@@ -598,8 +598,9 @@ const TRACKS={
     phases:[
       {id:"f1",name:"Phase 1 — الشبكات",emoji:"🌐",topics:["نموذج OSI والطبقات السبع","بروتوكولات TCP/IP","DNS وكيف يعمل","HTTP/HTTPS بعمق","Subnetting وعناوين IP","Wireshark — تحليل الحزم","VPN و Proxy","Network Protocols (FTP,SSH,SMB,RDP)"],
        resources:[
+         {title:"مهارة تك — أساسيات شبكات الحاسبات (مجاني بالكامل)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=22"},
+         {title:"مهارة تك — تطبيقات شبكات الحاسبات (مجاني بالكامل)",type:"lab",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1179"},
          {title:"CCNA بالعربي — Emad | IT DOSE",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL8s4OGp0649_e_Wbz5MlBgW5rBW-9hD0c"},
-         {title:"CCNA بالعربي — Mahara Tech (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=22"},
          {title:"TryHackMe — Pre-Security Path",type:"lab",lang:"en",url:"https://tryhackme.com/path/outline/presecurity"},
          {title:"Professor Messer — CompTIA Network+ (مجاني)",type:"video",lang:"en",url:"https://www.professormesser.com/network-plus/n10-008/n10-008-video/n10-008-training-course/"},
        ]},
@@ -618,6 +619,10 @@ const TRACKS={
        ]},
       {id:"f4",name:"Phase 4 — أساسيات الأمن",emoji:"🔐",topics:["مفاهيم CIA Triad","Encryption (Symmetric / Asymmetric)","Hashing وأنواعه","Authentication vs Authorization","Vulnerabilities vs Exploits","CVE / CVSS Scoring","OWASP المفاهيم الأساسية"],
        resources:[
+         {title:"مهارة تك — Cyber Security Engineer Job Profile 🏅 (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1004"},
+         {title:"مهارة تك — مقدمة في الأمن السيبراني (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=148"},
+         {title:"مهارة تك — Ethical Hacking (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=244"},
+         {title:"مهارة تك — أمن الشبكات المتقدم (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=560"},
          {title:"CompTIA Security+ — Professor Messer (مجاني)",type:"video",lang:"en",url:"https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/"},
          {title:"TryHackMe — Pre-Security & SOC Level 1",type:"lab",lang:"en",url:"https://tryhackme.com/paths"},
          {title:"OWASP Top 10 — الدليل الرسمي",type:"article",lang:"en",url:"https://owasp.org/www-project-top-ten/"},
@@ -635,6 +640,9 @@ const TRACKS={
        ]},
       {id:"w2",name:"Phase 2 — OWASP Top 10",emoji:"⚡",topics:["SQL Injection (Error-based, Blind, UNION)","XSS (Reflected, Stored, DOM-based)","CSRF","IDOR — Insecure Direct Object Reference","File Upload Vulnerabilities","Path Traversal / LFI / RFI","Command Injection","Broken Authentication","Open Redirect","Clickjacking"],
        resources:[
+         {title:"مهارة تك — OWASP Top 10 Web 2021 (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1232"},
+         {title:"مهارة تك — DevSecOps باستخدام أدوات OWASP (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1105"},
+         {title:"مهارة تك — دورة SSDLC الكاملة (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1052"},
          {title:"PortSwigger — SQL Injection Labs (مجاني)",type:"lab",lang:"en",url:"https://portswigger.net/web-security/sql-injection"},
          {title:"PortSwigger — XSS Labs (مجاني)",type:"lab",lang:"en",url:"https://portswigger.net/web-security/cross-site-scripting"},
          {title:"PortSwigger — CSRF Labs",type:"lab",lang:"en",url:"https://portswigger.net/web-security/csrf"},
@@ -679,6 +687,7 @@ const TRACKS={
        ]},
       {id:"mob3",name:"Phase 3 — OWASP Mobile Top 10 & Bug Bounty",emoji:"💰",topics:["M1-M10 OWASP Mobile Top 10","DIVA Android Challenges","InsecureBankv2","InjuredAndroid CTF","Mobile Report Writing"],
        resources:[
+         {title:"مهارة تك — OWASP Top 10 Mobile 2016 (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1143"},
          {title:"OWASP MASTG — دليل الاختبار الكامل (مجاني)",type:"lab",lang:"en",url:"https://mas.owasp.org/MASTG/"},
          {title:"DIVA Android — Damn Insecure Vulnerable App (GitHub)",type:"lab",lang:"en",url:"https://github.com/payatu/diva-android"},
          {title:"InjuredAndroid — CTF-Style App (GitHub)",type:"lab",lang:"en",url:"https://github.com/B3nac/InjuredAndroid"},
@@ -707,6 +716,8 @@ const TRACKS={
     phases:[
       {id:"net1",name:"Phase 1 — Scanning & Enumeration",emoji:"🔭",topics:["Nmap — كامل (Host Discovery, Port Scanning, NSE Scripts)","Masscan للسرعة العالية","Shodan للـ External Recon","Network Enumeration (SMB,NFS,SNMP,LDAP)","Vulnerability Scanning (OpenVAS)","Wireshark تحليل متقدم","Responder LLMNR Poisoning"],
        resources:[
+         {title:"مهارة تك — مقدمة في أمن الشبكات (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=560"},
+         {title:"مهارة تك — Network Security Engineer Job Profile (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1183"},
          {title:"Nmap — التوثيق الرسمي الكامل",type:"article",lang:"en",url:"https://nmap.org/book/man.html"},
          {title:"TryHackMe — Network Security Path",type:"lab",lang:"en",url:"https://tryhackme.com/paths"},
          {title:"HackTricks — Network Services Pentesting",type:"article",lang:"en",url:"https://book.hacktricks.xyz/network-services-pentesting"},
