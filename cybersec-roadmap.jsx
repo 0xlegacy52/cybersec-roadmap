@@ -21,7 +21,7 @@ body{background:#04080f;font-family:'Fira Code',monospace}
 .bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
 .topic-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;cursor:pointer;transition:all .15s}
 .topic-row:hover{background:rgba(255,255,255,.04)}
-.chk{width:17px;height:17px;border:2px solid rgba(0,255,136,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.chk{width:20px;height:20px;border:2px solid rgba(0,255,136,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
 .chk.on{background:#00ff88;border-color:#00ff88}
 .phase-hd{padding:14px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
 .phase-hd:hover{background:rgba(0,255,136,.04)}
@@ -32,8 +32,8 @@ body{background:#04080f;font-family:'Fira Code',monospace}
 .routine-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:flex-start}
 .slide{animation:slideIn .3s ease}
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.xp-toast{position:fixed;top:24px;right:24px;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#040810;padding:10px 18px;border-radius:10px;font-weight:700;font-size:14px;z-index:9999;animation:toastIn .4s ease,toastOut .4s ease 2.2s forwards}
-@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.xp-toast{position:fixed;top:16px;right:16px;left:16px;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#040810;padding:10px 18px;border-radius:10px;font-weight:700;font-size:14px;z-index:9999;text-align:center;animation:toastIn .4s ease,toastOut .4s ease 2.2s forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastOut{from{opacity:1}to{opacity:0}}
 .quiz-opt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;font-family:'Cairo',sans-serif;color:#cbd5e1;font-size:14px;text-align:right;width:100%}
 .quiz-opt:hover{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07)}
@@ -48,6 +48,33 @@ select option{background:#0f172a}
 .pulse{animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .sidebar-glow{box-shadow:inset -1px 0 0 rgba(0,255,136,.1)}
+.grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bottom-nav{display:none}
+.sidebar-overlay{display:none}
+@media(max-width:767px){
+  .sidebar-desktop{display:none!important}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(180deg,#060c1a,#040810);border-top:1px solid rgba(0,255,136,0.15);padding:6px 4px 10px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .bottom-nav::-webkit-scrollbar{display:none}
+  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:8px;cursor:pointer;color:#64748b;flex-shrink:0;min-width:56px;border:1px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+  .bnav-item.on{background:rgba(0,255,136,.12);color:#00ff88;border-color:rgba(0,255,136,.25)}
+  .bnav-item span:first-child{font-size:20px}
+  .bnav-item span:last-child{font-size:9px;font-family:'Cairo',sans-serif;white-space:nowrap}
+  .btn-g,.btn-o{padding:10px 14px;font-size:13px;min-height:44px}
+  input[type="text"],select{font-size:16px;width:100%}
+  .res-filters select{width:100%!important}
+  .topic-row{padding:10px;min-height:44px}
+  .phase-hd{min-height:52px}
+  .chk{width:22px;height:22px}
+  .quiz-opt{padding:14px 16px;min-height:52px}
+  .nav{min-height:44px}
+  .stat-card{padding:12px}
+  .res-card{padding:12px}
+  .todo-item{padding:12px}
+}
+@media(min-width:768px){
+  .xp-toast{left:auto;right:24px;top:24px;text-align:left}
+  .bottom-nav{display:none!important}
+}
 `;
 
 // ─────────────────────────────────────────────
@@ -911,6 +938,7 @@ export default function CyberPath(){
   const [toast,setToast]=useState(null);
   const [loading,setLoading]=useState(true);
   const [sideOpen,setSideOpen]=useState(true);
+  const [isMobile,setIsMobile]=useState(()=>typeof window!=="undefined"&&window.innerWidth<768);
   const [expPhase,setExpPhase]=useState(null);
   const [expWeek,setExpWeek]=useState(null);
   const [quiz,setQuiz]=useState({active:false,wkId:null,ans:{},submitted:false,score:0});
@@ -925,11 +953,13 @@ export default function CyberPath(){
   const [resTid,setResTid]=useState("all");
 
   useEffect(()=>{(async()=>{try{const r=await window.storage.get("cyberpath_v3");if(r?.value){const p=JSON.parse(r.value);setS({...D0,...p});if(p.todos)setTodos(p.todos);}}catch(e){}setLoading(false);})();},[]);
+  useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
 
   const save=useCallback(async(ns,td)=>{try{await window.storage.set("cyberpath_v3",JSON.stringify({...ns,todos:td||todos}));}catch(e){};},[todos]);
   const upd=useCallback((patch)=>{setS(prev=>{const ns={...prev,...(typeof patch==="function"?patch(prev):patch)};save(ns);return ns;});},[save]);
   const showToast=(m)=>{setToast(m);setTimeout(()=>setToast(null),2800);};
 
+  const g2=isMobile?"1fr":"1fr 1fr";
   const lv=getLevel(s.xp);
   const nlv=LEVELS.find(l=>l.lv===lv.lv+1)||lv;
   const lvPct=Math.min(100,Math.round((s.xp-lv.min)/((nlv.min||lv.min+1000)-lv.min)*100));
@@ -1023,8 +1053,20 @@ export default function CyberPath(){
     <div style={{color:"#00ff88",fontFamily:"'Fira Code',monospace",fontSize:14}}>جاري التحميل...</div>
   </div>);
 
+  const NAV_ITEMS=[
+    {id:"dashboard",icon:"📊",label:"Dashboard"},
+    {id:"program",icon:"🗺️",label:"البرنامج"},
+    {id:"missions",icon:"🎯",label:"المهام"},
+    {id:"quiz",icon:"📝",label:"اختبارات"},
+    {id:"achievements",icon:"🏅",label:"إنجازات"},
+    {id:"resources",icon:"📚",label:"موارد"},
+    {id:"todo",icon:"✅",label:"Todo"},
+    {id:"routine",icon:"🕐",label:"الروتين"},
+    {id:"stats",icon:"📈",label:"إحصائيات"},
+  ];
+
   // ─── SIDEBAR ───
-  const Sidebar=()=>(<div className="sidebar-glow" style={{width:sideOpen?260:72,minHeight:"100vh",background:"linear-gradient(180deg,#060c1a 0%,#040810 100%)",borderRight:"1px solid rgba(0,255,136,0.1)",display:"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
+  const Sidebar=()=>(<div className="sidebar-glow sidebar-desktop" style={{width:sideOpen?260:72,minHeight:"100vh",background:"linear-gradient(180deg,#060c1a 0%,#040810 100%)",borderRight:"1px solid rgba(0,255,136,0.1)",display:"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
     <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,padding:"0 4px"}}>
       <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
         <span style={{fontSize:16,color:"#050810",fontWeight:900}}>⚡</span>
@@ -1042,8 +1084,8 @@ export default function CyberPath(){
       {id:"todo",icon:"✅",label:"Todo List"},
       {id:"routine",icon:"🕐",label:"الروتين الإسلامي"},
       {id:"stats",icon:"📈",label:"الإحصائيات"},
-    ].map(item=>(<div key={item.id} className={`nav ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)} title={item.label}>
-      <span style={{fontSize:16,flexShrink:0}}>{item.icon}</span>
+    ].map(item=>(<div key={item.id} className={`nav ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)} title={item.label} style={{minHeight:44}}>
+      <span style={{fontSize:18,flexShrink:0}}>{item.icon}</span>
       {sideOpen&&<span style={{fontFamily:"'Cairo',sans-serif",fontSize:13}}>{item.label}</span>}
     </div>))}
     {sideOpen&&(<div style={{marginTop:"auto",padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
@@ -1061,11 +1103,11 @@ export default function CyberPath(){
 
   // ─── DASHBOARD ───
   const Dashboard=()=>(<div className="slide">
-    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:"24px 28px",marginBottom:20,position:"relative",overflow:"hidden"}}>
+    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"24px 28px",marginBottom:20,position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:-20,right:-20,width:200,height:200,background:"radial-gradient(circle,rgba(0,255,136,0.08),transparent 70%)",pointerEvents:"none"}}/>
       <div style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مرحباً في CyberPath Academy</div>
-      <h1 style={{color:"#e2e8f0",fontSize:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
-      <p style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>برنامج 24 شهراً | 80 أسبوع | 5 مراحل | 16 Track + موارد حقيقية ومتحقق منها</p>
+      <h1 style={{color:"#e2e8f0",fontSize:isMobile?18:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
+      <p style={{color:"#94a3b8",fontSize:isMobile?12:13,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>برنامج 24 شهراً | 80 أسبوع | 5 مراحل | 16 Track + موارد حقيقية ومتحقق منها</p>
       <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
         <button className="btn btn-g" onClick={()=>setPage("program")}>🗺️ البرنامج الكامل</button>
         <button className="btn btn-o" onClick={()=>setPage("missions")}>🎯 مهام اليوم</button>
@@ -1089,7 +1131,7 @@ export default function CyberPath(){
         <div style={{color:"#475569",fontSize:11,marginTop:2,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
       </div>))}
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:20}}>
+    <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:20}}>
       <div className="card" style={{padding:14}}>
         <div style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📍 الأسبوع الحالي — Week {s.currentWeek}</div>
         {curWk&&(<>
@@ -1189,7 +1231,7 @@ export default function CyberPath(){
                 <span style={{color:"#64748b",fontSize:11,transform:wO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
               </div>
               {wO&&(<div style={{padding:"0 12px 12px"}}>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <div style={{display:"grid",gridTemplateColumns:g2,gap:10}}>
                   <div>
                     <div style={{color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// missions (+5 XP)</div>
                     {w.missions.map((m,mi)=>{const mk=`m-${w.wk}-${mi}`;const dn=!!s.doneMissions?.[mk];return(<div key={mi} className="topic-row" onClick={()=>markMission(w.wk,mi)}>
@@ -1243,7 +1285,7 @@ export default function CyberPath(){
           <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{st.label}</div>
         </div>))}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:g2,gap:14}}>
         <div className="card" style={{padding:14}}>
           <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع (+5 XP لكل)</div>
           {wD.missions.map((m,i)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markMission(s.currentWeek,i)}>
@@ -1319,7 +1361,7 @@ export default function CyberPath(){
       </div>):(<div>
         {q.qs.map((qst,i)=>(<div key={i} style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,padding:14,marginBottom:14}}>
           <div style={{color:"#e2e8f0",fontSize:14,fontFamily:"'Cairo',sans-serif",marginBottom:10,fontWeight:600}}>{i+1}. {qst.q}</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          <div style={{display:"grid",gridTemplateColumns:g2,gap:8}}>
             {qst.os.map((opt,oi)=>(<button key={oi} className={`quiz-opt ${quiz.ans[i]===oi?"sel":""}`} onClick={()=>setQuiz(prev=>({...prev,ans:{...prev.ans,[i]:oi}}))}>
               {["A","B","C","D"][oi]}. {opt}
             </button>))}
@@ -1374,18 +1416,18 @@ export default function CyberPath(){
   const Resources=()=>(<div className="slide">
     <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📚 مكتبة الموارد الشاملة</h1>
     <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:12}}>{allRes.length}+ مورد — روابط حقيقية ومتحقق منها من 16 تراك</p>
-    <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-      <select value={resType} onChange={e=>setResType(e.target.value)} style={{width:130,fontSize:12}}>
+    <div className="res-filters" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+      <select value={resType} onChange={e=>setResType(e.target.value)} style={{flex:"1 1 120px",fontSize:12}}>
         <option value="all">📋 كل الأنواع</option>
         <option value="video">▶ Videos</option><option value="lab">⚗ Labs</option>
         <option value="article">📄 Articles</option><option value="writeup">✍ Writeups</option>
         <option value="book">📚 Books</option>
       </select>
-      <select value={resLang} onChange={e=>setResLang(e.target.value)} style={{width:110,fontSize:12}}>
+      <select value={resLang} onChange={e=>setResLang(e.target.value)} style={{flex:"1 1 100px",fontSize:12}}>
         <option value="all">🌐 كل اللغات</option>
         <option value="ar">🇸🇦 عربي</option><option value="en">🌐 English</option>
       </select>
-      <select value={resTid} onChange={e=>setResTid(e.target.value)} style={{width:150,fontSize:12}}>
+      <select value={resTid} onChange={e=>setResTid(e.target.value)} style={{flex:"1 1 140px",fontSize:12}}>
         <option value="all">🗺️ كل التراكات</option>
         {TRACK_ORDER.map(tid=><option key={tid} value={tid}>{TRACKS[tid].icon} {TRACKS[tid].name}</option>)}
       </select>
@@ -1472,7 +1514,7 @@ export default function CyberPath(){
   const Routine=()=>(<div className="slide">
     <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🕐 الروتين اليومي المتكامل</h1>
     <p style={{color:"#64748b",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>روتين يومي محكم يجمع بين الجانب الإسلامي والتعلم المنظم — مستوحى من هدي النبي ﷺ</p>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
+    <div style={{display:"grid",gridTemplateColumns:g2,gap:10,marginBottom:14}}>
       <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.2)",borderRadius:12,padding:12}}>
         <div style={{color:"#fde047",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:5}}>🕌 يوم الجمعة — مميزات خاصة</div>
         <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ قراءة سورة الكهف كاملة صباحاً<br/>✦ التبكير إلى صلاة الجمعة<br/>✦ الإكثار من الصلاة على النبي ﷺ<br/>✦ الدعاء في ساعة الإجابة (بعد العصر)<br/>✦ وقت مخفف للتعلم — يوم أسري</div>
@@ -1539,7 +1581,7 @@ export default function CyberPath(){
           <div style={{color:"#e2e8f0",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
         </div>))}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:16}}>
+      <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
         <div className="card" style={{padding:14}}>
           <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم كل مرحلة</div>
           {PHASES.map(ph=>{
@@ -1579,11 +1621,23 @@ export default function CyberPath(){
       </div>
     </div>);};
 
+  const BottomNav=()=>(
+    <nav className="bottom-nav">
+      {NAV_ITEMS.map(item=>(
+        <div key={item.id} className={`bnav-item ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)}>
+          <span>{item.icon}</span>
+          <span>{item.label}</span>
+        </div>
+      ))}
+    </nav>
+  );
+
   return(<div className="matrix-bg" style={{fontFamily:"'Fira Code',monospace",background:"#05080f",minHeight:"100vh",color:"#e2e8f0"}}>
     <style>{FONTS+CSS}</style>
     {toast&&<div className="xp-toast">{toast}</div>}
     <Sidebar/>
-    <main style={{marginLeft:SB,padding:"26px 26px 40px",maxWidth:1100,transition:"margin-left 0.3s ease"}}>
+    <BottomNav/>
+    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"16px 14px 90px":"26px 26px 40px",maxWidth:isMobile?"100%":1100,transition:"margin-left 0.3s ease"}}>
       {page==="dashboard"&&<Dashboard/>}
       {page==="program"&&<Program/>}
       {page==="missions"&&<Missions/>}
