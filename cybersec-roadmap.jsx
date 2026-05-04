@@ -912,7 +912,36 @@ const R_TXT={prayer:"#fde047",islamic:"#34d399",quran:"#6ee7b7",study:"#60a5fa",
 const today=()=>new Date().toISOString().split("T")[0];
 const findPhase=(wk)=>PHASES.find(p=>wk>=p.startWeek&&wk<=p.endWeek)||PHASES[0];
 const findWeek=(wk)=>{for(const ph of PHASES){const f=ph.weeks.find(w=>w.wk===wk);if(f)return{...f,phase:ph};}return null;};
-const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{}};
+const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[]};
+
+// خطة يومية: توزيع المواضيع على أيام الأسبوع (السبت→الخميس = 6 أيام، الجمعة راحة)
+const STUDY_DAYS=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+const DAY_PLAN=(wk)=>{
+  const w=findWeek(wk);if(!w)return[];
+  const allItems=[
+    ...w.missions.map((m,i)=>({type:"mission",text:m,idx:i,xp:5,icon:"🎯",wk})),
+    ...w.topics.map((t,i)=>({type:"topic",text:t,idx:i,xp:10,icon:"📚",wk}))
+  ];
+  // توزيع متساوٍ على 6 أيام
+  return STUDY_DAYS.map((day,di)=>{
+    const perDay=Math.ceil(allItems.length/6);
+    const items=allItems.slice(di*perDay,(di+1)*perDay);
+    const hrs=items.length>0?Math.max(1,Math.round(items.length*0.5)):0;
+    return{day,items,hrs};
+  }).filter(d=>d.items.length>0);
+};
+// حساب يوم الأسبوع العربي الحالي
+const getTodayDayAr=()=>{const d=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];return d[new Date().getDay()];};
+// مراجعة Spaced Repetition: الأسابيع المكتملة قبل 7,14,30 يوم
+const SR_INTERVALS=[7,14,30];
+const getReviewWeeks=(s)=>{
+  const done=[];
+  PHASES.forEach(ph=>ph.weeks.forEach(w=>{
+    const topics=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
+    if(topics===w.topics.length&&w.wk<s.currentWeek)done.push(w.wk);
+  }));
+  return done.slice(-6);
+};
 
 function Ring({pct,size=48,stroke=4,color="#00ff88"}){
   const r=(size-stroke*2)/2,c=2*Math.PI*r,o=c-(pct/100)*c;
@@ -951,6 +980,9 @@ export default function CyberPath(){
   const [resType,setResType]=useState("all");
   const [resLang,setResLang]=useState("all");
   const [resTid,setResTid]=useState("all");
+  const [studyHoursInput,setStudyHoursInput]=useState("");
+  const [weekReportOpen,setWeekReportOpen]=useState(false);
+  const [certModal,setCertModal]=useState(null);
 
   useEffect(()=>{(async()=>{try{const r=await window.storage.get("cyberpath_v3");if(r?.value){const p=JSON.parse(r.value);setS({...D0,...p});if(p.todos)setTodos(p.todos);}}catch(e){}setLoading(false);})();},[]);
   useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
@@ -987,6 +1019,50 @@ export default function CyberPath(){
     const nb=Math.max(ns,s.bestStreak);
     upd({lastCheckIn:t,streak:ns,bestStreak:nb,xp:s.xp+15,islamicDays:s.islamicDays+1});
     showToast(`🕌 حضور مسجّل! 🔥 سلسلة ${ns} يوم | +15 XP`);
+  };
+
+  // تسجيل ساعات الدراسة اليومية
+  const logStudyHours=(hrs)=>{
+    const h=parseFloat(hrs);
+    if(isNaN(h)||h<=0||h>16){showToast("❗ أدخل عدد ساعات صحيح (1-16)");return;}
+    const t=today();
+    const prev=s.studyLog[t]||0;
+    const nl={...s.studyLog,[t]:prev+h};
+    // حساب إجمالي ساعات الأسبوع الحالي
+    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
+    const weekHrs=weekDates.reduce((a,d)=>a+(nl[d]||0),0);
+    const xpBonus=Math.floor(h)*3;
+    upd({studyLog:nl,xp:s.xp+xpBonus});
+    setStudyHoursInput("");
+    showToast(`⏱️ ${h} ساعة مسجّلة! أسبوعياً: ${weekHrs.toFixed(1)}h | +${xpBonus} XP`);
+  };
+
+  // توليد التقرير الأسبوعي
+  const generateWeekReport=()=>{
+    const wk=s.currentWeek;const wData=curWk;if(!wData)return null;
+    const mDone=wData.missions.filter((_,i)=>s.doneMissions?.[`m-${wk}-${i}`]).length;
+    const tDone=wData.topics.filter((_,i)=>s.doneTopics?.[`${wk}-${i}`]).length;
+    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
+    const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
+    const quizScore=s.quizHistory[wData.quizId]?.score??null;
+    const ph=findPhase(wk);
+    return{wk,title:wData.title,phase:ph.nameAr,mDone,mTotal:wData.missions.length,tDone,tTotal:wData.topics.length,weekHrs:weekHrs.toFixed(1),quizScore,date:today(),xpGained:s.xp};
+  };
+  const saveWeekReport=()=>{
+    const r=generateWeekReport();if(!r)return;
+    upd({weeklyReports:{...s.weeklyReports,[`wk${r.wk}`]:r}});
+    setWeekReportOpen(true);
+    showToast("📋 تم حفظ تقرير الأسبوع!");
+  };
+
+  // شهادات إنهاء المراحل
+  const earnCertificate=(phId)=>{
+    if(s.certificates.includes(phId))return;
+    const ph=PHASES.find(p=>p.id===phId);if(!ph)return;
+    const nc=[...s.certificates,phId];
+    upd({certificates:nc,xp:s.xp+150});
+    setCertModal(ph);
+    showToast(`🎓 شهادة ${ph.nameAr} +150 XP`);
   };
 
   const markTopic=(wk,i)=>{
@@ -1131,6 +1207,54 @@ export default function CyberPath(){
         <div style={{color:"#475569",fontSize:11,marginTop:2,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
       </div>))}
     </div>
+    {/* ─ بطاقة خطة اليوم الرئيسية ─ */}
+    {(()=>{
+      const todayAr=getTodayDayAr();
+      const isFriday=todayAr==="الجمعة";
+      const dayPlan=DAY_PLAN(s.currentWeek);
+      const todayPlan=dayPlan.find(d=>d.day===todayAr)||null;
+      const todayHrs=s.studyLog?.[today()]||0;
+      const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
+      const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
+      return(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.25)",borderRadius:14,padding:isMobile?"14px":"18px",marginBottom:18}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:8}}>
+          <div>
+            <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
+            <div style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} · {curWk?.title}</div>
+          </div>
+          <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+            {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs}h مقترحة</span>}
+            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"rgba(0,0,0,0.3)",color:todayHrs>0?"#a78bfa":"#334155",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>✓ {todayHrs}h مسجلة</span>
+            <span style={{background:"rgba(249,115,22,0.1)",color:"#f97316",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>📅 {weekHrs.toFixed(1)}h أسبوعياً</span>
+          </div>
+        </div>
+        {isFriday?(
+          <div style={{textAlign:"center",padding:"12px 0",color:"#fde047",fontSize:13,fontFamily:"'Cairo',sans-serif"}}>🕌 يوم الجمعة — يوم الراحة والعبادة · سورة الكهف · صلاة الجمعة</div>
+        ):todayPlan?(
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {todayPlan.items.slice(0,4).map((item,i)=>{
+              const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
+              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",background:dn?"rgba(0,255,136,0.04)":"rgba(0,0,0,0.2)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"rgba(255,255,255,0.05)"}`,cursor:"pointer"}}
+                onClick={()=>{setPage("missions");}}>
+                <div style={{width:16,height:16,borderRadius:4,border:`1.5px solid ${dn?"#00ff88":"rgba(0,255,136,0.3)"}`,background:dn?"#00ff88":"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  {dn&&<span style={{color:"#040810",fontSize:8,fontWeight:900}}>✓</span>}
+                </div>
+                <span style={{color:dn?"#475569":"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
+                <span style={{color:item.type==="mission"?"#00ff88":"#00d4ff",fontSize:10,flexShrink:0}}>+{item.xp} XP</span>
+              </div>);
+            })}
+            {todayPlan.items.length>4&&(<div style={{color:"#475569",fontSize:11,textAlign:"center",fontFamily:"'Cairo',sans-serif",cursor:"pointer",padding:"5px"}} onClick={()=>setPage("missions")}>+ {todayPlan.items.length-4} مهام أخرى ← اعرض الكل</div>)}
+          </div>
+        ):(
+          <div style={{color:"#334155",textAlign:"center",padding:"12px 0",fontFamily:"'Cairo',sans-serif",fontSize:12}}>لا توجد مهام مخطط لهذا اليوم</div>
+        )}
+        <div style={{display:"flex",gap:8,marginTop:12,flexWrap:"wrap"}}>
+          <button className="btn btn-g" style={{fontSize:11,padding:"6px 14px",flex:1}} onClick={()=>setPage("missions")}>🎯 خطة الأسبوع الكاملة</button>
+          <button className="btn btn-o" style={{fontSize:11,padding:"6px 14px"}} onClick={doCheckIn}>🕌 تسجيل الحضور</button>
+        </div>
+      </div>);
+    })()}
+
     <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:20}}>
       <div className="card" style={{padding:14}}>
         <div style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📍 الأسبوع الحالي — Week {s.currentWeek}</div>
@@ -1270,51 +1394,184 @@ export default function CyberPath(){
   </div>);
 
   // ─── MISSIONS ───
-  const Missions=()=>{const wD=curWk;if(!wD)return null;
+  const Missions=()=>{
+    const wD=curWk;if(!wD)return null;
     const mD=wD.missions.filter((_,i)=>s.doneMissions?.[`m-${s.currentWeek}-${i}`]).length;
     const tD=wD.topics.filter((_,i)=>s.doneTopics?.[`${s.currentWeek}-${i}`]).length;
+    const todayAr=getTodayDayAr();
+    const dayPlan=DAY_PLAN(s.currentWeek);
+    const todayPlan=dayPlan.find(d=>d.day===todayAr)||null;
+    const isFriday=todayAr==="الجمعة";
+    // ساعات الأسبوع
+    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
+    const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
+    const todayHrs=s.studyLog?.[today()]||0;
+    const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
+    // تقرير الأسبوع المحفوظ
+    const savedReport=s.weeklyReports?.[`wk${s.currentWeek}`];
+    // قائمة المراجعة SR
+    const reviewWks=getReviewWeeks(s);
+    const qd=s.quizHistory[wD.quizId];
+    const phPct=Math.round((tD/wD.topics.length)*100);
     return(<div className="slide">
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
-        <div><h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>🎯 Daily Missions</h1>
-          <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>Week {s.currentWeek} — {wD.title}</p></div>
-        <button className="btn btn-o" style={{fontSize:12,padding:"6px 12px"}} onClick={doCheckIn}>🕌 تسجيل يومي</button>
+      {/* ─ رأس الصفحة ─ */}
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
+        <div>
+          <h1 style={{color:"#e2e8f0",fontSize:isMobile?18:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>🎯 خطة اليوم والأسبوع</h1>
+          <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} — {wD.title} — {findPhase(s.currentWeek).nameAr}</p>
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          <button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={doCheckIn}>🕌 حضور +15 XP</button>
+          <button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={saveWeekReport}>📋 حفظ التقرير</button>
+        </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10,marginBottom:14}}>
-        {[{label:"المهام",val:`${mD}/${wD.missions.length}`,color:"#00ff88"},{label:"المواضيع",val:`${tD}/${wD.topics.length}`,color:"#00d4ff"},{label:"XP الكلي",val:s.xp,color:"#fbbf24"},{label:"🔥 السلسلة",val:`${s.streak}`,color:"#f97316"}].map((st,i)=>(<div key={i} className="stat-card" style={{padding:12}}>
-          <div style={{color:st.color,fontSize:18,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</div>
-          <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{st.label}</div>
+
+      {/* ─ بطاقات الحالة ─ */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:16}}>
+        {[
+          {label:"المهام",val:`${mD}/${wD.missions.length}`,color:"#00ff88",icon:"🎯"},
+          {label:"المواضيع",val:`${tD}/${wD.topics.length}`,color:"#00d4ff",icon:"📚"},
+          {label:"ساعات اليوم",val:`${todayHrs}h`,color:"#a78bfa",icon:"⏱️"},
+          {label:"ساعات الأسبوع",val:`${weekHrs.toFixed(1)}h`,color:"#f97316",icon:"📅"},
+          {label:"إجمالي الساعات",val:`${totalHrs.toFixed(0)}h`,color:"#fbbf24",icon:"⭐"},
+          {label:"🔥 السلسلة",val:`${s.streak} يوم`,color:"#ef4444",icon:"🔥"},
+        ].map((st,i)=>(<div key={i} className="stat-card" style={{padding:12}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <span style={{fontSize:16}}>{st.icon}</span>
+            <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
+          </div>
+          <div style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
         </div>))}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:g2,gap:14}}>
+
+      {/* ─ تسجيل ساعات الدراسة ─ */}
+      <div style={{background:"linear-gradient(135deg,rgba(167,139,250,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(167,139,250,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
+        <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>⏱️ سجّل ساعات دراستك اليوم</div>
+        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+          <input type="number" min="0.5" max="16" step="0.5" placeholder="مثال: 2.5" value={studyHoursInput} onChange={e=>setStudyHoursInput(e.target.value)}
+            style={{width:120,flex:"0 0 auto"}} onKeyDown={e=>e.key==="Enter"&&logStudyHours(studyHoursInput)}/>
+          <span style={{color:"#64748b",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
+          <button className="btn btn-g" style={{fontSize:12,padding:"8px 18px"}} onClick={()=>logStudyHours(studyHoursInput)}>+ تسجيل</button>
+          {todayHrs>0&&<span style={{color:"#a78bfa",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"rgba(167,139,250,0.1)",padding:"4px 10px",borderRadius:6}}>اليوم: {todayHrs}h ✓</span>}
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
+          {weekDates.slice(0,7).reverse().map((d,i)=>{const h=s.studyLog?.[d]||0;const label=["ج","خ","أ","ث","إ","أح","س"][6-i]||"";
+            return(<div key={d} style={{textAlign:"center",flex:1,minWidth:32}}>
+              <div style={{height:40,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"rgba(255,255,255,0.04)",borderRadius:4,border:`1px solid ${h>0?"rgba(167,139,250,0.3)":"rgba(255,255,255,0.06)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:3}}>
+                <span style={{color:h>0?"#a78bfa":"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
+              </div>
+              <div style={{color:"#475569",fontSize:9,marginTop:2}}>{label}</div>
+            </div>);
+          })}
+        </div>
+      </div>
+
+      {/* ─ خطة اليوم ─ */}
+      {isFriday?(
+        <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.25)",borderRadius:12,padding:16,marginBottom:16,textAlign:"center"}}>
+          <div style={{fontSize:36,marginBottom:8}}>🕌</div>
+          <div style={{color:"#fde047",fontSize:16,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>يوم الجمعة — يوم الراحة والعبادة</div>
+          <div style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
+            ✦ قراءة سورة الكهف • ✦ صلاة الجمعة • ✦ الإكثار من الصلاة على النبي ﷺ<br/>
+            لا دراسة تقنية اليوم — استرح وجدّد نشاطك للأسبوع القادم
+          </div>
+        </div>
+      ):(
+        <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:6}}>
+            <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
+            {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs} ساعة مقترحة</span>}
+          </div>
+          {todayPlan?(
+            <div style={{display:"flex",flexDirection:"column",gap:7}}>
+              {todayPlan.items.map((item,i)=>{
+                const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
+                return(<div key={i} className="topic-row" style={{background:dn?"rgba(0,255,136,0.04)":"rgba(255,255,255,0.02)",border:`1px solid ${dn?"rgba(0,255,136,0.2)":"rgba(255,255,255,0.06)"}`,borderRadius:8,padding:"10px 12px"}}
+                  onClick={()=>item.type==="mission"?markMission(item.wk,item.idx):markTopic(item.wk,item.idx)}>
+                  <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <span style={{color:dn?"#475569":"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{item.text}</span>
+                  </div>
+                  <span style={{fontSize:11,color:item.type==="mission"?"#00ff88":"#00d4ff",background:item.type==="mission"?"rgba(0,255,136,0.08)":"rgba(0,212,255,0.08)",padding:"2px 7px",borderRadius:4,flexShrink:0}}>{item.icon} +{item.xp}</span>
+                </div>);
+              })}
+            </div>
+          ):(
+            <div style={{color:"#334155",textAlign:"center",padding:"20px 0",fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام مخطط لها اليوم</div>
+          )}
+        </div>
+      )}
+
+      {/* ─ جميع المهام والمواضيع الأسبوعية ─ */}
+      <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع (+5 XP لكل)</div>
+          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع <span style={{color:"#00ff88",fontSize:10}}>+5 XP لكل</span></div>
+          <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${Math.round(mD/wD.missions.length*100)}%`,background:"linear-gradient(90deg,#00ff88,#10b981)"}}/></div>
           {wD.missions.map((m,i)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markMission(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:9,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"#475569":"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{m}</span>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"#475569":"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{m}</span>
           </div>);})}
         </div>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📚 مواضيع الأسبوع (+10 XP لكل)</div>
+          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📚 مواضيع الأسبوع <span style={{color:"#00d4ff",fontSize:10}}>+10 XP لكل</span></div>
+          <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${phPct}%`,background:"linear-gradient(90deg,#00d4ff,#3b82f6)"}}/></div>
           {wD.topics.map((t,i)=>{const dn=!!s.doneTopics?.[`${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markTopic(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:9,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"#475569":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{t}</span>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"#475569":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{t}</span>
           </div>);})}
-          {QUIZZES[wD.quizId]&&!s.quizHistory[wD.quizId]&&(<div style={{marginTop:10,padding:10,background:"rgba(0,212,255,0.05)",border:"1px solid rgba(0,212,255,0.2)",borderRadius:8}}>
-            <div style={{color:"#00d4ff",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>📝 اختبار الأسبوع متاح!</div>
-            <button className="btn btn-g" style={{fontSize:11,padding:"5px 12px"}} onClick={()=>startQuiz(wD.quizId)}>ابدأ الاختبار</button>
+          {QUIZZES[wD.quizId]&&(<div style={{marginTop:10,padding:10,background:qd?"rgba(16,185,129,0.06)":"rgba(0,212,255,0.05)",border:`1px solid ${qd?"rgba(16,185,129,0.3)":"rgba(0,212,255,0.2)"}`,borderRadius:8}}>
+            {!qd?(<><div style={{color:"#00d4ff",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>📝 اختبار الأسبوع متاح!</div>
+              <button className="btn btn-g" style={{fontSize:11,padding:"5px 12px",width:"100%"}} onClick={()=>startQuiz(wD.quizId)}>ابدأ الاختبار</button></>)
+            :(<div style={{color:"#10b981",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>✓ اجتزت الاختبار — {qd.score}% | {qd.score>=80?"✅ ناجح":"📖 يمكن التحسين"}</div>)}
           </div>)}
         </div>
       </div>
-      <div className="card" style={{padding:14,marginTop:14}}>
-        <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🌙 مبادئ اليوم الناجح</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:8}}>
-          {[{i:"🌙",t:"ابدأ يومك بذكر الله — البركة في الصباح"},{i:"🎯",t:"حدد 3 أهداف رئيسية فقط كل يوم"},{i:"⏱️",t:"Pomodoro: 25 دقيقة تركيز + 5 راحة"},{i:"📝",t:"سجّل كل ما تتعلمه في Obsidian"},{i:"💻",t:"لا يوم بلا Lab واحد على الأقل"},{i:"📖",t:"اقرأ Writeup واحد يومياً"}].map((p,i)=>(<div key={i} style={{display:"flex",gap:8,padding:"7px 10px",background:"rgba(255,255,255,0.02)",borderRadius:8}}>
-            <span style={{fontSize:13}}>{p.i}</span>
-            <span style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{p.t}</span>
-          </div>))}
+
+      {/* ─ مراجعة Spaced Repetition ─ */}
+      {reviewWks.length>0&&(<div style={{background:"rgba(251,191,36,0.05)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
+        <div style={{color:"#fbbf24",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🔄 مراجعة مقترحة — Spaced Repetition</div>
+        <p style={{color:"#64748b",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          {reviewWks.map(wk=>{const w=findWeek(wk);const ph=findPhase(wk);return w?(
+            <div key={wk} style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:8,padding:"8px 12px",cursor:"pointer"}} onClick={()=>{setExpPhase(ph.id);setExpWeek(`${ph.id}-${wk}`);setPage("program");}}>
+              <div style={{color:"#fbbf24",fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>Week {wk}</div>
+              <div style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
+            </div>
+          ):null;})}
         </div>
-      </div>
+      </div>)}
+
+      {/* ─ التقرير الأسبوعي ─ */}
+      {(weekReportOpen||savedReport)&&(<div style={{background:"rgba(0,255,136,0.04)",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:16,marginBottom:16}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+          <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📋 تقرير الأسبوع {s.currentWeek}</div>
+          <button style={{background:"transparent",border:"none",color:"#64748b",cursor:"pointer",fontSize:16}} onClick={()=>setWeekReportOpen(false)}>×</button>
+        </div>
+        {(()=>{const r=savedReport||generateWeekReport();if(!r)return null;return(
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:8}}>
+            {[
+              {label:"المرحلة",val:r.phase,color:"#3b82f6",icon:"🏗️"},
+              {label:"الموضوع",val:r.title,color:"#e2e8f0",icon:"📖"},
+              {label:"المهام",val:`${r.mDone}/${r.mTotal}`,color:"#00ff88",icon:"🎯"},
+              {label:"المواضيع",val:`${r.tDone}/${r.tTotal}`,color:"#00d4ff",icon:"📚"},
+              {label:"ساعات الدراسة",val:`${r.weekHrs}h`,color:"#a78bfa",icon:"⏱️"},
+              {label:"نتيجة الاختبار",val:r.quizScore!==null?`${r.quizScore}%`:"لم يُجتز",color:r.quizScore>=80?"#10b981":"#f59e0b",icon:"📝"},
+            ].map((st,i)=>(<div key={i} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px",border:"1px solid rgba(255,255,255,0.06)"}}>
+              <div style={{fontSize:16,marginBottom:4}}>{st.icon}</div>
+              <div style={{color:st.color,fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{st.val}</div>
+              <div style={{color:"#64748b",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{st.label}</div>
+            </div>))}
+          </div>
+        );})()}
+      </div>)}
+
+      {/* ─ زر التقدم للأسبوع التالي ─ */}
+      {qd&&s.currentWeek<80&&(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.3)",borderRadius:12,padding:14,textAlign:"center"}}>
+        <div style={{color:"#e2e8f0",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>✅ أكملت اختبار هذا الأسبوع — جاهز للتقدم!</div>
+        <button className="btn btn-g" style={{fontSize:13,padding:"10px 28px"}} onClick={()=>{saveWeekReport();advWeek();}}>🚀 الأسبوع {s.currentWeek+1} ←</button>
+      </div>)}
     </div>);};
+
 
   // ─── QUIZ ───
   const QuizPage=()=>{
@@ -1374,9 +1631,43 @@ export default function CyberPath(){
     </div>);};
 
   // ─── ACHIEVEMENTS ───
-  const Achievements=()=>(<div className="slide">
-    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🏅 الإنجازات والشارات</h1>
-    <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{s.badges.length}/{BADGES.length} شارة مكتسبة</p>
+  const Achievements=()=>{
+    // تحقق من الشهادات المستحقة
+    PHASES.forEach(ph=>{
+      const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
+      const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
+      const quizzesDone=ph.weeks.every(w=>!QUIZZES[w.quizId]||s.quizHistory[w.quizId]);
+      if(pd===pt&&quizzesDone&&!s.certificates?.includes(ph.id))earnCertificate(ph.id);
+    });
+    return(<div className="slide">
+    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🏅 الإنجازات والشهادات</h1>
+    <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{s.badges.length}/{BADGES.length} شارة · {s.certificates?.length||0}/5 شهادة</p>
+
+    {/* ─ شهادات المراحل ─ */}
+    <h2 style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎓 شهادات إنهاء المراحل</h2>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:10,marginBottom:20}}>
+      {PHASES.map(ph=>{
+        const earned=s.certificates?.includes(ph.id);
+        const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
+        const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
+        const pct=pt>0?Math.round(pd/pt*100):0;
+        return(<div key={ph.id} style={{background:earned?`linear-gradient(135deg,${ph.color}15,${ph.color}08)`:"rgba(0,0,0,0.3)",border:`2px solid ${earned?ph.color:"rgba(255,255,255,0.08)"}`,borderRadius:12,padding:14,position:"relative",overflow:"hidden",cursor:earned?"pointer":"default"}}
+          onClick={()=>earned&&setCertModal(ph)}>
+          {earned&&<div style={{position:"absolute",top:0,right:0,background:`linear-gradient(135deg,${ph.color},${ph.color}88)`,color:"#040810",fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:"0 12px 0 8px"}}>✓ مكتسبة</div>}
+          <div style={{fontSize:32,marginBottom:8,opacity:earned?1:0.3}}>{ph.icon}</div>
+          <div style={{color:earned?ph.color:"#64748b",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{ph.nameAr}</div>
+          <div style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:8}}>{ph.monthLabel} · Wk {ph.startWeek}–{ph.endWeek}</div>
+          <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
+            <span style={{color:"#475569",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{pd}/{pt} موضوع</span>
+            <span style={{color:earned?ph.color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
+          </div>
+          {earned&&<div style={{color:"#fbbf24",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:6}}>🎓 انقر لعرض الشهادة</div>}
+        </div>);
+      })}
+    </div>
+
+    {/* ─ مستوى XP ─ */}
     <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:18,marginBottom:18}}>
       <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
         <div style={{textAlign:"center"}}>
@@ -1410,7 +1701,7 @@ export default function CyberPath(){
         <div style={{color:earned?"#00ff88":"#334155",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{earned?"✓ مكتسبة":"+"+b.xp+" XP"}</div>
       </div>);})}
     </div>
-  </div>);
+  </div>);};
 
   // ─── RESOURCES ───
   const Resources=()=>(<div className="slide">
@@ -1556,41 +1847,70 @@ export default function CyberPath(){
   // ─── STATS ───
   const Stats=()=>{
     const qAvg=Object.values(s.quizHistory).length>0?Math.round(Object.values(s.quizHistory).reduce((a,q)=>a+q.score,0)/Object.values(s.quizHistory).length):0;
+    const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
+    const avgDailyHrs=Object.keys(s.studyLog||{}).length>0?(totalHrs/Object.keys(s.studyLog).length).toFixed(1):0;
+    // آخر 14 يوم من سجل الدراسة
+    const last14=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];}).reverse();
+    const maxHrs=Math.max(1,...last14.map(d=>s.studyLog?.[d]||0));
+    const totalReports=Object.keys(s.weeklyReports||{}).length;
+    const totalCerts=s.certificates?.length||0;
     return(<div className="slide">
       <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📈 الإحصائيات التفصيلية</h1>
-      <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>تحليل شامل لرحلتك التعليمية</p>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:10,marginBottom:18}}>
+      <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>تحليل شامل لرحلتك التعليمية كمنحة</p>
+
+      {/* ─ بطاقات رئيسية ─ */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10,marginBottom:18}}>
         {[
           {label:"XP الكلي",val:s.xp,color:"#fbbf24",icon:"⭐"},
           {label:"المستوى",val:`${lv.icon} ${lv.ar}`,color:lv.color,icon:"🏆"},
           {label:"الأسبوع الحالي",val:`${s.currentWeek}/80`,color:"#00ff88",icon:"📅"},
           {label:"التقدم الكلي",val:`${donePct}%`,color:"#00d4ff",icon:"📊"},
-          {label:"المواضيع المكتملة",val:s.totalDone,color:"#a78bfa",icon:"📚"},
-          {label:"السلسلة الحالية",val:`${s.streak} يوم 🔥`,color:"#f97316",icon:"🔥"},
+          {label:"إجمالي ساعات الدراسة",val:`${totalHrs.toFixed(0)}h`,color:"#a78bfa",icon:"⏱️"},
+          {label:"متوسط الدراسة اليومي",val:`${avgDailyHrs}h`,color:"#f97316",icon:"📅"},
+          {label:"السلسلة الحالية",val:`${s.streak} يوم 🔥`,color:"#ef4444",icon:"🔥"},
           {label:"أطول سلسلة",val:`${s.bestStreak} يوم`,color:"#ef4444",icon:"👑"},
-          {label:"أيام إسلامية",val:s.islamicDays,color:"#34d399",icon:"🕌"},
           {label:"الاختبارات المجتازة",val:Object.keys(s.quizHistory).length,color:"#60a5fa",icon:"📝"},
           {label:"متوسط الاختبارات",val:`${qAvg}%`,color:"#10b981",icon:"✅"},
-          {label:"اختبارات 100%",val:s.perfectQuiz,color:"#fbbf24",icon:"💯"},
-          {label:"الشارات المكتسبة",val:`${s.badges.length}/${BADGES.length}`,color:"#f472b6",icon:"🏅"},
+          {label:"الشهادات المكتسبة",val:`${totalCerts}/5`,color:"#fbbf24",icon:"🎓"},
+          {label:"التقارير الأسبوعية",val:totalReports,color:"#00ff88",icon:"📋"},
         ].map((st,i)=>(<div key={i} className="stat-card">
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <span style={{fontSize:18}}>{st.icon}</span>
-            <span style={{color:st.color,fontSize:17,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
+            <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
           </div>
           <div style={{color:"#e2e8f0",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
         </div>))}
       </div>
+
+      {/* ─ رسم بياني لساعات الدراسة ─ */}
+      <div style={{background:"rgba(167,139,250,0.05)",border:"1px solid rgba(167,139,250,0.15)",borderRadius:12,padding:14,marginBottom:16}}>
+        <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:12}}>⏱️ ساعات الدراسة — آخر 14 يوم</div>
+        <div style={{display:"flex",gap:4,alignItems:"flex-end",height:70}}>
+          {last14.map((d,i)=>{const h=s.studyLog?.[d]||0;const pct=maxHrs>0?h/maxHrs:0;const isToday=d===today();
+            return(<div key={d} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+              <div style={{width:"100%",background:isToday?`rgba(0,255,136,${0.15+pct*0.7})`:`rgba(167,139,250,${0.1+pct*0.7})`,borderRadius:"3px 3px 0 0",height:`${Math.max(4,pct*60)}px`,border:`1px solid ${isToday?"rgba(0,255,136,0.4)":"rgba(167,139,250,0.3)"}`,transition:"height .3s"}}/>
+              <div style={{color:"#334155",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</div>
+            </div>);
+          })}
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+          <span style={{color:"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{last14[0]?.slice(5)}</span>
+          <span style={{color:"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>اليوم ↑</span>
+        </div>
+      </div>
+
+      {/* ─ تقدم المراحل + الاختبارات ─ */}
       <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم كل مرحلة</div>
+          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم المراحل الخمس</div>
           {PHASES.map(ph=>{
             const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
             const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
             const pct=pt>0?Math.round(pd/pt*100):0;
-            return(<div key={ph.id} style={{marginBottom:9}}>
+            const cert=s.certificates?.includes(ph.id);
+            return(<div key={ph.id} style={{marginBottom:10}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{ph.icon} {ph.nameAr}</span>
+                <span style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{ph.icon} {ph.nameAr} {cert?"🎓":""}</span>
                 <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
               </div>
               <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
@@ -1599,13 +1919,34 @@ export default function CyberPath(){
         </div>
         <div className="card" style={{padding:14}}>
           <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📝 تاريخ الاختبارات</div>
-          {Object.entries(s.quizHistory).length===0?(<div style={{color:"#334155",fontFamily:"'Cairo',sans-serif",fontSize:12}}>لم تجتز أي اختبار بعد</div>)
-          :Object.entries(s.quizHistory).map(([id,q])=>(<div key={id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0",borderBottom:"1px solid rgba(255,255,255,0.04)"}}>
+          {Object.entries(s.quizHistory).length===0?(<div style={{color:"#334155",fontFamily:"'Cairo',sans-serif",fontSize:12,textAlign:"center",padding:"20px 0"}}>لم تجتز أي اختبار بعد</div>)
+          :Object.entries(s.quizHistory).map(([id,q])=>(<div key={id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid rgba(255,255,255,0.04)"}}>
             <span style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{QUIZZES[id]?.title||id}</span>
-            <span style={{color:q.score>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{q.score}%</span>
+            <span style={{color:q.score>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace",background:q.score>=80?"rgba(16,185,129,0.1)":"rgba(245,158,11,0.1)",padding:"1px 6px",borderRadius:4}}>{q.score}%</span>
           </div>))}
         </div>
       </div>
+
+      {/* ─ التقارير الأسبوعية المحفوظة ─ */}
+      {Object.keys(s.weeklyReports||{}).length>0&&(<div style={{background:"rgba(0,255,136,0.03)",border:"1px solid rgba(0,255,136,0.12)",borderRadius:12,padding:14,marginBottom:16}}>
+        <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📋 التقارير الأسبوعية المحفوظة</div>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {Object.entries(s.weeklyReports).map(([key,r])=>(
+            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"rgba(0,0,0,0.2)",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)",flexWrap:"wrap",gap:6}}>
+              <div><div style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.phase} — الأسبوع {r.wk}</div>
+                <div style={{color:"#64748b",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{r.title} · {r.date}</div></div>
+              <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+                <span style={{color:"#00ff88",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.mDone}/{r.mTotal} مهام</span>
+                <span style={{color:"#00d4ff",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.tDone}/{r.tTotal} مواضيع</span>
+                <span style={{color:"#a78bfa",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.weekHrs}h</span>
+                {r.quizScore!==null&&<span style={{color:r.quizScore>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.quizScore}%</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>)}
+
+      {/* ─ تقدم التراكات الـ 16 ─ */}
       <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:14}}>
         <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🗺️ تقدم التراكات الـ 16</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:8}}>
@@ -1635,6 +1976,29 @@ export default function CyberPath(){
   return(<div className="matrix-bg" style={{fontFamily:"'Fira Code',monospace",background:"#05080f",minHeight:"100vh",color:"#e2e8f0"}}>
     <style>{FONTS+CSS}</style>
     {toast&&<div className="xp-toast">{toast}</div>}
+
+    {/* ─── مودال الشهادة ─── */}
+    {certModal&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:9000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setCertModal(null)}>
+      <div style={{background:"linear-gradient(135deg,#060c1a,#04080f)",border:`2px solid ${certModal.color}`,borderRadius:20,padding:isMobile?"24px 20px":"40px",maxWidth:520,width:"100%",textAlign:"center",position:"relative",boxShadow:`0 0 60px ${certModal.color}33`}} onClick={e=>e.stopPropagation()}>
+        <div style={{position:"absolute",top:0,left:0,right:0,height:4,background:`linear-gradient(90deg,${certModal.color},${certModal.color}88)`,borderRadius:"20px 20px 0 0"}}/>
+        <div style={{fontSize:10,color:"#64748b",fontFamily:"'Fira Code',monospace",marginBottom:12,letterSpacing:3}}>CYBERPATH ACADEMY — CERTIFICATE OF COMPLETION</div>
+        <div style={{fontSize:64,marginBottom:8}}>{certModal.icon}</div>
+        <div style={{color:"#e2e8f0",fontSize:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>{certModal.nameAr}</div>
+        <div style={{color:certModal.color,fontSize:14,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{certModal.nameEn}</div>
+        <div style={{background:`${certModal.color}12`,border:`1px solid ${certModal.color}33`,borderRadius:10,padding:"12px 20px",marginBottom:16}}>
+          <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
+            {certModal.desc}<br/>
+            <span style={{color:"#64748b",fontSize:10}}>الأسابيع {certModal.startWeek}–{certModal.endWeek} · {certModal.monthLabel}</span>
+          </div>
+        </div>
+        <div style={{color:"#fbbf24",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:20}}>🏆 +150 XP · تاريخ الإنجاز: {today()}</div>
+        <div style={{display:"flex",gap:10,justifyContent:"center"}}>
+          <button className="btn btn-g" style={{fontSize:13,padding:"10px 28px"}} onClick={()=>setCertModal(null)}>✓ رائع!</button>
+          <button className="btn btn-o" style={{fontSize:13,padding:"10px 20px"}} onClick={()=>{setPage("achievements");setCertModal(null);}}>🏅 الإنجازات</button>
+        </div>
+      </div>
+    </div>)}
+
     <Sidebar/>
     <BottomNav/>
     <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"16px 14px 90px":"26px 26px 40px",maxWidth:isMobile?"100%":1100,transition:"margin-left 0.3s ease"}}>
