@@ -4,6 +4,7 @@ const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Fira+Code:w
 
 const CSS = `
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100%;-webkit-text-size-adjust:100%}
 body{background:#04080f;font-family:'Fira Code',monospace}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0a1220}::-webkit-scrollbar-thumb{background:#00ff88;border-radius:3px}
 .glow{text-shadow:0 0 18px #00ff88,0 0 36px #00ff8844}
@@ -49,6 +50,7 @@ select option{background:#0f172a}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .sidebar-glow{box-shadow:inset -1px 0 0 rgba(0,255,136,.1)}
 .grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.trk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
 .bottom-nav{display:none}
 .sidebar-overlay{display:none}
 @media(max-width:767px){
@@ -70,6 +72,8 @@ select option{background:#0f172a}
   .stat-card{padding:12px}
   .res-card{padding:12px}
   .todo-item{padding:12px}
+  .grid-2col{grid-template-columns:1fr!important}
+  .trk-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))!important}
 }
 @media(min-width:768px){
   .xp-toast{left:auto;right:24px;top:24px;text-align:left}
@@ -2847,7 +2851,7 @@ export default function CyberPath(){
         <button className="btn btn-o" onClick={doCheckIn}>🕌 تسجيل الحضور</button>
       </div>
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10,marginBottom:20}}>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))",gap:8,marginBottom:20}}>
       {[
         {label:"تقدم البرنامج",val:`${donePct}%`,icon:"📊",color:"#00ff88",sub:`${s.totalDone}/${totalT} موضوع`},
         {label:"المستوى",val:lv.icon,icon:"🏆",color:lv.color,sub:lv.ar},
@@ -2936,7 +2940,7 @@ export default function CyberPath(){
       </div>
     </div>
     <h2 style={{color:"#e2e8f0",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🚀 المراحل الخمس</h2>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:10}}>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:10}}>
       {PHASES.map(ph=>{
         const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
         const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
@@ -3332,7 +3336,7 @@ export default function CyberPath(){
           <div style={{color:lv.color,fontSize:13,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div>
           <div style={{color:"#64748b",fontSize:11}}>{lv.en}</div>
         </div>
-        <div style={{flex:1,minWidth:180}}>
+        <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
             <span style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>Level {lv.lv} → {nlv?.lv||"MAX"}</span>
             <span style={{color:lv.color,fontSize:12,fontFamily:"'Fira Code',monospace"}}>{s.xp} XP</span>
