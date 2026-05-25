@@ -112,31 +112,51 @@ select option{background:var(--select-bg);color:var(--t0)}
 .hov-up:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,136,.12)}
 /* Scale click */
 .scale-click:active{transform:scale(.95)}
+/* Swipeable tabs */
+.swipe-container{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.swipe-container::-webkit-scrollbar{display:none}
+.swipe-container > *{scroll-snap-align:start}
 @media(max-width:767px){
   .sidebar-desktop{display:none!important}
-  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--sg);border-top:1px solid var(--sbd15);padding:6px 4px 10px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .sidebar-overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99}
+  .sidebar-mobile{position:fixed;top:0;left:0;bottom:0;width:260px;z-index:100;background:var(--sg);border-right:1px solid var(--sbd15);padding:20px 10px;display:flex;flex-direction:column;gap:3;overflow-y:auto;animation:slideInLeft .25s ease}
+  @keyframes slideInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--sg);border-top:1px solid var(--sbd15);padding:6px 2px 12px;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:space-around}
   .bottom-nav::-webkit-scrollbar{display:none}
-  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:8px;cursor:pointer;color:var(--t1);flex-shrink:0;min-width:56px;border:1px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:8px;cursor:pointer;color:var(--t1);flex-shrink:0;min-width:0;flex:1;max-width:72px;border:1px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
   .bnav-item.on{background:var(--sbg12);color:#00ff88;border-color:var(--sbd25)}
   .bnav-item span:first-child{font-size:20px}
-  .bnav-item span:last-child{font-size:9px;font-family:'Cairo',sans-serif;white-space:nowrap}
+  .bnav-item span:last-child{font-size:9px;font-family:'Cairo',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .btn-g,.btn-o{padding:10px 14px;font-size:13px;min-height:44px}
   input[type="text"],select{font-size:16px;width:100%}
   .res-filters select{width:100%!important}
-  .topic-row{padding:10px;min-height:44px}
+  .topic-row{padding:10px;min-height:44px;gap:8px}
   .phase-hd{min-height:52px}
-  .chk{width:22px;height:22px}
+  .chk{width:22px;height:22px;min-width:22px}
   .quiz-opt{padding:14px 16px;min-height:52px}
   .nav{min-height:44px}
   .stat-card{padding:12px}
   .res-card{padding:12px}
   .todo-item{padding:12px}
   .grid-2col{grid-template-columns:1fr!important}
-  .trk-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))!important}
+  .trk-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))!important}
 }
 @media(min-width:768px){
   .xp-toast{left:auto;right:24px;top:24px;text-align:left}
   .bottom-nav{display:none!important}
+  .sidebar-overlay{display:none!important}
+  .sidebar-mobile{display:none!important}
+}
+@media(min-width:768px)and(max-width:1024px){
+  .sidebar-desktop{width:72px!important}
+  .sidebar-desktop>div:not(:first-child){display:none}
+  .sidebar-desktop .nav{padding:10px;justify-content:center}
+  .sidebar-desktop .nav span:last-child{display:none}
+  .trk-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))!important}
+  main{padding:20px!important}
+}
+@media(min-width:1200px){
+  .trk-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 }
 `;
 
@@ -3244,7 +3264,7 @@ export default function CyberPath(){
   ];
 
   // ─── SIDEBAR ───
-  const Sidebar=()=>(<div className="sidebar-glow sidebar-desktop" style={{width:sideOpen?260:72,minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
+  const Sidebar=()=>(<div className={isMobile?(sideOpen?"sidebar-mobile":"sidebar-mobile"):"sidebar-glow sidebar-desktop"} style={{width:isMobile?260:(sideOpen?260:72),minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:isMobile&&!sideOpen?"none":"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
     <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,padding:"0 4px"}}>
       <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
         <span style={{fontSize:16,color:"#050810",fontWeight:900}}>⚡</span>
@@ -4102,9 +4122,16 @@ export default function CyberPath(){
       </div>
     </div>)}
 
+    {isMobile&&sideOpen&&<div className="sidebar-overlay" onClick={()=>setSideOpen(false)}/>}
     <Sidebar/>
     <BottomNav/>
-    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"16px 14px 90px":"26px 26px 40px",maxWidth:isMobile?"100%":1100,transition:"margin-left 0.3s ease"}}>
+    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"60px 14px 90px":"26px 26px 40px",maxWidth:isMobile?"100%":1100,transition:"margin-left 0.3s ease"}}>
+      {isMobile&&<div style={{position:"fixed",top:0,left:0,right:0,zIndex:50,background:"var(--bg)",borderBottom:"1px solid var(--sbd15)",display:"flex",alignItems:"center",gap:10,padding:"10px 14px"}}>
+        <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
+          <span style={{fontSize:16,color:"#050810",fontWeight:900}}>☰</span>
+        </div>
+        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath</div>
+      </div>}
       {page==="dashboard"&&<Dashboard/>}
       {page==="program"&&<Program/>}
       {page==="missions"&&<Missions/>}
