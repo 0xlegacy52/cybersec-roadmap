@@ -3,62 +3,121 @@ import { useState, useEffect, useCallback } from "react";
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Cairo:wght@400;600;700;900&display=swap');`;
 
 const CSS = `
+:root{
+  --bg:#04080f;--bg2:#0a1220;--bg3:#060c1a;--bg4:#040810;
+  --t0:#e2e8f0;--t1:#64748b;--t2:#475569;--t3:#334155;--t4:#94a3b8;--t5:#cbd5e1;
+  --wo:rgba(255,255,255,.06);--wh:rgba(255,255,255,.1);--wb:rgba(255,255,255,.08);
+  --wm:rgba(255,255,255,.04);--w3:rgba(255,255,255,.03);--w5:rgba(255,255,255,.05);
+  --w7:rgba(255,255,255,.07);--w12:rgba(255,255,255,.12);
+  --bo:rgba(0,0,0,.2);--bt:rgba(0,0,0,.3);
+  --sg:linear-gradient(180deg,#060c1a 0%,#040810 100%);
+  --sbg:rgba(0,255,136,.03);--sbg5:rgba(0,255,136,.05);
+  --sbgh:rgba(0,255,136,.07);--sbg12:rgba(0,255,136,.12);
+  --sbd:rgba(0,255,136,.1);--sbd2:rgba(0,255,136,.2);--sbd25:rgba(0,255,136,.25);
+  --sbd3:rgba(0,255,136,.3);--sbd4:rgba(0,255,136,.4);--sbd15:rgba(0,255,136,.15);
+  --sbg04:rgba(0,255,136,.04);--sbg06:rgba(0,255,136,.06);--sbg08:rgba(0,255,136,.08);
+  --dbbg:rgba(0,212,255,.04);--db07:rgba(0,212,255,.07);--db1:rgba(0,212,255,.1);
+  --select-bg:#0f172a;
+}
+[data-theme="light"]{
+  --bg:#f8fafc;--bg2:#f1f5f9;--bg3:#f8fafc;--bg4:#f1f5f9;
+  --t0:#0f172a;--t1:#475569;--t2:#64748b;--t3:#94a3b8;--t4:#64748b;--t5:#334155;
+  --wo:rgba(0,0,0,.05);--wh:rgba(0,0,0,.08);--wb:rgba(0,0,0,.08);
+  --wm:rgba(0,0,0,.03);--w3:rgba(0,0,0,.02);--w5:rgba(0,0,0,.04);--w7:rgba(0,0,0,.06);--w12:rgba(0,0,0,.1);
+  --bo:rgba(0,0,0,.06);--bt:rgba(0,0,0,.1);
+  --sg:linear-gradient(180deg,#f1f5f9 0%,#e2e8f0 100%);
+  --sbg:rgba(0,200,100,.04);--sbg5:rgba(0,200,100,.06);
+  --sbgh:rgba(0,200,100,.08);--sbg12:rgba(0,200,100,.12);
+  --sbd:rgba(0,200,100,.15);--sbd2:rgba(0,200,100,.2);--sbd25:rgba(0,200,100,.25);
+  --sbd3:rgba(0,200,100,.3);--sbd4:rgba(0,200,100,.4);--sbd15:rgba(0,200,100,.15);
+  --sbg04:rgba(0,200,100,.05);--sbg06:rgba(0,200,100,.06);--sbg08:rgba(0,200,100,.08);
+  --dbbg:rgba(0,0,0,.03);--db07:rgba(0,180,255,.08);--db1:rgba(0,180,255,.1);
+  --select-bg:#fff;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow-x:hidden;max-width:100%;-webkit-text-size-adjust:100%}
-body{background:#04080f;font-family:'Fira Code',monospace}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0a1220}::-webkit-scrollbar-thumb{background:#00ff88;border-radius:3px}
+body{background:var(--bg);font-family:'Fira Code',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:#00ff88;border-radius:3px}
 .glow{text-shadow:0 0 18px #00ff88,0 0 36px #00ff8844}
 .btn{border:none;cursor:pointer;border-radius:8px;font-family:'Fira Code',monospace;transition:all .2s}
 .btn-g{background:linear-gradient(135deg,#00ff88,#00d4ff);color:#040810;font-weight:700;padding:10px 20px}
 .btn-g:hover{transform:translateY(-1px);box-shadow:0 4px 20px #00ff8855}
-.btn-o{background:transparent;border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:8px 16px}
-.btn-o:hover{background:rgba(0,255,136,.1)}
-.card{background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.1);border-radius:12px}
-.card:hover{border-color:rgba(0,255,136,.22);background:rgba(0,255,136,.05);transition:all .2s}
-.nav{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;cursor:pointer;color:#64748b;font-size:13px;border:1px solid transparent;transition:all .2s}
-.nav:hover{background:rgba(0,255,136,.07);color:#00ff88}
-.nav.on{background:rgba(0,255,136,.12);color:#00ff88;border-color:rgba(0,255,136,.25)}
-.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}
+.btn-o{background:transparent;border:1px solid var(--sbd3);color:#00ff88;padding:8px 16px}
+.btn-o:hover{background:var(--sbgh)}
+.card{background:var(--sbg);border:1px solid var(--sbd);border-radius:12px}
+.card:hover{border-color:var(--sbd25);background:var(--sbg5);transition:all .2s}
+.nav{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;cursor:pointer;color:var(--t1);font-size:13px;border:1px solid transparent;transition:all .2s}
+.nav:hover{background:var(--sbgh);color:#00ff88}
+.nav.on{background:var(--sbg12);color:#00ff88;border-color:var(--sbd25)}
+.bar{height:6px;border-radius:3px;background:var(--w7);overflow:hidden}
 .bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
 .topic-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;cursor:pointer;transition:all .15s}
-.topic-row:hover{background:rgba(255,255,255,.04)}
-.chk{width:20px;height:20px;border:2px solid rgba(0,255,136,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.topic-row:hover{background:var(--wm)}
+.chk{width:20px;height:20px;border:2px solid var(--sbd4);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
 .chk.on{background:#00ff88;border-color:#00ff88}
 .phase-hd{padding:14px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
-.phase-hd:hover{background:rgba(0,255,136,.04)}
-.res-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;margin-bottom:8px;transition:all .2s;text-decoration:none;display:block}
-.res-card:hover{border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.04)}
-.todo-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s}
-.todo-item:hover{border-color:rgba(0,255,136,.2)}
-.routine-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:flex-start}
+.phase-hd:hover{background:var(--sbg04)}
+.res-card{background:var(--w3);border:1px solid var(--wb);border-radius:8px;padding:10px 14px;margin-bottom:8px;transition:all .2s;text-decoration:none;display:block}
+.res-card:hover{border-color:var(--sbd25);background:var(--sbg04)}
+.todo-item{background:var(--w3);border:1px solid var(--wb);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s}
+.todo-item:hover{border-color:var(--sbd2)}
+.routine-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--w5);align-items:flex-start}
 .slide{animation:slideIn .3s ease}
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .xp-toast{position:fixed;top:16px;right:16px;left:16px;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#040810;padding:10px 18px;border-radius:10px;font-weight:700;font-size:14px;z-index:9999;text-align:center;animation:toastIn .4s ease,toastOut .4s ease 2.2s forwards}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastOut{from{opacity:1}to{opacity:0}}
-.quiz-opt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;font-family:'Cairo',sans-serif;color:#cbd5e1;font-size:14px;text-align:right;width:100%}
-.quiz-opt:hover{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07)}
+.quiz-opt{background:var(--wm);border:1px solid var(--wh);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;font-family:'Cairo',sans-serif;color:var(--t5);font-size:14px;text-align:right;width:100%}
+.quiz-opt:hover{border-color:rgba(0,212,255,.4);background:var(--db07)}
 .quiz-opt.correct{border-color:#10b981;background:rgba(16,185,129,.15);color:#6ee7b7}
 .quiz-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,.15);color:#fca5a5}
-.quiz-opt.sel{border-color:#00d4ff;background:rgba(0,212,255,.1)}
-.matrix-bg{background-image:radial-gradient(circle at 15% 50%,rgba(0,255,136,.04) 0%,transparent 55%),radial-gradient(circle at 85% 20%,rgba(0,212,255,.03) 0%,transparent 55%)}
-input[type="text"],select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;padding:10px 14px;border-radius:8px;outline:none;font-family:'Fira Code',monospace;font-size:13px}
-input[type="text"]:focus,select:focus{border-color:rgba(0,255,136,.4)}
-select option{background:#0f172a}
-.stat-card{background:linear-gradient(135deg,rgba(0,255,136,.06),rgba(0,212,255,.03));border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:16px}
+.quiz-opt.sel{border-color:#00d4ff;background:var(--db1)}
+.matrix-bg{background-image:radial-gradient(circle at 15% 50%,var(--sbg08) 0%,transparent 55%),radial-gradient(circle at 85% 20%,var(--dbbg) 0%,transparent 55%)}
+input[type="text"],select{background:var(--w5);border:1px solid var(--w12);color:var(--t0);padding:10px 14px;border-radius:8px;outline:none;font-family:'Fira Code',monospace;font-size:13px}
+input[type="text"]:focus,select:focus{border-color:var(--sbd4)}
+select option{background:var(--select-bg);color:var(--t0)}
+.stat-card{background:linear-gradient(135deg,var(--sbg06),var(--dbbg));border:1px solid var(--sbd15);border-radius:12px;padding:16px}
 .pulse{animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.sidebar-glow{box-shadow:inset -1px 0 0 rgba(0,255,136,.1)}
+.sidebar-glow{box-shadow:inset -1px 0 0 var(--sbd)}
 .grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .trk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
 .bottom-nav{display:none}
 .sidebar-overlay{display:none}
+/* Theme toggle button */
+.theme-tgl{width:36px;height:36px;border-radius:50%;border:1px solid var(--sbd);background:var(--sbg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .3s;flex-shrink:0}
+.theme-tgl:hover{background:var(--sbg5);transform:rotate(15deg)}
+/* Stagger animation for lists */
+.stg > *{opacity:0;animation:stgIn .35s ease forwards}
+@keyframes stgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stg > *:nth-child(1){animation-delay:0s}
+.stg > *:nth-child(2){animation-delay:.03s}
+.stg > *:nth-child(3){animation-delay:.06s}
+.stg > *:nth-child(4){animation-delay:.09s}
+.stg > *:nth-child(5){animation-delay:.12s}
+.stg > *:nth-child(6){animation-delay:.15s}
+.stg > *:nth-child(7){animation-delay:.18s}
+.stg > *:nth-child(8){animation-delay:.21s}
+.stg > *:nth-child(9){animation-delay:.24s}
+.stg > *:nth-child(10){animation-delay:.27s}
+.stg > *:nth-child(11){animation-delay:.3s}
+.stg > *:nth-child(12){animation-delay:.33s}
+.stg > *:nth-child(13){animation-delay:.36s}
+.stg > *:nth-child(14){animation-delay:.39s}
+.stg > *:nth-child(15){animation-delay:.42s}
+.stg > *:nth-child(16){animation-delay:.45s}
+.stg > *:nth-child(n+17){animation-delay:.48s}
+/* Hover lift effect */
+.hov-up{transition:all .2s}
+.hov-up:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,136,.12)}
+/* Scale click */
+.scale-click:active{transform:scale(.95)}
 @media(max-width:767px){
   .sidebar-desktop{display:none!important}
-  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(180deg,#060c1a,#040810);border-top:1px solid rgba(0,255,136,0.15);padding:6px 4px 10px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--sg);border-top:1px solid var(--sbd15);padding:6px 4px 10px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .bottom-nav::-webkit-scrollbar{display:none}
-  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:8px;cursor:pointer;color:#64748b;flex-shrink:0;min-width:56px;border:1px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
-  .bnav-item.on{background:rgba(0,255,136,.12);color:#00ff88;border-color:rgba(0,255,136,.25)}
+  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:8px;cursor:pointer;color:var(--t1);flex-shrink:0;min-width:56px;border:1px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+  .bnav-item.on{background:var(--sbg12);color:#00ff88;border-color:var(--sbd25)}
   .bnav-item span:first-child{font-size:20px}
   .bnav-item span:last-child{font-size:9px;font-family:'Cairo',sans-serif;white-space:nowrap}
   .btn-g,.btn-o{padding:10px 14px;font-size:13px;min-height:44px}
@@ -1493,7 +1552,7 @@ const QUIZZES = {
 //  LEVELS & BADGES
 // ─────────────────────────────────────────────
 const LEVELS=[
-  {lv:0,ar:"مبتدئ",en:"Initiate",min:0,color:"#64748b",icon:"🔰"},
+  {lv:0,ar:"مبتدئ",en:"Initiate",min:0,color:"var(--t1)",icon:"🔰"},
   {lv:1,ar:"محلل مبتدئ",en:"Junior Analyst",min:500,color:"#3b82f6",icon:"🔵"},
   {lv:2,ar:"ممارس أمني",en:"Security Practitioner",min:1500,color:"#10b981",icon:"🟢"},
   {lv:3,ar:"مختبر اختراق",en:"Penetration Tester",min:3500,color:"#f59e0b",icon:"🟡"},
@@ -1677,21 +1736,63 @@ const TRACKS={
          "Lesson 14: Threat / Vulnerability / Risk — الفرق والعلاقة",
          "Lesson 15: Firewalls / IDS / IPS — الأساسيات",
          "Lesson 16: Security Policies وCompliance (ISO 27001, NIST)",
-         "Lab: قراءة CVE حقيقية وفهم CVSS Score",
-         "Lab: مراجعة OWASP Top 10 الرسمية كاملاً",
-       ],
-       resources:[
-         {title:"مهارة تك — Cyber Security Engineer Job Profile 🏅 (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1004"},
+          "Lab: قراءة CVE حقيقية وفهم CVSS Score",
+          "Lab: مراجعة OWASP Top 10 الرسمية كاملاً",
+          "بلاك سايلنس م1 — Introduction To Workshop",
+          "بلاك سايلنس م2 — Introduction To Cybersecurity : Part 1",
+          "بلاك سايلنس م3 — Introduction To Cybersecurity : Part 2",
+          "بلاك سايلنس م4 — Important Cybersecurity Concepts And Definitions : Part 1",
+          "بلاك سايلنس م5 — Important Cybersecurity Concepts And Definitions : Part 2",
+          "بلاك سايلنس م6 — Network Basics : Part 1",
+          "بلاك سايلنس م7 — Network Basics : Part 2",
+          "بلاك سايلنس م8 — Network Basics : Part 3",
+          "بلاك سايلنس م9 — Network Basics : Part 4",
+          "بلاك سايلنس م10 — Network Basics : Part 5",
+          "بلاك سايلنس م11 — Linux Basics : Part 1",
+          "بلاك سايلنس م12 — Linux Basics : Part 2",
+          "بلاك سايلنس م13 — Linux Basics : Part 3",
+          "بلاك سايلنس م14 — Linux Basics : Part 4",
+          "بلاك سايلنس م15 — Linux Basics : Part 5",
+          "CyMatriX م1 — Introduction to Cybersecurity",
+          "CyMatriX م2 — Network Introduction and Protocols",
+          "CyMatriX م3 — Network + شرح",
+          "CyMatriX م4 — Network Revision (الزيتونة)",
+          "CyMatriX م5 — Kali Linux for Beginners",
+          "CyMatriX م6 — شرح + Security بالكامل",
+          "CyMatriX م7 — Cryptography Basics",
+          "CyMatriX م8 — Web Basics (Part 1)",
+          "CyMatriX م9 — Web Basics (Part 2)",
+          "CyMatriX م10 — Authentication ثغرة",
+          "CyMatriX م11 — Path Traversal ثغرة",
+          "CyMatriX م12 — Advanced bug bounty tips & tricks",
+          "CISSP م1 — Course introduction (مقدمه عن الدوره)",
+          "CISSP م2 — Exam blue print",
+          "CISSP م3 — Domain 1-1: Security and Risk management- Security Concepts",
+          "CISSP م4 — Domain 1-2: Information Security Governance and Frameworks",
+          "CISSP م5 — Domain 1-3: Information Security roles, documents and Personal security",
+          "CISSP م6 — Domain 1-4: Risk Management",
+          "CISSP م7 — Domain 1-5: Business Continuity and Code of Ethics",
+          "CISSP م8 — Domain 1-6: Threat Modeling",
+          "CISSP م9 — Domain 2: Asset Security",
+          "CISSP م10 — Domain 3-1: Security Engineering Development Architecture",
+        ],
+        resources:[
+          {title:"مهارة تك — Cyber Security Engineer Job Profile 🏅 (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1004"},
          {title:"مهارة تك — مقدمة في الأمن السيبراني (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=148"},
          {title:"مهارة تك — Ethical Hacking (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=244"},
          {title:"مهارة تك — أمن الشبكات المتقدم (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=560"},
          {title:"CompTIA Security+ — Professor Messer (مجاني)",type:"video",lang:"en",url:"https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/"},
          {title:"TryHackMe — Pre-Security & SOC Level 1",type:"lab",lang:"en",url:"https://tryhackme.com/paths"},
          {title:"OWASP Top 10 — الدليل الرسمي",type:"article",lang:"en",url:"https://owasp.org/www-project-top-ten/"},
-         {title:"Get BountyOrDie — Basics Resources",type:"article",lang:"ar",url:"https://get-bountyordie.gitbook.io/get-bountyordie-docs/resources-for-security/web-app-pentest"},
-       ]},
-    ]},
-  web:{id:"web",name:"Web Pentesting",nameEn:"Web App Pentesting & Bug Bounty",icon:"🌐",color:"#10b981",colorBg:"rgba(16,185,129,0.15)",duration:"4–6 أشهر",desc:"اختبار اختراق تطبيقات الويب، Bug Bounty، OWASP Top 10",
+          {title:"Get BountyOrDie — Basics Resources",type:"article",lang:"ar",url:"https://get-bountyordie.gitbook.io/get-bountyordie-docs/resources-for-security/web-app-pentest"},
+          {title:"Cybersecurity Basics For Beginners — BlackSilence (Playlist)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5"},
+          {title:"كورس Cybersecurity for beginner to master bug bounty hunter — CyMatriX",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez"},
+          {title:"Security (in Arabic) — Ayman Bahaa-Eldin (تشفير)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV"},
+           {title:"CISSP Exam Preparation Arabic — Ahmed Abdelhamid",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLwPnN230DSEAqIPD673UWoO770s5wYzz4"},
+           {title:"Web Pen-Testing Course (بالإنجليزية) — The Cyber Mentor",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLP66taSxlNLPVijghTy-sVx7tLmTft6hR"},
+         ]},
+      ]},
+    web:{id:"web",name:"Web Pentesting",nameEn:"Web App Pentesting & Bug Bounty",icon:"🌐",color:"#10b981",colorBg:"rgba(16,185,129,0.15)",duration:"4–6 أشهر",desc:"اختبار اختراق تطبيقات الويب، Bug Bounty، OWASP Top 10",
     phases:[
       {id:"w1",name:"Phase 1 — أساسيات الويب",emoji:"🔌",topics:[
          "Lesson 1: HTTP Protocol — Request Structure (Method / URL / Headers / Body)",
@@ -1710,16 +1811,26 @@ const TRACKS={
          "Lesson 14: CORS — التعريف والـ Headers والثغرات",
          "Lesson 15: REST APIs — Endpoints / JSON / Status Codes",
          "Lesson 16: GraphQL — Query / Mutation / Introspection",
-         "Lab: Intercept وتعديل HTTP Requests ببـ Burp Suite",
-         "Lab: PortSwigger Labs — HTTP الأساسية",
-       ],
-       resources:[
-         {title:"Web Pentest بالعربي — Ebrahem Hegazy (Zigoo0) Playlist",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj"},
+          "Lab: Intercept وتعديل HTTP Requests ببـ Burp Suite",
+          "Lab: PortSwigger Labs — HTTP الأساسية",
+          "Cybrary Web م1 — Introduction (مترجم عربي)",
+          "Cybrary Web م2 — Tools (مترجم عربي)",
+          "Cybrary Web م3 — Packets (مترجم عربي)",
+          "Cybrary Web م4 — HTTP Basics (مترجم عربي)",
+          "Cybrary Web م5 — Why Sites Get Hacked (1) (مترجم عربي)",
+          "Cybrary Web م6 — Why Sites Get Hacked (2) (مترجم عربي)",
+          "Cybrary Web م7 — Why Sites Get Hacked (3) (مترجم عربي)",
+          "Cybrary Web م8 — Why Sites Get Hacked (4) (مترجم عربي)",
+        ],
+        resources:[
+          {title:"Web Pentest بالعربي — Ebrahem Hegazy (Zigoo0) Playlist",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj"},
          {title:"Web Pentest بالعربي — Flex Playlist",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3"},
          {title:"PortSwigger Web Security Academy (مجاني 100%)",type:"lab",lang:"en",url:"https://portswigger.net/web-security"},
-         {title:"Sec-88 GitBook — Nour Sallam (مرجع عربي شامل)",type:"article",lang:"ar",url:"https://sallam.gitbook.io/sec-88/web-appsec"},
-       ]},
-      {id:"w2",name:"Phase 2 — OWASP Top 10",emoji:"⚡",topics:[
+          {title:"Sec-88 GitBook — Nour Sallam (مرجع عربي شامل)",type:"article",lang:"ar",url:"https://sallam.gitbook.io/sec-88/web-appsec"},
+           {title:"Cybrary Web App Pen Testing — مترجم عربي (CWWC)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo"},
+           {title:"Web Pen-Testing Course — The Cyber Mentor (بالإنجليزية)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp"},
+         ]},
+        {id:"w2",name:"Phase 2 — OWASP Top 10",emoji:"⚡",topics:[
          "Lesson 1: SQL Injection — مقدمة ومفهوم الحقن",
          "Lesson 2: SQLi — Error-Based: استخراج البيانات عبر رسائل الخطأ",
          "Lesson 3: SQLi — UNION-Based: استخراج بيانات من جداول أخرى",
@@ -1803,19 +1914,46 @@ const TRACKS={
          "Lesson 14: CVSS Scoring لتقييم شدة الثغرة",
          "Lesson 15: كتابة Bug Bounty Report احترافي — التنسيق والمكونات",
          "Lesson 16: Triage Process — ما يحدث بعد الإرسال",
-         "Lab: تطبيق Methodology كاملة على Target حقيقي",
-         "Lab: كتابة Report محترف لثغرة اكتشفتها",
-       ],
-       resources:[
-         {title:"Recon بالعربي — Critical Glitch Playlist",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL76MuQ6v56X8tNsbtB1OsSegz2jHHRRmG"},
+          "Lab: تطبيق Methodology كاملة على Target حقيقي",
+          "Lab: كتابة Report محترف لثغرة اكتشفتها",
+          "rs0n_live م1 — Bug Bounty Hunting for Client-Side Injection | Part I",
+          "rs0n_live م2 — Bug Bounty Hunting for Client-Side Injection | Part II",
+          "rs0n_live م3 — Bug Bounty Hunting for IDORs and Access Control | Part I",
+          "rs0n_live م4 — Bug Bounty Hunting for IDORs and Access Control | Part II",
+          "rs0n_live م5 — Bug Bounty Hunting for IDORs and Access Control | Part III",
+          "rs0n_live م6 — Weaponizing XSS to Show Impact",
+          "rs0n_live م7 — Scan All H1 & Bugcrowd Programs for XSS Targets",
+          "rs0n_live م8 — Methodology to Bypass Security Controls & Exploit XSS",
+          "rs0n_live م9 — What Can We Learn From These Three Simple Reports?",
+          "rs0n_live م10 — Three Common OAuth Misconfigurations Leading to ATO",
+          "mahdi م1 — الفرق بين Authentication و Authorization | Access Control",
+          "mahdi م2 — Why I Cannot Get Bounties in Bug Bounty?",
+          "mahdi م3 — Race Condition (Time-Sensitive Bugs)",
+          "mahdi م4 — RC, PE, FC, PD — Easy Money with Honey",
+          "mahdi م5 — Privilege Escalation + IDOR — 2 Bugs 1 Hit POCs",
+          "mahdi م6 — Privilege Escalation Finding in External Program",
+          "mahdi م7 — ما هو الـ API وما فائدته وكيف يعمل",
+          "mahdi م8 — Business Logic Error ثغرات | مصادر للتطور",
+          "mahdi م9 — AI Will Automate The IDORs (ChatGPT)",
+          "mahdi م10 — Step-by-Step Guide to Get IDOR in Live Programs",
+          "mahdi م11 — Step-by-Step Guide to Get 2 Privilege Escalation",
+          "mahdi م12 — $3,000 Instagram Delete Highlight Cover IDOR",
+          "mahdi م13 — How to Use Jira Software for Beginners",
+          "mahdi م14 — Auth0 in 100 Seconds | Next.js Auth Tutorial",
+          "mahdi م15 — IDOR — Magisto Send via Email PoC",
+        ],
+        resources:[
+          {title:"Recon بالعربي — Critical Glitch Playlist",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL76MuQ6v56X8tNsbtB1OsSegz2jHHRRmG"},
          {title:"Get BountyOrDie — Recon & Web Resources (بالعربي)",type:"article",lang:"ar",url:"https://get-bountyordie.gitbook.io/get-bountyordie-docs/resources-for-security/web-app-pentest"},
          {title:"HackerOne — Disclosed Reports (Writeups حقيقية)",type:"writeup",lang:"en",url:"https://hackerone.com/hacktivity"},
          {title:"Pentester Land — Bug Bounty Writeups Compilation",type:"writeup",lang:"en",url:"https://pentester.land/writeups/"},
          {title:"NahamSec — Recon Playlist (YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLKAaMVNxvLmAkqBkzFaOxqs3L66z2n8LA"},
-         {title:"InsiderPhD — Bug Bounty للمبتدئين (YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/c/InsiderPhD"},
-       ]},
-    ]},
-  mobile:{id:"mobile",name:"Mobile Security",nameEn:"Android Pentesting & Bug Bounty",icon:"📱",color:"#f59e0b",colorBg:"rgba(245,158,11,0.15)",duration:"3–5 أشهر",desc:"تحليل واختبار اختراق تطبيقات الأندرويد من الصفر",
+          {title:"InsiderPhD — Bug Bounty للمبتدئين (YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/c/InsiderPhD"},
+          {title:"Bug Bounty Hunting For... — rs0n_live (XSS, IDOR, OAuth)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1"},
+          {title:"my fav bug -*-*-* — mahdi (IDOR, Race Condition, PE بالعربي)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx"},
+        ]},
+     ]},
+   mobile:{id:"mobile",name:"Mobile Security",nameEn:"Android Pentesting & Bug Bounty",icon:"📱",color:"#f59e0b",colorBg:"rgba(245,158,11,0.15)",duration:"3–5 أشهر",desc:"تحليل واختبار اختراق تطبيقات الأندرويد من الصفر",
     phases:[
       {id:"mob1",name:"Phase 1 — أساسيات الأندرويد",emoji:"🤖",topics:[
          "Lesson 1: Android Architecture — Kernel / HAL / ART / Framework / Apps",
@@ -1832,15 +1970,75 @@ const TRACKS={
          "Lesson 12: ADB — logcat / am start / pm list packages",
          "Lesson 13: Android Emulator — إعداد AVD وGenymotion",
          "Lesson 14: Root — ما هو وفائدته في الاختبار (Magisk)",
-         "Lab: تحليل APK بسيط باستخدام ADB",
-         "Lab: قراءة AndroidManifest.xml وفهم الـ Permissions",
-       ],
-       resources:[
-         {title:"Android Pentesting Roadmap — A0xTrojan Notion",type:"article",lang:"ar",url:"https://almond-fontina-ed4.notion.site/Road-map-Android-20190050c671803e8b13f608601c3bb3"},
-         {title:"Mobile Security Notes — 0x5atab Notion",type:"article",lang:"ar",url:"https://0x5atab.notion.site/MOBILE-SECURITY-17490ba198d280b497c5fb1d41387288"},
-         {title:"OWASP MASTG — Mobile Application Security Testing Guide",type:"book",lang:"en",url:"https://mas.owasp.org/MASTG/"},
-       ]},
-      {id:"mob2",name:"Phase 2 — Static & Dynamic Analysis",emoji:"🔍",topics:[
+          "Lab: تحليل APK بسيط باستخدام ADB",
+          "Lab: قراءة AndroidManifest.xml وفهم الـ Permissions",
+          "عملي: Android Pentesting Basics — تجربة حقيقية (1) — Abdulrahman",
+          "عملي: Insecure Data Storage & Insecure Logging — APK Extraction (2)",
+          "عملي: Android Components Attacks وFirebase Misconfiguration (3)",
+          "عملي: Android Native Library Analysis (4)",
+          "عملي: C# based Android Apps Analysis (5)",
+          "عملي: Dynamic Analysis باستخدام drozer Framework (6)",
+          "عملي: Frida Framework — Dynamic Analysis عملي (7)",
+          "عملي: Patching Android Applications — إعادة التجميع (8)",
+          "عملي: Traffic Interception وSSL Pinning Bypass (9)",
+          "عملي: Root Detection Bypass Techniques (10)",
+          "عملي: Objection Framework — Dynamic Analysis متقدم",
+          "عملي: Android Exploitation — Hack The Box Track | الجزء 1",
+          "عملي: Android Exploitation — Hack The Box Track | الجزء 2",
+          "عملي: Task Hijacking Vulnerability في أندرويد",
+          "عملي: WebView Security Testing — اختبار WebViews",
+          "PentestHint م1 — Android Pentesting Approach and Checklist",
+          "PentestHint م2 — Decompile APK to JAR with dex2jar and JDGUI",
+          "PentestHint م3 — Read AndroidManifest.xml with APKTOOL",
+          "PentestHint م4 — Deploy Root/Non-Root Phone on Android Studio",
+          "PentestHint م5 — Setup MOBSF on Docker (Mobile Static Analyzer)",
+          "PentestHint م6 — Install/Setup Genymotion Virtual Phone",
+          "PentestHint م7 — ADB Commands Full Guide",
+          "PentestHint م8 — Intercept HTTPS with Burp Suite on Emulator",
+          "PentestHint م9 — Export IPA from iPhone without iTunes",
+          "PentestHint م10 — Export IPA from iPhone in Windows 11",
+          "PentestHint م11 — Jailbreak iPhone 7 (iOS 14.8)",
+          "PentestHint م12 — Code Obfuscation in Android Pentesting",
+          "PentestHint م13 — Manually Sign APKs with keytool Jarsigner",
+          "PentestHint م14 — Mobile Pentesting Lab Setup (Mobexler)",
+          "Cyber_Pharaohs م1 — Course Intro: Mobile PT Overview",
+          "Cyber_Pharaohs م2 — Android Architecture",
+          "Cyber_Pharaohs م3 — Android Security Model",
+          "Cyber_Pharaohs م4 — Android Application Permissions",
+          "Cyber_Pharaohs م5 — App Journey: APK Path to Execution",
+          "Cyber_Pharaohs م6 — ADB Part 1: Basic Commands",
+          "Cyber_Pharaohs م7 — ADB Part 2: Advanced Usage",
+          "Cyber_Pharaohs م8 — Reverse Engineering APK Basics",
+          "AppSec Hub م1 — Android Penetration Testing Process Part 1",
+          "AppSec Hub م2 — Android Penetration Testing Process Part 2",
+          "AppSec Hub م3 — Android Security Architecture",
+          "AppSec Hub م4 — Application Security and Signing Process",
+          "AppSec Hub م5 — Windows JADX GUI Installation",
+          "AppSec Hub م6 — Windows ADB Installation",
+          "AppSec Hub م7 — Windows APKTool Installation",
+          "AppSec Hub م8 — Windows Android Studio Install",
+          "AppSec Hub م9 — Kali Linux ADB Install",
+          "AppSec Hub م10 — Kali Linux APKTool Install",
+          "AppSec Hub م11 — Kali Linux JADX GUI Install",
+          "AppSec Hub م12 — Kali Linux Android Studio Install",
+          "AppSec Hub م13 — Mac Brew Installation and Guidance",
+          "AppSec Hub م14 — Mac JADX GUI",
+          "AppSec Hub م15 — Mac APKTool",
+        ],
+         resources:[
+           {title:"Android Pentesting Roadmap — A0xTrojan Notion",type:"article",lang:"ar",url:"https://almond-fontina-ed4.notion.site/Road-map-Android-20190050c671803e8b13f608601c3bb3"},
+          {title:"Mobile Security Notes — 0x5atab Notion",type:"article",lang:"ar",url:"https://0x5atab.notion.site/MOBILE-SECURITY-17490ba198d280b497c5fb1d41387288"},
+          {title:"OWASP MASTG — Mobile Application Security Testing Guide",type:"book",lang:"en",url:"https://mas.owasp.org/MASTG/"},
+          {title:"Android Applications Penetration Testing — Abdulrahman (بالعربي)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F"},
+          {title:"Mobile Application Pentesting — PentestHint (هندي/إنجليزي)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ"},
+          {title:"Mobile Applications Penetration Testing — Cyber_Pharaohs",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q"},
+          {title:"Full Android Penetration Testing Course — AppSec Hub",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t"},
+          {title:"Android Pentesting Series — AumLayer (OWASP Mobile Top 10)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14"},
+           {title:"Free Android Application Security Course — Mobile Hacking Lab",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr"},
+           {title:"MOBISEC — Mobile Security Course (إنجليزي)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK"},
+           {title:"MOBISEC 2 — Advanced Mobile Security (إنجليزي)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLo-yDpB0Omq7mBKkynWZWIMePEJjAjSTn"},
+         ]},
+       {id:"mob2",name:"Phase 2 — Static & Dynamic Analysis",emoji:"🔍",topics:[
          "Lesson 1: Static Analysis — المفهوم وما تبحث عنه",
          "Lesson 2: JADX-GUI — Decompile APK وتصفح الكود Java/Kotlin",
          "Lesson 3: JADX-GUI — البحث عن Hardcoded Secrets وAPI Keys",
@@ -1883,11 +2081,41 @@ const TRACKS={
          "Lesson 13: InjuredAndroid — CTF Challenges حل مفصل",
          "Lesson 14: Mobile Bug Bounty — أين تجد تطبيقات الـ Scope",
          "Lesson 15: Mobile Bug Bounty Report — التنسيق والخطوات",
-         "Lab: تطبيق OWASP Mobile Top 10 على DIVA",
-         "Lab: كتابة Report موبايل احترافي",
-       ],
-       resources:[
-         {title:"مهارة تك — OWASP Top 10 Mobile 2016 (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1143"},
+          "Lab: تطبيق OWASP Mobile Top 10 على DIVA",
+          "Lab: كتابة Report موبايل احترافي",
+          "AumLayer م1 — Introduction to Mobile Penetration Testing",
+          "AumLayer م2 — Android Architecture and Compilation",
+          "AumLayer م3 — Dynamic Analysis Lab Setup (Burp + Genymotion)",
+          "AumLayer م4 — Mobile Pentesting Lab: JADX + ADB + APKTool",
+          "AumLayer م5 — Installing MobSF for SAST/DAST",
+          "AumLayer م6 — Static Analysis: JADX and Secret Keys",
+          "AumLayer م7 — Dynamic Analysis of Android Application",
+          "AumLayer م8 — OWASP M1: Improper Platform Usage",
+          "AumLayer م9 — OWASP M2: Insecure Data Storage",
+          "AumLayer م10 — OWASP M3: Insecure Communication",
+          "AumLayer م11 — OWASP M4: Insecure Authentication",
+          "AumLayer م12 — Multiple Ways to Bypass SSL Pinning (Frida/Objection/apkmitm)",
+          "AumLayer م13 — OWASP M5: Insufficient Cryptography",
+          "AumLayer م14 — OWASP M6: Insecure Authorization",
+          "AumLayer م15 — OWASP M7: Poor Code Quality",
+          "MHL م1 — Full Free Android App Security Course Intro",
+          "MHL م2 — Android Application Security Introduction",
+          "MHL م3 — Android Architecture: Introduction 1",
+          "MHL م4 — Android Architecture: Linux Kernel",
+          "MHL م5 — Android Architecture: HAL",
+          "MHL م6 — Android Architecture: Libraries + Runtime",
+          "MHL م7 — Android Architecture: Java API & Apps",
+          "MHL م8 — Android Security",
+          "MHL م9 — Android Application Structure",
+          "MHL م10 — Android IPC",
+          "MHL م11 — Android Application Publishing",
+          "MHL م12 — Pen Testing Basics: Host Software Setup",
+          "MHL م13 — Pen Testing Basics: ADB",
+          "MHL م14 — Pen Testing Basics: Local Device Setup",
+          "MHL م15 — Pentesting Basics: MHL Device Setup",
+        ],
+        resources:[
+          {title:"مهارة تك — OWASP Top 10 Mobile 2016 (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1143"},
          {title:"OWASP MASTG — دليل الاختبار الكامل (مجاني)",type:"lab",lang:"en",url:"https://mas.owasp.org/MASTG/"},
          {title:"DIVA Android — Damn Insecure Vulnerable App (GitHub)",type:"lab",lang:"en",url:"https://github.com/payatu/diva-android"},
          {title:"InjuredAndroid — CTF-Style App (GitHub)",type:"lab",lang:"en",url:"https://github.com/B3nac/InjuredAndroid"},
@@ -1968,17 +2196,37 @@ const TRACKS={
          "Lesson 14: OpenVAS / Nessus — Vulnerability Scanning Report",
          "Lesson 15: Wireshark — Protocol Analysis وFollowing TCP Streams",
          "Lesson 16: Responder — LLMNR / NBT-NS Poisoning وHash Capture",
-         "Lab: Nmap Full Scan على HackTheBox Machine",
-         "Lab: SMB + LDAP Enumeration كامل",
-       ],
-       resources:[
-         {title:"مهارة تك — مقدمة في أمن الشبكات (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=560"},
-         {title:"مهارة تك — Network Security Engineer Job Profile (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1183"},
-         {title:"Nmap — التوثيق الرسمي الكامل",type:"article",lang:"en",url:"https://nmap.org/book/man.html"},
-         {title:"TryHackMe — Network Security Path",type:"lab",lang:"en",url:"https://tryhackme.com/paths"},
-         {title:"HackTricks — Network Services Pentesting",type:"article",lang:"en",url:"https://book.hacktricks.xyz/network-services-pentesting"},
-         {title:"VulnHub — Practice Machines (مجاني)",type:"lab",lang:"en",url:"https://www.vulnhub.com/"},
-       ]},
+          "Lab: Nmap Full Scan على HackTheBox Machine",
+          "Lab: SMB + LDAP Enumeration كامل",
+          "eJPTv2 م1 — Passive Information Gathering #1 | تجميع معلومات",
+          "eJPTv2 م2 — Passive Information Gathering #2",
+          "eJPTv2 م3 — Passive Information Gathering #3",
+          "eJPTv2 م4 — Passive Information Gathering #4",
+          "eJPTv2 م5 — Active Information Gathering #1",
+          "eJPTv2 م6 — Active Information Gathering #2 + تطبيق عملي",
+          "eJPTv2 م7 — Footprinting & Scanning: أساسيات الشبكات #1",
+          "eJPTv2 م8 — Footprinting & Scanning: أساسيات الشبكات #2",
+          "eJPTv2 م9 — تابع أساسيات الشبكات",
+          "eJPTv2 م10 — Footprinting & Scanning: أساسيات الشبكات #3",
+          "eJPTv2 م11 — Assessment Methodologies: Host Discovery",
+          "eJPTv2 م12 — Host Discovery عملي | اكتشاف الأجهزة",
+          "eJPTv2 م13 — Assessment Methodologies: Port Scanning",
+          "eJPTv2 م14 — Port Scanning #2 | فحص البورتات",
+          "eJPTv2 م15 — Nmap Script | استعمال السكريبتات",
+        ],
+         resources:[
+          {title:"مهارة تك — مقدمة في أمن الشبكات (مجاني بالكامل) 🏅",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=560"},
+          {title:"مهارة تك — Network Security Engineer Job Profile (مجاني)",type:"video",lang:"ar",url:"https://maharatech.gov.eg/course/view.php?id=1183"},
+          {title:"Nmap — التوثيق الرسمي الكامل",type:"article",lang:"en",url:"https://nmap.org/book/man.html"},
+          {title:"TryHackMe — Network Security Path",type:"lab",lang:"en",url:"https://tryhackme.com/paths"},
+          {title:"HackTricks — Network Services Pentesting",type:"article",lang:"en",url:"https://book.hacktricks.xyz/network-services-pentesting"},
+          {title:"VulnHub — Practice Machines (مجاني)",type:"lab",lang:"en",url:"https://www.vulnhub.com/"},
+          {title:"eJPTv2 Course — Cyberock (اختبار اختراق بالعربي كامل)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b"},
+          {title:"Zero to Hero Network Pentesting — TCM (The Cyber Mentor)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj"},
+          {title:"FSU Offensive Security Lectures — جامعة فلوريدا (مجاني)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq"},
+          {title:"Cyber Weapons Lab — Null Byte (Pentesting عملي)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT"},
+          {title:"Penetration Testing بالعربي — Ahmed Abdelazeem (8 جلسات)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X"},
+        ]},
       {id:"net2",name:"Phase 2 — Exploitation & Post-Exploitation",emoji:"💥",topics:[
          "Lesson 1: Metasploit — msfconsole Navigation وأوامره الأساسية",
          "Lesson 2: Metasploit — search / use / show options / set / run",
@@ -1997,18 +2245,52 @@ const TRACKS={
          "Lesson 15: Pivoting — Chisel وSocat للـ Port Forwarding",
          "Lesson 16: Persistence — Cron Jobs / Registry Run Keys / Scheduled Tasks",
          "Lesson 17: Covering Tracks — Log Clearing / Timestomping",
-         "Lab: HackTheBox Linux Box من Scan حتى Root",
-         "Lab: HackTheBox Windows Box من Scan حتى Admin",
-       ],
-       resources:[
-         {title:"TCM Security — Practical Ethical Hacking (Free on YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/watch?v=fNzpcB7ODxQ"},
+          "Lab: HackTheBox Linux Box من Scan حتى Root",
+          "Lab: HackTheBox Windows Box من Scan حتى Admin",
+          "TCM Zero to Hero E1 — Course Intro, Notekeeping, Linux Basics",
+          "TCM Zero to Hero E2 — Python 101 for Pentesters",
+          "TCM Zero to Hero E3 — Python 102 & Building a Port Scanner",
+          "TCM Zero to Hero E4 — Five Phases of Hacking & Passive OSINT",
+          "TCM Zero to Hero E5 — Scanning Tools (Nmap, Nessus, BurpSuite)",
+          "TCM Zero to Hero E6 — Enumeration: Kioptrix & Hack The Box",
+          "TCM Zero to Hero E7 — Exploitation, Shells & Credential Stuffing",
+          "TCM Zero to Hero E8 — Building AD Lab, LLMNR Poisoning & NTLMv2 Cracking",
+          "TCM Zero to Hero E9 — NTLM Relay, Token Impersonation, Pass the Hash, PsExec",
+          "TCM Zero to Hero E10 — MS17-010/EternalBlue, GPP/cPasswords & Kerberoasting",
+           "TCM Zero to Hero E11 — File Transfers, Pivoting & Reporting Writing",
+           "PT Arabic م1 — Intro to Pen Testing",
+           "PT Arabic م2 — Scanning",
+           "PT Arabic م3 — Vulnerability Scanning",
+           "PT Arabic م4 — Exploitation",
+           "PT Arabic م5 — Linux Privilege Escalation",
+           "PT Arabic م6 — Windows Privilege Escalation",
+           "PT Arabic م7 — Password Attacks & AV Evasion",
+            "PT Arabic م8 — Buffer Overflow",
+            "FSU Lec 02 — Offensive Computer Security",
+            "FSU Lec 03 — Offensive Computer Security",
+            "FSU Lec 04 — Offensive Computer Security",
+            "FSU Lec 05 — Offensive Computer Security",
+            "FSU Lec 07 — Offensive Computer Security",
+            "FSU Lec 08 — Offensive Computer Security",
+            "FSU — Fuzzing Presentation 2014",
+            "FSU Lec 10P1 — Advanced Fuzzing Topics",
+            "FSU Lec 10P2 — Exploit Development 101",
+            "FSU Lec 11 — Exploit Development 102",
+            "FSU Lec 12 — Exploit Development 103",
+            "FSU Lec 13 — Networking 101",
+            "FSU Lec 14 — Networking 102",
+            "FSU Lec 15 — Web Application Hacking/Security 101",
+        ],
+        resources:[
+          {title:"TCM Security — Practical Ethical Hacking (Free on YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/watch?v=fNzpcB7ODxQ"},
          {title:"GTFOBins — Linux Privilege Escalation",type:"article",lang:"en",url:"https://gtfobins.github.io/"},
          {title:"LOLBAS — Windows Living Off The Land",type:"article",lang:"en",url:"https://lolbas-project.github.io/"},
-         {title:"TryHackMe — Offensive Pentesting Path",type:"lab",lang:"en",url:"https://tryhackme.com/path/outline/pentesting"},
-         {title:"HackTheBox — Starting Point (مجاني)",type:"lab",lang:"en",url:"https://app.hackthebox.com/starting-point"},
-       ]},
-    ]},
-  ad:{id:"ad",name:"Active Directory",nameEn:"Active Directory & Red Team",icon:"🏰",color:"#dc2626",colorBg:"rgba(220,38,38,0.15)",duration:"4–6 أشهر",desc:"اختراق بيئات Active Directory وعمليات Red Team",
+          {title:"TryHackMe — Offensive Pentesting Path",type:"lab",lang:"en",url:"https://tryhackme.com/path/outline/pentesting"},
+          {title:"HackTheBox — Starting Point (مجاني)",type:"lab",lang:"en",url:"https://app.hackthebox.com/starting-point"},
+          {title:"Penetration Testing بالعربي — abdelazeem (مبتدئين)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X"},
+        ]},
+     ]},
+   ad:{id:"ad",name:"Active Directory",nameEn:"Active Directory & Red Team",icon:"🏰",color:"#dc2626",colorBg:"rgba(220,38,38,0.15)",duration:"4–6 أشهر",desc:"اختراق بيئات Active Directory وعمليات Red Team",
     phases:[
       {id:"ad1",name:"Phase 1 — AD Fundamentals",emoji:"🏛️",topics:[
          "Lesson 1: Active Directory — ما هو ولماذا يستهدفه المهاجمون",
@@ -2027,16 +2309,28 @@ const TRACKS={
          "Lesson 14: PowerShell AD Enum — Get-ADUser / Get-ADComputer / Get-ADGroup",
          "Lesson 15: PowerView — Enumeration للـ AD بشكل أعمق",
          "Lesson 16: AD Trust Relationships — Forest Trust / External Trust",
-         "Lab: إعداد AD Lab المنزلي بـ Windows Server",
-         "Lab: BloodHound Enumeration كاملة على AD Lab",
-       ],
-       resources:[
-         {title:"TCM Security — Practical AD Pentesting (Free YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/watch?v=pKtDptF5HA4"},
-         {title:"BloodHound — GitHub الرسمي",type:"lab",lang:"en",url:"https://github.com/BloodHoundAD/BloodHound"},
-         {title:"TryHackMe — Active Directory Rooms",type:"lab",lang:"en",url:"https://tryhackme.com/room/winadbasics"},
-         {title:"HackTricks — Active Directory Methodology",type:"article",lang:"en",url:"https://book.hacktricks.xyz/windows-hardening/active-directory-methodology"},
-       ]},
-      {id:"ad2",name:"Phase 2 — AD Attacks",emoji:"⚔️",topics:[
+          "Lab: إعداد AD Lab المنزلي بـ Windows Server",
+          "Lab: BloodHound Enumeration كاملة على AD Lab",
+          "Windows م1 — كيف يعمل نظام تشغيل ويندوز",
+          "Windows م2 — أساسيات التعامل مع أوامر CMD",
+          "Windows م3 — أساسيات التعامل مع أوامر PowerShell",
+          "Windows م4 — التعامل مع الـ Processes في ويندوز",
+          "Windows م5 — التعامل مع الـ Services في ويندوز",
+          "Windows م6 — التعامل مع الـ Scheduled Tasks",
+          "Windows م7 — أهم الـ System Utilities في ويندوز",
+          "Windows م8 — التعامل مع الـ Registry",
+          "Windows م9 — التعامل مع الـ Sharing في ويندوز",
+          "Windows م10 — التعامل مع الـ Logging في ويندوز",
+          "Windows م11 — التعامل مع الـ WSL في ويندوز",
+        ],
+         resources:[
+           {title:"TCM Security — Practical AD Pentesting (Free YouTube)",type:"video",lang:"en",url:"https://www.youtube.com/watch?v=pKtDptF5HA4"},
+          {title:"BloodHound — GitHub الرسمي",type:"lab",lang:"en",url:"https://github.com/BloodHoundAD/BloodHound"},
+          {title:"TryHackMe — Active Directory Rooms",type:"lab",lang:"en",url:"https://tryhackme.com/room/winadbasics"},
+          {title:"HackTricks — Active Directory Methodology",type:"article",lang:"en",url:"https://book.hacktricks.xyz/windows-hardening/active-directory-methodology"},
+          {title:"Windows for Cybersecurity Professionals — تكناوي دوت نيت (دورة ويندوز كاملة)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv"},
+        ]},
+       {id:"ad2",name:"Phase 2 — AD Attacks",emoji:"⚔️",topics:[
          "Lesson 1: LLMNR/NBT-NS Poisoning — Responder لجمع NTLM Hashes",
          "Lesson 2: NTLM Relay Attack — ntlmrelayx.py وتحويل الـ Hash",
          "Lesson 3: Pass-the-Hash — CrackMapExec: --sam / --lsa / -x cmd",
@@ -2089,19 +2383,35 @@ const TRACKS={
          "Lesson 20: x64dbg — Breakpoints / Stepping F7-F9 / Memory View",
          "Lesson 21: YARA Rules — Strings / Hex / Conditions / Testing",
          "Lesson 22: IOC Extraction — Network / Registry / File Indicators",
-         "Lab: Static Analysis لـ Ransomware Sample حقيقي",
-         "Lab: Dynamic Analysis ومراقبة الـ C2 Traffic",
-       ],
-       resources:[
-         {title:"Practical Malware Analysis — كتاب Nostarch (المرجع الأساسي)",type:"book",lang:"en",url:"https://nostarch.com/malware"},
+          "Lab: Static Analysis لـ Ransomware Sample حقيقي",
+          "Lab: Dynamic Analysis ومراقبة الـ C2 Traffic",
+          "BlackSilence M1 — Introduction To Malware Analysis Workshop",
+          "BlackSilence M2 — Programming Basics For Malware Analysts Part 1",
+          "BlackSilence M3 — Programming Basics For Malware Analysts Part 2",
+          "BlackSilence M4 — Python for Malware Analysts Part 1",
+          "BlackSilence M5 — Python for Malware Analysts Part 2",
+          "BlackSilence M6 — Revision And Task Discussion",
+          "BlackSilence M7 — Revision & C Programming Introduction",
+          "BlackSilence M8 — Introduction To C Programming Part 2",
+          "BlackSilence M9 — Introduction To C Programming Part 3",
+          "BlackSilence M10 — Introduction To C Programming Part 4",
+          "BlackSilence M11 — Introduction To C Programming Part 5",
+          "BlackSilence M12 — Introduction To C Programming Part 6",
+          "BlackSilence M13 — CPU Architecture Basics",
+          "BlackSilence M14 — Network Basics Part 1",
+          "BlackSilence M15 — Network Basics Part 2",
+        ],
+        resources:[
+          {title:"Practical Malware Analysis — كتاب Nostarch (المرجع الأساسي)",type:"book",lang:"en",url:"https://nostarch.com/malware"},
          {title:"Ghidra — NSA Free Disassembler (GitHub)",type:"lab",lang:"en",url:"https://github.com/NationalSecurityAgency/ghidra"},
          {title:"x64dbg — Open Source Debugger (GitHub)",type:"lab",lang:"en",url:"https://github.com/x64dbg/x64dbg"},
          {title:"ANY.RUN — Interactive Sandbox (مجاني)",type:"lab",lang:"en",url:"https://any.run/"},
          {title:"MalwareBazaar — عينات حقيقية للتحليل (مجاني)",type:"lab",lang:"en",url:"https://bazaar.abuse.ch/"},
-         {title:"OpenSecurityTraining2 — مجاني بالكامل",type:"video",lang:"en",url:"https://opensecuritytraining.info/"},
-       ]},
-    ]},
-  ctf:{id:"ctf",name:"CTF & Wargames",nameEn:"CTF Competitions & Practice",icon:"🚩",color:"#f97316",colorBg:"rgba(249,115,22,0.15)",duration:"مستمر",desc:"تحديات CTF، تطبيق المهارات، المسابقات الأمنية",
+          {title:"OpenSecurityTraining2 — مجاني بالكامل",type:"video",lang:"en",url:"https://opensecuritytraining.info/"},
+          {title:"Malware Analysis Fundamentals — BlackSilence (دورة كاملة)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4"},
+        ]},
+     ]},
+   ctf:{id:"ctf",name:"CTF & Wargames",nameEn:"CTF Competitions & Practice",icon:"🚩",color:"#f97316",colorBg:"rgba(249,115,22,0.15)",duration:"مستمر",desc:"تحديات CTF، تطبيق المهارات، المسابقات الأمنية",
     phases:[
       {id:"ctf1",name:"Phase 1 — CTF Basics & Wargames",emoji:"🎯",topics:[
          "Lesson 1: CTF Types — Web / Crypto / Forensics / Pwn / Reverse Engineering / Misc",
@@ -2121,18 +2431,55 @@ const TRACKS={
          "Lesson 15: CTF Methodology — كيف تتعامل مع تحدي جديد خطوة بخطوة",
          "Lesson 16: PicoCTF — Walkthrough للمستوى المبتدئ",
          "Lesson 17: OverTheWire Bandit — أفضل بداية لـ CTF",
-         "Lab: PicoCTF — حل 10 تحديات مع توثيق الحل",
-         "Lab: OverTheWire Natas — Web CTF للمبتدئين",
-       ],
-       resources:[
-         {title:"CTF101 — Getting Started Guide (مجاني)",type:"article",lang:"en",url:"https://ctf101.org/"},
-         {title:"PicoCTF — للمبتدئين من Carnegie Mellon (مجاني)",type:"lab",lang:"en",url:"https://picoctf.org/"},
-         {title:"OverTheWire — Wargames كاملة (Bandit,Natas,Leviathan)",type:"lab",lang:"en",url:"https://overthewire.org/wargames/"},
-         {title:"CTFtime — مسابقات CTF الحية حول العالم",type:"lab",lang:"en",url:"https://ctftime.org/"},
-         {title:"CyberChef — أداة تشفير وتحليل شاملة (مجاني)",type:"lab",lang:"en",url:"https://gchq.github.io/CyberChef/"},
-         {title:"CTF Writeups — GitHub Collection",type:"writeup",lang:"en",url:"https://github.com/sajjadium/ctf-archives"},
-       ]},
-    ]},
+          "Lab: PicoCTF — حل 10 تحديات مع توثيق الحل",
+          "Lab: OverTheWire Natas — Web CTF للمبتدئين",
+          "DFIRHub CTF 1 — HTB مقدمة عن تحديات CTF",
+          "DFIRHub CTF 2 — Digital Forensics CTF بالعربي",
+          "DFIRHub CTF 3 — Steganography CTF Challenges",
+          "DFIRHub CTF 4 — Memory Forensics CTF",
+          "DFIRHub CTF 5 — Packet Analysis & Misc CTF",
+          "DFIRHub CTF 6 — Web CTF Challenges Part 1",
+          "DFIRHub CTF 7 — Web CTF Challenges Part 2",
+          "DFIRHub CTF 8 — Web CTF Challenges Part 3",
+          "DFIRHub CTF 9 — Cryptography CTF Part 1",
+          "DFIRHub CTF 10 — Cryptography CTF Part 2",
+          "DFIRHub CTF 11 — Cryptography CTF Part 3",
+          "SATTAM CTF #0 — Introduction to CTFs (بالعربي)",
+          "SATTAM CTF #1 — Forensics 101 Challenge",
+          "SATTAM CTF #2 — Talking LS Challenge",
+          "SATTAM CTF #3 — Exif & WOW...So Meta Challenges",
+          "SATTAM CTF #4 — POST Practice Challenge",
+          "SATTAM CTF #5 — Wireshark For CTF",
+          "SATTAM CTF #6 — Wireshark Challenges",
+          "SATTAM CTF #7 — Forensics Hex Signature Format",
+          "Mina CTF #1 — Introduction to CTF (بالعربي)",
+          "Mina CTF #2 — Forensics 101 CTFLearn",
+          "Mina CTF #3 — Taking ls Challenge CTFlearn",
+          "Mina CTF #4 — 07601 Challenge CTFlearn",
+          "Mina CTF #5 — POST Practice Challenge CTFlearn",
+          "Mina CTF #6 — Android Reverse Engineering CTFlearn",
+          "Mina CTF #7 — TUX Forensics Challenge CTFlearn",
+          "Mina CTF #8 — Lazy Game Binary Challenge CTFlearn",
+          "Mina CTF #9 — Where Can My Robot Go CTFlearn",
+          "Mina CTF #10 — WOW So META Forensics",
+          "Mina CTF #11 — Binwalk Forensics Challenge",
+          "Mina CTF — Learn Reverse Engineering in Arabic",
+          "Mina CTF — SQL Injection Basics in Arabic",
+          "FSU Lec 1 — Offensive Computer Security Introduction",
+        ],
+         resources:[
+          {title:"CTF101 — Getting Started Guide (مجاني)",type:"article",lang:"en",url:"https://ctf101.org/"},
+          {title:"PicoCTF — للمبتدئين من Carnegie Mellon (مجاني)",type:"lab",lang:"en",url:"https://picoctf.org/"},
+          {title:"OverTheWire — Wargames كاملة (Bandit,Natas,Leviathan)",type:"lab",lang:"en",url:"https://overthewire.org/wargames/"},
+          {title:"CTFtime — مسابقات CTF الحية حول العالم",type:"lab",lang:"en",url:"https://ctftime.org/"},
+          {title:"CyberChef — أداة تشفير وتحليل شاملة (مجاني)",type:"lab",lang:"en",url:"https://gchq.github.io/CyberChef/"},
+          {title:"CTF Writeups — GitHub Collection",type:"writeup",lang:"en",url:"https://github.com/sajjadium/ctf-archives"},
+          {title:"Introduction to CTF in Arabic — DFIRHub (بالعربي)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks"},
+          {title:"CTF Course — SATTAM (شروحات CTF بالعربي)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLtJkL6CnLVXM-YZcyKrCWylperkismVHv"},
+          {title:"Learn CTF and Cyber Security in Arabic — Mina Ashraf",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA"},
+          {title:"FSU Offensive Security — CTF Style Lectures (English)",type:"video",lang:"en",url:"https://www.youtube.com/playlist?list=PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq"},
+        ]},
+     ]},
   cloud:{id:"cloud",name:"Cloud Security",nameEn:"Cloud Security (AWS/Azure/GCP)",icon:"☁️",color:"#0ea5e9",colorBg:"rgba(14,165,233,0.15)",duration:"3–5 أشهر",desc:"اختبار اختراق بيئات AWS وAzure وGCP — المجال الأسرع نمواً",
     phases:[
       {id:"cloud1",name:"Phase 1 — Cloud Fundamentals",emoji:"🌩️",topics:[
@@ -2328,12 +2675,13 @@ const TRACKS={
          "Lab: تحليل Disk Image بـ Autopsy من الصفر",
          "Lab: Windows Registry Analysis — إيجاد Persistence",
        ],
-       resources:[
-         {title:"Autopsy — Digital Forensics Platform (مجاني)",type:"lab",lang:"en",url:"https://www.autopsy.com/"},
-         {title:"TryHackMe — Digital Forensics Path",type:"lab",lang:"en",url:"https://tryhackme.com/path/outline/dfir"},
-         {title:"HackTricks — Forensics Methodology",type:"article",lang:"en",url:"https://book.hacktricks.xyz/forensics/basic-forensic-methodology"},
-       ]},
-      {id:"dfir2",name:"Phase 2 — Memory & Incident Response",emoji:"🚨",topics:[
+        resources:[
+          {title:"Autopsy — Digital Forensics Platform (مجاني)",type:"lab",lang:"en",url:"https://www.autopsy.com/"},
+          {title:"TryHackMe — Digital Forensics Path",type:"lab",lang:"en",url:"https://tryhackme.com/path/outline/dfir"},
+          {title:"HackTricks — Forensics Methodology",type:"article",lang:"en",url:"https://book.hacktricks.xyz/forensics/basic-forensic-methodology"},
+          {title:"The Art of DFIR & Threat Hunting — Muhammed Talaat (عربي)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL"},
+        ]},
+       {id:"dfir2",name:"Phase 2 — Memory & Incident Response",emoji:"🚨",topics:[
          "Lesson 1: Memory Forensics — لماذا الذاكرة أهم من الـ Disk",
          "Lesson 2: Memory Acquisition — winpmem / LiME / DumpIt",
          "Lesson 3: Volatility 3 — Installation وأول Plugin",
@@ -2345,8 +2693,12 @@ const TRACKS={
          "Lesson 9: PCAP Analysis — Zeek / Suricata لـ Network Detection",
          "Lesson 10: MITRE ATT&CK — Tactics / Techniques / Sub-techniques",
          "Lesson 11: MITRE ATT&CK — Mapping Artifacts لـ TTPs",
-         "Lesson 12: Threat Hunting — Hypothesis-Based وIOC-Based",
-         "Lesson 13: YARA للـ Detection — كتابة Rules للـ Malware الحي",
+          "Lesson 12: Threat Hunting — Hypothesis-Based وIOC-Based",
+          "Lesson 13: YARA للـ Detection — كتابة Rules للـ Malware الحي",
+          "Threat Hunt S1 — Initial Access: Malicious PowerShell & VBS Execution",
+          "Threat Hunt S2 — Investigating Lateral Movement: OverPass-The-Hash",
+          "Threat Hunt S3 — Investigating Lateral Movement: PSExec Analysis",
+          "Threat Hunt S4 — Defense Evasion: Mshta HTML Application (HTA)",
          "Lesson 14: SIEM Basics — Elastic Stack (ELK) Setup وQuerying",
          "Lesson 15: Splunk — SPL Queries وDashboards",
          "Lesson 16: Incident Response Lifecycle — Preparation / Detection / Containment / Eradication / Recovery",
@@ -2382,11 +2734,26 @@ const TRACKS={
          "Lesson 14: Wifite2 — Automated WiFi Auditing",
          "Lesson 15: Bettercap — MITM على WiFi + SSL Stripping",
          "Lesson 16: Wireless Pentest Report — Findings + Remediation",
-         "Lab: Capture WPA2 Handshake وكسره بـ Hashcat",
-         "Lab: Evil Twin Attack Setup كامل",
-       ],
-       resources:[
-         {title:"Aircrack-ng Suite — Official Documentation",type:"article",lang:"en",url:"https://www.aircrack-ng.org/documentation.html"},
+          "Lab: Capture WPA2 Handshake وكسره بـ Hashcat",
+          "Lab: Evil Twin Attack Setup كامل",
+          "Cyber Weapons Lab م1 — LoRa for Hackers: Long-Range Remote Control",
+          "Cyber Weapons Lab م2 — Hacking the Skies: Ghost Drone Swarms with Spoofed IDs",
+          "Cyber Weapons Lab م3 — Ethical Hacking Kit with Raspberry Pi 5",
+          "Cyber Weapons Lab م4 — Xerosploit for Advanced MiTM Attacks",
+          "Cyber Weapons Lab م5 — Facial Detection & Recognition on ESP32",
+          "Cyber Weapons Lab م6 — Create a Wi-Fi Spy Camera with ESP32-CAM",
+          "Cyber Weapons Lab م7 — Deauther Watch Wi-Fi Hacking Wearable",
+          "Cyber Weapons Lab م8 — Fingerprint Web Apps & Servers for Better Recon",
+          "Cyber Weapons Lab م9 — Kali Linux as Bootable Live USB",
+          "Cyber Weapons Lab م10 — Clear Logs & History on Linux Systems",
+          "Cyber Weapons Lab م11 — Practice Wi-Fi Hacking with ESP8266 CTF Games",
+          "Cyber Weapons Lab م12 — Directional Antenna with ESP8266",
+          "Cyber Weapons Lab م13 — Find Hidden Wi-Fi Networks",
+          "Cyber Weapons Lab م14 — Generate Crackable Handshakes with ESP8266",
+          "Cyber Weapons Lab م15 — Automate Remote SSH Control with Expect Scripts",
+        ],
+        resources:[
+          {title:"Aircrack-ng Suite — Official Documentation",type:"article",lang:"en",url:"https://www.aircrack-ng.org/documentation.html"},
          {title:"HackTricks — Pentesting WiFi",type:"article",lang:"en",url:"https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi"},
          {title:"TryHackMe — WiFi Hacking Rooms",type:"lab",lang:"en",url:"https://tryhackme.com/room/wifihacking101"},
          {title:"Wifite2 — Automated WiFi Auditor (GitHub)",type:"lab",lang:"en",url:"https://github.com/derv82/wifite2"},
@@ -2435,11 +2802,26 @@ const TRACKS={
          "Lesson 14: Digital Signatures — RSA Signature / ECDSA",
          "Lesson 15: Key Exchange — Diffie-Hellman / ECDH",
          "Lesson 16: PKI — Certificate Authority / X.509 / Chain of Trust",
-         "Lab: CyberChef — تشفير وفك تشفير AES / RSA / Base64",
-         "Lab: CryptoHack — أول 5 تحديات في Intro to Crypto",
-       ],
-       resources:[
-         {title:"CryptoHack — Interactive Cryptography Challenges (مجاني)",type:"lab",lang:"en",url:"https://cryptohack.org/"},
+          "Lab: CyberChef — تشفير وفك تشفير AES / RSA / Base64",
+          "Lab: CryptoHack — أول 5 تحديات في Intro to Crypto",
+          "Security/Ayman م1 — Security Introduction & Cryptography Intro",
+          "Security/Ayman م2 — Network Model & Security Attacks",
+          "Security/Ayman م3 — Classic Cryptography Caesar & Monoalphabetic",
+          "Security/Ayman م4 — Polyalphabetic & Playfair Ciphers",
+          "Security/Ayman م5 — Transposition Techniques & Hill Cipher",
+          "Security/Ayman م6 — DES & Block Cipher Modes (ECB/CBC)",
+          "Security/Ayman م7 — AES & Triple DES",
+          "Security/Ayman م8 — Stream Ciphers & RC4",
+          "Security/Ayman م9 — Public Key Cryptography & RSA",
+          "Security/Ayman م10 — Diffie-Hellman Key Exchange",
+          "Security/Ayman م11 — Hash Functions & Message Authentication",
+          "Security/Ayman م12 — Digital Signatures & Certificates",
+          "Security/Ayman م13 — User Authentication & Kerberos",
+          "Security/Ayman م14 — IP Security (IPSec)",
+          "Security/Ayman م15 — Web Security (SSL/TLS)",
+        ],
+        resources:[
+          {title:"CryptoHack — Interactive Cryptography Challenges (مجاني)",type:"lab",lang:"en",url:"https://cryptohack.org/"},
          {title:"CyberChef — Crypto Analysis Tool (مجاني)",type:"lab",lang:"en",url:"https://gchq.github.io/CyberChef/"},
          {title:"Cryptopals Challenges — Classic Crypto Attacks (مجاني)",type:"lab",lang:"en",url:"https://cryptopals.com/"},
          {title:"Khan Academy — Cryptography Course (مجاني)",type:"video",lang:"en",url:"https://www.khanacademy.org/computing/computer-science/cryptography"},
@@ -2557,15 +2939,72 @@ const TRACKS={
          {title:"GoPhish — Phishing Framework (GitHub)",type:"lab",lang:"en",url:"https://github.com/gophish/gophish"},
          {title:"TryHackMe — Phishing Rooms",type:"lab",lang:"en",url:"https://tryhackme.com/hacktivities?tab=search&value=phishing"},
          {title:"HackTricks — Phishing Methodology",type:"article",lang:"en",url:"https://book.hacktricks.xyz/generic-methodologies-and-resources/phishing-methodology"},
-       ]},
+        ]},
+     ]},
+  general:{id:"general",name:"عام",nameEn:"General Cybersecurity & Community",icon:"🧠",color:"var(--t1)",colorBg:"rgba(100,116,139,0.15)",duration:"مستمر",desc:"بودكاست، فعاليات، محتوى عام ومتنوع يثري معرفتك الأمنية",
+    phases:[
+      {id:"gen1",name:"Phase 1 — Podcasts & Interviews",emoji:"🎙️",topics:[
+         "BugCast Ep:01 — زياد عبدالعظيم | Security Researching & Learning Tips",
+         "BugCast Ep:02 — محمود حامد | Bug Bounty Guide",
+         "BugCast Ep:03 — معاذ عادل | Hack without learning programming",
+         "BugCast Ep:04 — صهيب ناصري | Advice for Bug Bounty",
+         "BugCast Ep:05 — ياسر علي | From 0 to working at Facebook (Meta)",
+         "BugCast Ep:06 — فادي عثمان | Hacker Mindset",
+         "BugCast Ep:07 — محمد نصر | Shifting to Blue Team",
+         "BugCast Ep:08 — السيد الرفاعي | Purple Team",
+         "BugCast Ep:09 — حازم هشام | Day Life of Red Teamer",
+         "BugCast Ep:10 — محمد فتحي | Find your First Job",
+         "BugCast Ep:11 — محمد سادات | Working as a Group CISO",
+         "BugCast Ep:12 — سيد عبدالحفيظ | How to Hack mobile apps",
+         "BugCast Ep:13 — أحمد علاء الدين | Working in Application Security",
+      ],
+      resources:[
+         {title:"BugCast Podcast — سايبر عرب (Playlist كامل)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt"},
+      ]},
+      {id:"gen2",name:"Phase 2 — Security Events & Workshops",emoji:"🎪",topics:[
+         "Ramadan Nights 2025 — Intro To Hardware Security",
+         "Ramadan Nights 2025 — Hack AD Like A Team Lead",
+         "Ramadan Nights 2025 — Breaking the Signal: Pentesting Wireless",
+         "Ramadan Nights 2025 — Your Path to Android Penetration Testing",
+         "Ramadan Nights 2025 — Threat detection engineering",
+         "Ramadan Nights 2025 — Investigating the Hyperliquid Whale: OSINT Case Study",
+         "Ramadan Nights 2025 — Intro to AI hacking",
+         "Ramadan Nights 2025 — Secure by Design: Strengthening Applications",
+         "Ramadan Nights 2025 — Phishing Analysis Techniques",
+         "Ramadan Nights 2025 — From CV to job offer: Essential Tips & Tricks",
+         "Ramadan Nights 2025 — Introduction To Infostealer",
+         "Ramadan Nights 2025 — From infection To Detection: Intro To Malware Analysis",
+         "Ramadan Nights 2025 — Ethical Hacking Radio Stations",
+         "Ramadan Nights 2025 — Bug Bounty Hunting",
+          "Ramadan Nights 2025 — Blue team Behind the scene",
+          "Testing Workshops م1 — Session 1: Intro",
+          "Testing Workshops م2 — Session 2",
+          "Testing Workshops م3 — Requirements Review",
+          "Testing Workshops م4 — Design Test Cases",
+          "Testing Workshops م5 — Q&A",
+          "Testing Workshops م6 — Agile",
+          "Testing Workshops م7 — DB",
+          "Testing Workshops م8 — APIs Part 1",
+          "Testing Workshops م9 — APIs Part 2",
+          "Testing Workshops م10 — Bug Reporting",
+          "Testing Workshops م11 — Azure & Questions",
+          "Testing Workshops م12 — Java Session 1",
+          "Testing Workshops م13 — Java Session 2",
+          "Testing Workshops م14 — Java Session 3",
+          "Testing Workshops م15 — Java Session 4 (OOP & Maven)",
+       ],
+       resources:[
+         {title:"Ramadan Nights 2025 — AOU Cyber Security Club (Playlist)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf"},
+         {title:"Testing Workshops — Rania Mokhtar (Software Testing)",type:"video",lang:"ar",url:"https://www.youtube.com/playlist?list=PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ"},
+      ]},
     ]},
 };
 
-const TRACK_ORDER=["foundations","web","mobile","api","network","ad","malware","ctf","cloud","osint","web3track","dfir","wireless","crypto","pwn","social"];
+const TRACK_ORDER=["foundations","web","mobile","api","network","ad","malware","ctf","cloud","osint","web3track","dfir","wireless","crypto","pwn","social","general"];
 const PRI_COL={high:"#ef4444",medium:"#f59e0b",low:"#10b981"};
 const PRI_BG={high:"rgba(239,68,68,0.12)",medium:"rgba(245,158,11,0.12)",low:"rgba(16,185,129,0.12)"};
 const R_COL={prayer:"rgba(250,204,21,0.15)",islamic:"rgba(52,211,153,0.15)",quran:"rgba(52,211,153,0.2)",study:"rgba(59,130,246,0.12)",health:"rgba(34,197,94,0.12)",break:"rgba(148,163,184,0.08)",project:"rgba(168,85,247,0.12)",community:"rgba(236,72,153,0.12)",personal:"rgba(249,115,22,0.1)"};
-const R_TXT={prayer:"#fde047",islamic:"#34d399",quran:"#6ee7b7",study:"#60a5fa",health:"#4ade80",break:"#94a3b8",project:"#c084fc",community:"#f472b6",personal:"#fb923c"};
+const R_TXT={prayer:"#fde047",islamic:"#34d399",quran:"#6ee7b7",study:"#60a5fa",health:"#4ade80",break:"var(--t4)",project:"#c084fc",community:"#f472b6",personal:"#fb923c"};
 
 // ─────────────────────────────────────────────
 //  HELPERS
@@ -2607,13 +3046,13 @@ const getReviewWeeks=(s)=>{
 function Ring({pct,size=48,stroke=4,color="#00ff88"}){
   const r=(size-stroke*2)/2,c=2*Math.PI*r,o=c-(pct/100)*c;
   return(<svg width={size} height={size} style={{transform:"rotate(-90deg)"}}>
-    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke}/>
+    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--wb)" strokeWidth={stroke}/>
     <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
       strokeDasharray={c} strokeDashoffset={o} strokeLinecap="round" style={{transition:"stroke-dashoffset 0.5s ease"}}/>
   </svg>);
 }
 function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,alignItems:"center"}}>
-  <span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:type==="video"?"rgba(239,68,68,0.15)":type==="lab"?"rgba(34,197,94,0.15)":type==="article"?"rgba(249,115,22,0.15)":type==="writeup"?"rgba(236,72,153,0.15)":type==="book"?"rgba(234,179,8,0.15)":"rgba(100,116,139,0.15)",color:type==="video"?"#f87171":type==="lab"?"#4ade80":type==="article"?"#fb923c":type==="writeup"?"#f472b6":type==="book"?"#facc15":"#94a3b8",border:`1px solid ${type==="video"?"rgba(239,68,68,0.3)":type==="lab"?"rgba(34,197,94,0.3)":type==="article"?"rgba(249,115,22,0.3)":type==="writeup"?"rgba(236,72,153,0.3)":type==="book"?"rgba(234,179,8,0.3)":"rgba(100,116,139,0.3)"}`}}>
+  <span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:type==="video"?"rgba(239,68,68,0.15)":type==="lab"?"rgba(34,197,94,0.15)":type==="article"?"rgba(249,115,22,0.15)":type==="writeup"?"rgba(236,72,153,0.15)":type==="book"?"rgba(234,179,8,0.15)":"rgba(100,116,139,0.15)",color:type==="video"?"#f87171":type==="lab"?"#4ade80":type==="article"?"#fb923c":type==="writeup"?"#f472b6":type==="book"?"#facc15":"var(--t4)",border:`1px solid ${type==="video"?"rgba(239,68,68,0.3)":type==="lab"?"rgba(34,197,94,0.3)":type==="article"?"rgba(249,115,22,0.3)":type==="writeup"?"rgba(236,72,153,0.3)":type==="book"?"rgba(234,179,8,0.3)":"rgba(100,116,139,0.3)"}`}}>
     {type==="video"?"▶ Video":type==="lab"?"⚗ Lab":type==="article"?"📄 Article":type==="writeup"?"✍ Writeup":type==="book"?"📚 Book":"🔗"}
   </span>
   {lang&&<span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:lang==="ar"?"rgba(0,212,255,0.15)":"rgba(139,92,246,0.15)",color:lang==="ar"?"#00d4ff":"#a78bfa",border:`1px solid ${lang==="ar"?"rgba(0,212,255,0.3)":"rgba(139,92,246,0.3)"}`}}>{lang==="ar"?"🇸🇦 AR":"🌐 EN"}</span>}
@@ -2644,6 +3083,7 @@ export default function CyberPath(){
   const [studyHoursInput,setStudyHoursInput]=useState("");
   const [weekReportOpen,setWeekReportOpen]=useState(false);
   const [certModal,setCertModal]=useState(null);
+  const [theme,setTheme]=useState("dark");
 
   useEffect(()=>{(async()=>{try{const r=await window.storage.get("cyberpath_v3");if(r?.value){const p=JSON.parse(r.value);setS({...D0,...p});if(p.todos)setTodos(p.todos);}}catch(e){}setLoading(false);})();},[]);
   useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
@@ -2651,6 +3091,7 @@ export default function CyberPath(){
   const save=useCallback(async(ns,td)=>{try{await window.storage.set("cyberpath_v3",JSON.stringify({...ns,todos:td||todos}));}catch(e){};},[todos]);
   const upd=useCallback((patch)=>{setS(prev=>{const ns={...prev,...(typeof patch==="function"?patch(prev):patch)};save(ns);return ns;});},[save]);
   const showToast=(m)=>{setToast(m);setTimeout(()=>setToast(null),2800);};
+  const toggleTheme=()=>{setTheme(p=>p==="dark"?"light":"dark");};
 
   const g2=isMobile?"1fr":"1fr 1fr";
   const lv=getLevel(s.xp);
@@ -2785,7 +3226,7 @@ export default function CyberPath(){
   const filtRes=allRes.filter(r=>(resType==="all"||r.type===resType)&&(resLang==="all"||r.lang===resLang)&&(resTid==="all"||r.tid===resTid));
   const SB=sideOpen?260:72;
 
-  if(loading)return(<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#04080f",flexDirection:"column",gap:16}}>
+  if(loading)return(<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"var(--bg)",flexDirection:"column",gap:16}}>
     <style>{FONTS+CSS}</style><div className="pulse" style={{fontSize:48}}>⚡</div>
     <div style={{color:"#00ff88",fontFamily:"'Fira Code',monospace",fontSize:14}}>جاري التحميل...</div>
   </div>);
@@ -2803,14 +3244,15 @@ export default function CyberPath(){
   ];
 
   // ─── SIDEBAR ───
-  const Sidebar=()=>(<div className="sidebar-glow sidebar-desktop" style={{width:sideOpen?260:72,minHeight:"100vh",background:"linear-gradient(180deg,#060c1a 0%,#040810 100%)",borderRight:"1px solid rgba(0,255,136,0.1)",display:"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
+  const Sidebar=()=>(<div className="sidebar-glow sidebar-desktop" style={{width:sideOpen?260:72,minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
     <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,padding:"0 4px"}}>
       <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
         <span style={{fontSize:16,color:"#050810",fontWeight:900}}>⚡</span>
       </div>
-      {sideOpen&&<div><div style={{color:"#00ff88",fontWeight:700,fontSize:13,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath Academy</div><div style={{color:"#475569",fontSize:10}}>24M | 80W | 5 Phases</div></div>}
+      {sideOpen&&<div><div style={{color:"#00ff88",fontWeight:700,fontSize:13,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath Academy</div><div style={{color:"var(--t2)",fontSize:10}}>24M | 80W | 5 Phases</div></div>}
+      <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"}>{theme==="dark"?"☀️":"🌙"}</button>
     </div>
-    {sideOpen&&<div style={{fontSize:10,color:"#334155",padding:"4px 6px",fontFamily:"'Fira Code',monospace"}}>NAVIGATION</div>}
+    {sideOpen&&<div style={{fontSize:10,color:"var(--t3)",padding:"4px 6px",fontFamily:"'Fira Code',monospace"}}>NAVIGATION</div>}
     {[
       {id:"dashboard",icon:"📊",label:"Dashboard"},
       {id:"program",icon:"🗺️",label:"البرنامج الكامل"},
@@ -2828,12 +3270,12 @@ export default function CyberPath(){
     {sideOpen&&(<div style={{marginTop:"auto",padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
         <span style={{fontSize:18}}>{lv.icon}</span>
-        <div><div style={{color:lv.color,fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div><div style={{color:"#475569",fontSize:10}}>{s.xp} XP</div></div>
+        <div><div style={{color:lv.color,fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div><div style={{color:"var(--t2)",fontSize:10}}>{s.xp} XP</div></div>
       </div>
       <div className="bar"><div className="bar-fill" style={{width:`${lvPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
       <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-        <span style={{color:"#334155",fontSize:10}}>Wk {s.currentWeek}/80</span>
-        <span style={{color:"#334155",fontSize:10}}>🔥{s.streak}</span>
+        <span style={{color:"var(--t3)",fontSize:10}}>Wk {s.currentWeek}/80</span>
+        <span style={{color:"var(--t3)",fontSize:10}}>🔥{s.streak}</span>
       </div>
     </div>)}
   </div>);
@@ -2842,16 +3284,16 @@ export default function CyberPath(){
   const Dashboard=()=>(<div className="slide">
     <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"24px 28px",marginBottom:20,position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:-20,right:-20,width:200,height:200,background:"radial-gradient(circle,rgba(0,255,136,0.08),transparent 70%)",pointerEvents:"none"}}/>
-      <div style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مرحباً في CyberPath Academy</div>
-      <h1 style={{color:"#e2e8f0",fontSize:isMobile?18:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
-      <p style={{color:"#94a3b8",fontSize:isMobile?12:13,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>برنامج 24 شهراً | 80 أسبوع | 5 مراحل | 16 Track + موارد حقيقية ومتحقق منها</p>
+      <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مرحباً في CyberPath Academy</div>
+      <h1 style={{color:"var(--t0)",fontSize:isMobile?18:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
+      <p style={{color:"var(--t4)",fontSize:isMobile?12:13,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>برنامج 24 شهراً | 80 أسبوع | 5 مراحل | 16 Track + موارد حقيقية ومتحقق منها</p>
       <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
         <button className="btn btn-g" onClick={()=>setPage("program")}>🗺️ البرنامج الكامل</button>
         <button className="btn btn-o" onClick={()=>setPage("missions")}>🎯 مهام اليوم</button>
         <button className="btn btn-o" onClick={doCheckIn}>🕌 تسجيل الحضور</button>
       </div>
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))",gap:8,marginBottom:20}}>
+    <div className="stg" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))",gap:8,marginBottom:20}}>
       {[
         {label:"تقدم البرنامج",val:`${donePct}%`,icon:"📊",color:"#00ff88",sub:`${s.totalDone}/${totalT} موضوع`},
         {label:"المستوى",val:lv.icon,icon:"🏆",color:lv.color,sub:lv.ar},
@@ -2859,13 +3301,13 @@ export default function CyberPath(){
         {label:"XP الكلي",val:s.xp,icon:"⭐",color:"#fbbf24",sub:`${nlv.lv>lv.lv?nlv.min-s.xp:0} XP للتالي`},
         {label:"الإنجازات",val:`${s.badges.length}/${BADGES.length}`,icon:"🏅",color:"#a78bfa",sub:"شارة"},
         {label:"الاختبارات",val:Object.keys(s.quizHistory).length,icon:"📝",color:"#00d4ff",sub:`من ${Object.keys(QUIZZES).length}`},
-      ].map((st,i)=>(<div key={i} className="stat-card">
+      ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click">
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <span style={{fontSize:18}}>{st.icon}</span>
           <span style={{color:st.color,fontSize:18,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
         </div>
-        <div style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{st.label}</div>
-        <div style={{color:"#475569",fontSize:11,marginTop:2,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
+        <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{st.label}</div>
+        <div style={{color:"var(--t2)",fontSize:11,marginTop:2,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
       </div>))}
     </div>
     {/* ─ بطاقة خطة اليوم الرئيسية ─ */}
@@ -2881,11 +3323,11 @@ export default function CyberPath(){
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:8}}>
           <div>
             <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
-            <div style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} · {curWk?.title}</div>
+            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} · {curWk?.title}</div>
           </div>
           <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
             {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs}h مقترحة</span>}
-            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"rgba(0,0,0,0.3)",color:todayHrs>0?"#a78bfa":"#334155",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>✓ {todayHrs}h مسجلة</span>
+            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"var(--bt)",color:todayHrs>0?"#a78bfa":"var(--t3)",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>✓ {todayHrs}h مسجلة</span>
             <span style={{background:"rgba(249,115,22,0.1)",color:"#f97316",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>📅 {weekHrs.toFixed(1)}h أسبوعياً</span>
           </div>
         </div>
@@ -2895,19 +3337,19 @@ export default function CyberPath(){
           <div style={{display:"flex",flexDirection:"column",gap:6}}>
             {todayPlan.items.slice(0,4).map((item,i)=>{
               const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
-              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",background:dn?"rgba(0,255,136,0.04)":"rgba(0,0,0,0.2)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"rgba(255,255,255,0.05)"}`,cursor:"pointer"}}
+              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",background:dn?"rgba(0,255,136,0.04)":"var(--bo)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--w5)"}`,cursor:"pointer"}}
                 onClick={()=>{setPage("missions");}}>
                 <div style={{width:16,height:16,borderRadius:4,border:`1.5px solid ${dn?"#00ff88":"rgba(0,255,136,0.3)"}`,background:dn?"#00ff88":"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  {dn&&<span style={{color:"#040810",fontSize:8,fontWeight:900}}>✓</span>}
+                  {dn&&<span style={{color:"var(--bg4)",fontSize:8,fontWeight:900}}>✓</span>}
                 </div>
-                <span style={{color:dn?"#475569":"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
+                <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
                 <span style={{color:item.type==="mission"?"#00ff88":"#00d4ff",fontSize:10,flexShrink:0}}>+{item.xp} XP</span>
               </div>);
             })}
-            {todayPlan.items.length>4&&(<div style={{color:"#475569",fontSize:11,textAlign:"center",fontFamily:"'Cairo',sans-serif",cursor:"pointer",padding:"5px"}} onClick={()=>setPage("missions")}>+ {todayPlan.items.length-4} مهام أخرى ← اعرض الكل</div>)}
+            {todayPlan.items.length>4&&(<div style={{color:"var(--t2)",fontSize:11,textAlign:"center",fontFamily:"'Cairo',sans-serif",cursor:"pointer",padding:"5px"}} onClick={()=>setPage("missions")}>+ {todayPlan.items.length-4} مهام أخرى ← اعرض الكل</div>)}
           </div>
         ):(
-          <div style={{color:"#334155",textAlign:"center",padding:"12px 0",fontFamily:"'Cairo',sans-serif",fontSize:12}}>لا توجد مهام مخطط لهذا اليوم</div>
+          <div style={{color:"var(--t3)",textAlign:"center",padding:"12px 0",fontFamily:"'Cairo',sans-serif",fontSize:12}}>لا توجد مهام مخطط لهذا اليوم</div>
         )}
         <div style={{display:"flex",gap:8,marginTop:12,flexWrap:"wrap"}}>
           <button className="btn btn-g" style={{fontSize:11,padding:"6px 14px",flex:1}} onClick={()=>setPage("missions")}>🎯 خطة الأسبوع الكاملة</button>
@@ -2918,10 +3360,10 @@ export default function CyberPath(){
 
     <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:20}}>
       <div className="card" style={{padding:14}}>
-        <div style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📍 الأسبوع الحالي — Week {s.currentWeek}</div>
+        <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📍 الأسبوع الحالي — Week {s.currentWeek}</div>
         {curWk&&(<>
           <div style={{color:curPh.color,fontSize:12,fontFamily:"'Fira Code',monospace",marginBottom:6}}>{curPh.icon} {curPh.nameAr}</div>
-          <div style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>{curWk.title}</div>
+          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>{curWk.title}</div>
           <div className="bar"><div className="bar-fill" style={{width:`${donePct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
           <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
             <button className="btn btn-o" style={{fontSize:11,padding:"5px 10px"}} onClick={()=>setPage("missions")}>🎯 المهام</button>
@@ -2931,7 +3373,7 @@ export default function CyberPath(){
         </>)}
       </div>
       <div className="card" style={{padding:14}}>
-        <div style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🕌 أوقات الصلاة</div>
+        <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🕌 أوقات الصلاة</div>
         {ROUTINE.filter(r=>r.type==="prayer").slice(0,5).map((r,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 8px",borderRadius:7,background:"rgba(250,204,21,0.06)",border:"1px solid rgba(250,204,21,0.1)",marginBottom:5}}>
           <span style={{fontSize:13}}>{r.icon}</span>
           <span style={{color:"#fde047",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1}}>{r.label}</span>
@@ -2939,7 +3381,7 @@ export default function CyberPath(){
         </div>))}
       </div>
     </div>
-    <h2 style={{color:"#e2e8f0",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🚀 المراحل الخمس</h2>
+    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🚀 المراحل الخمس</h2>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:10}}>
       {PHASES.map(ph=>{
         const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
@@ -2949,14 +3391,14 @@ export default function CyberPath(){
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
             <span style={{fontSize:22}}>{ph.icon}</span>
             <div>
-              <div style={{color:"#e2e8f0",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr}</div>
-              <div style={{color:"#475569",fontSize:10}}>{ph.monthLabel}</div>
+              <div style={{color:"var(--t0)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr}</div>
+              <div style={{color:"var(--t2)",fontSize:10}}>{ph.monthLabel}</div>
             </div>
             {ph.id===curPh.id&&<span style={{marginLeft:"auto",fontSize:10,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"2px 7px",borderRadius:4}}>● نشط</span>}
           </div>
           <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-            <span style={{color:"#64748b",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{ph.desc.substring(0,35)}…</span>
+            <span style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{ph.desc.substring(0,35)}…</span>
             <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
           </div>
         </div>);
@@ -2966,20 +3408,20 @@ export default function CyberPath(){
 
   // ─── PROGRAM ───
   const Program=()=>(<div className="slide">
-    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🗺️ البرنامج الكامل</h1>
-    <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:14}}>24 شهراً | 80 أسبوع | 5 مراحل</p>
+    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🗺️ البرنامج الكامل</h1>
+    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:14}}>24 شهراً | 80 أسبوع | 5 مراحل</p>
     {PHASES.map(ph=>{
       const isO=expPhase===ph.id;
       const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
       const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
       const pct=pt>0?Math.round(pd/pt*100):0;
-      return(<div key={ph.id} style={{border:`1px solid ${isO?ph.color+"44":"rgba(255,255,255,0.08)"}`,borderRadius:12,marginBottom:10,overflow:"hidden",background:isO?ph.bg:"rgba(0,0,0,0.2)"}}>
+      return(<div key={ph.id} style={{border:`1px solid ${isO?ph.color+"44":"var(--wb)"}`,borderRadius:12,marginBottom:10,overflow:"hidden",background:isO?ph.bg:"var(--bo)"}}>
         <div className="phase-hd" onClick={()=>setExpPhase(isO?null:ph.id)}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:22}}>{ph.icon}</span>
             <div>
-              <div style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr} — {ph.nameEn}</div>
-              <div style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{ph.monthLabel} | Weeks {ph.startWeek}–{ph.endWeek} | +{ph.phaseXP} XP</div>
+              <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr} — {ph.nameEn}</div>
+              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{ph.monthLabel} | Weeks {ph.startWeek}–{ph.endWeek} | +{ph.phaseXP} XP</div>
             </div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -2987,48 +3429,48 @@ export default function CyberPath(){
               <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:ph.color}}/></div>
               <div style={{color:ph.color,fontSize:10,marginTop:2,fontFamily:"'Fira Code',monospace",textAlign:"right"}}>{pct}%</div>
             </div>
-            <span style={{color:"#64748b",fontSize:14,transform:isO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+            <span style={{color:"var(--t1)",fontSize:14,transform:isO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
           </div>
         </div>
         {isO&&(<div style={{padding:"0 16px 16px"}}>
-          <p style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:12,paddingTop:8}}>{ph.desc}</p>
+          <p style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:12,paddingTop:8}}>{ph.desc}</p>
           {ph.weeks.map(w=>{
             const wKey=`${ph.id}-${w.wk}`;const wO=expWeek===wKey;
             const wd=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
             const wPct=Math.round(wd/w.topics.length*100);
             const qd=s.quizHistory[w.quizId];const isCur=w.wk===s.currentWeek;
-            return(<div key={w.wk} style={{border:`1px solid ${isCur?"rgba(0,255,136,0.4)":wO?"rgba(255,255,255,0.1)":"rgba(255,255,255,0.05)"}`,borderRadius:8,marginBottom:6,background:isCur?"rgba(0,255,136,0.04)":"rgba(0,0,0,0.2)"}}>
+            return(<div key={w.wk} style={{border:`1px solid ${isCur?"rgba(0,255,136,0.4)":wO?"var(--wh)":"var(--w5)"}`,borderRadius:8,marginBottom:6,background:isCur?"rgba(0,255,136,0.04)":"var(--bo)"}}>
               <div style={{padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:8}} onClick={()=>setExpWeek(wO?null:wKey)}>
                 <div style={{width:30,height:30,borderRadius:6,background:`${ph.color}22`,border:`1px solid ${ph.color}44`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                   <span style={{color:ph.color,fontSize:10,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{w.wk}</span>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",display:"flex",alignItems:"center",gap:6}}>
+                  <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",display:"flex",alignItems:"center",gap:6}}>
                     {isCur&&<span style={{fontSize:9,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"1px 5px",borderRadius:4}}>● الحالي</span>}
                     {w.title}
                   </div>
                   <div style={{display:"flex",gap:8,marginTop:1}}>
-                    <span style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{wd}/{w.topics.length} topics</span>
+                    <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{wd}/{w.topics.length} topics</span>
                     {qd&&<span style={{color:"#10b981",fontSize:10}}>✓ Quiz {qd.score}%</span>}
                   </div>
                 </div>
                 <div style={{width:55}}><div className="bar"><div className="bar-fill" style={{width:`${wPct}%`,background:ph.color}}/></div></div>
-                <span style={{color:"#64748b",fontSize:11,transform:wO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+                <span style={{color:"var(--t1)",fontSize:11,transform:wO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
               </div>
               {wO&&(<div style={{padding:"0 12px 12px"}}>
                 <div style={{display:"grid",gridTemplateColumns:g2,gap:10}}>
-                  <div>
-                    <div style={{color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// missions (+5 XP)</div>
+                    <div className="stg">
+                    <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// missions (+5 XP)</div>
                     {w.missions.map((m,mi)=>{const mk=`m-${w.wk}-${mi}`;const dn=!!s.doneMissions?.[mk];return(<div key={mi} className="topic-row" onClick={()=>markMission(w.wk,mi)}>
-                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:9,fontWeight:900}}>✓</span>}</div>
-                      <span style={{color:dn?"#475569":"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{m}</span>
+                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
+                      <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{m}</span>
                     </div>);})}
                   </div>
-                  <div>
-                    <div style={{color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// topics (+10 XP)</div>
+                  <div className="stg">
+                    <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// topics (+10 XP)</div>
                     {w.topics.map((t,ti)=>{const tk=`${w.wk}-${ti}`;const dn=!!s.doneTopics?.[tk];return(<div key={ti} className="topic-row" onClick={()=>markTopic(w.wk,ti)}>
-                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:9,fontWeight:900}}>✓</span>}</div>
-                      <span style={{color:dn?"#475569":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{t}</span>
+                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
+                      <span style={{color:dn?"var(--t2)":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{t}</span>
                     </div>);})}
                   </div>
                 </div>
@@ -3037,8 +3479,8 @@ export default function CyberPath(){
                       :<span style={{color:"#10b981",fontSize:12,fontFamily:"'Cairo',sans-serif",padding:"5px 0"}}>✓ اجتزت الاختبار — {qd.score}%</span>}
                   {isCur&&qd&&<button className="btn btn-o" style={{fontSize:11,padding:"5px 12px"}} onClick={advWeek}>🚀 الأسبوع التالي</button>}
                 </div>)}
-                {ph.relatedTracks.filter(tid=>TRACKS[tid]).length>0&&(<div style={{marginTop:10,background:"rgba(0,0,0,0.2)",borderRadius:6,padding:8}}>
-                  <div style={{color:"#334155",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:6}}>// موارد مرتبطة</div>
+                {ph.relatedTracks.filter(tid=>TRACKS[tid]).length>0&&(<div style={{marginTop:10,background:"var(--bo)",borderRadius:6,padding:8}}>
+                  <div style={{color:"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:6}}>// موارد مرتبطة</div>
                   <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                     {ph.relatedTracks.filter(tid=>TRACKS[tid]).map(tid=>(<button key={tid} onClick={()=>{setResTid(tid);setPage("resources");}}
                       style={{padding:"4px 10px",borderRadius:5,border:`1px solid ${TRACKS[tid].color}44`,background:`${TRACKS[tid].color}15`,color:TRACKS[tid].color,cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:11}}>
@@ -3078,8 +3520,8 @@ export default function CyberPath(){
       {/* ─ رأس الصفحة ─ */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
         <div>
-          <h1 style={{color:"#e2e8f0",fontSize:isMobile?18:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>🎯 خطة اليوم والأسبوع</h1>
-          <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} — {wD.title} — {findPhase(s.currentWeek).nameAr}</p>
+          <h1 style={{color:"var(--t0)",fontSize:isMobile?18:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>🎯 خطة اليوم والأسبوع</h1>
+          <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} — {wD.title} — {findPhase(s.currentWeek).nameAr}</p>
         </div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
           <button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={doCheckIn}>🕌 حضور +15 XP</button>
@@ -3088,7 +3530,7 @@ export default function CyberPath(){
       </div>
 
       {/* ─ بطاقات الحالة ─ */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:16}}>
+      <div className="stg" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:16}}>
         {[
           {label:"المهام",val:`${mD}/${wD.missions.length}`,color:"#00ff88",icon:"🎯"},
           {label:"المواضيع",val:`${tD}/${wD.topics.length}`,color:"#00d4ff",icon:"📚"},
@@ -3096,12 +3538,12 @@ export default function CyberPath(){
           {label:"ساعات الأسبوع",val:`${weekHrs.toFixed(1)}h`,color:"#f97316",icon:"📅"},
           {label:"إجمالي الساعات",val:`${totalHrs.toFixed(0)}h`,color:"#fbbf24",icon:"⭐"},
           {label:"🔥 السلسلة",val:`${s.streak} يوم`,color:"#ef4444",icon:"🔥"},
-        ].map((st,i)=>(<div key={i} className="stat-card" style={{padding:12}}>
+        ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click" style={{padding:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <span style={{fontSize:16}}>{st.icon}</span>
             <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
           </div>
-          <div style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
+          <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
         </div>))}
       </div>
 
@@ -3111,17 +3553,17 @@ export default function CyberPath(){
         <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
           <input type="number" min="0.5" max="16" step="0.5" placeholder="مثال: 2.5" value={studyHoursInput} onChange={e=>setStudyHoursInput(e.target.value)}
             style={{width:120,flex:"0 0 auto"}} onKeyDown={e=>e.key==="Enter"&&logStudyHours(studyHoursInput)}/>
-          <span style={{color:"#64748b",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
+          <span style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
           <button className="btn btn-g" style={{fontSize:12,padding:"8px 18px"}} onClick={()=>logStudyHours(studyHoursInput)}>+ تسجيل</button>
           {todayHrs>0&&<span style={{color:"#a78bfa",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"rgba(167,139,250,0.1)",padding:"4px 10px",borderRadius:6}}>اليوم: {todayHrs}h ✓</span>}
         </div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
           {weekDates.slice(0,7).reverse().map((d,i)=>{const h=s.studyLog?.[d]||0;const label=["ج","خ","أ","ث","إ","أح","س"][6-i]||"";
             return(<div key={d} style={{textAlign:"center",flex:1,minWidth:32}}>
-              <div style={{height:40,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"rgba(255,255,255,0.04)",borderRadius:4,border:`1px solid ${h>0?"rgba(167,139,250,0.3)":"rgba(255,255,255,0.06)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:3}}>
-                <span style={{color:h>0?"#a78bfa":"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
+              <div style={{height:40,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"var(--wm)",borderRadius:4,border:`1px solid ${h>0?"rgba(167,139,250,0.3)":"var(--wo)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:3}}>
+                <span style={{color:h>0?"#a78bfa":"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
               </div>
-              <div style={{color:"#475569",fontSize:9,marginTop:2}}>{label}</div>
+              <div style={{color:"var(--t2)",fontSize:9,marginTop:2}}>{label}</div>
             </div>);
           })}
         </div>
@@ -3132,7 +3574,7 @@ export default function CyberPath(){
         <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.25)",borderRadius:12,padding:16,marginBottom:16,textAlign:"center"}}>
           <div style={{fontSize:36,marginBottom:8}}>🕌</div>
           <div style={{color:"#fde047",fontSize:16,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>يوم الجمعة — يوم الراحة والعبادة</div>
-          <div style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
+          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
             ✦ قراءة سورة الكهف • ✦ صلاة الجمعة • ✦ الإكثار من الصلاة على النبي ﷺ<br/>
             لا دراسة تقنية اليوم — استرح وجدّد نشاطك للأسبوع القادم
           </div>
@@ -3147,18 +3589,18 @@ export default function CyberPath(){
             <div style={{display:"flex",flexDirection:"column",gap:7}}>
               {todayPlan.items.map((item,i)=>{
                 const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
-                return(<div key={i} className="topic-row" style={{background:dn?"rgba(0,255,136,0.04)":"rgba(255,255,255,0.02)",border:`1px solid ${dn?"rgba(0,255,136,0.2)":"rgba(255,255,255,0.06)"}`,borderRadius:8,padding:"10px 12px"}}
+                return(<div key={i} className="topic-row" style={{background:dn?"rgba(0,255,136,0.04)":"rgba(255,255,255,0.02)",border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--wo)"}`,borderRadius:8,padding:"10px 12px"}}
                   onClick={()=>item.type==="mission"?markMission(item.wk,item.idx):markTopic(item.wk,item.idx)}>
-                  <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
+                  <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <span style={{color:dn?"#475569":"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{item.text}</span>
+                    <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{item.text}</span>
                   </div>
                   <span style={{fontSize:11,color:item.type==="mission"?"#00ff88":"#00d4ff",background:item.type==="mission"?"rgba(0,255,136,0.08)":"rgba(0,212,255,0.08)",padding:"2px 7px",borderRadius:4,flexShrink:0}}>{item.icon} +{item.xp}</span>
                 </div>);
               })}
             </div>
           ):(
-            <div style={{color:"#334155",textAlign:"center",padding:"20px 0",fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام مخطط لها اليوم</div>
+            <div style={{color:"var(--t3)",textAlign:"center",padding:"20px 0",fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام مخطط لها اليوم</div>
           )}
         </div>
       )}
@@ -3166,19 +3608,19 @@ export default function CyberPath(){
       {/* ─ جميع المهام والمواضيع الأسبوعية ─ */}
       <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع <span style={{color:"#00ff88",fontSize:10}}>+5 XP لكل</span></div>
+          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع <span style={{color:"#00ff88",fontSize:10}}>+5 XP لكل</span></div>
           <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${Math.round(mD/wD.missions.length*100)}%`,background:"linear-gradient(90deg,#00ff88,#10b981)"}}/></div>
           {wD.missions.map((m,i)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markMission(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"#475569":"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{m}</span>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{m}</span>
           </div>);})}
         </div>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📚 مواضيع الأسبوع <span style={{color:"#00d4ff",fontSize:10}}>+10 XP لكل</span></div>
+          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📚 مواضيع الأسبوع <span style={{color:"#00d4ff",fontSize:10}}>+10 XP لكل</span></div>
           <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${phPct}%`,background:"linear-gradient(90deg,#00d4ff,#3b82f6)"}}/></div>
           {wD.topics.map((t,i)=>{const dn=!!s.doneTopics?.[`${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markTopic(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"#040810",fontSize:10,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"#475569":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{t}</span>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"var(--t2)":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{t}</span>
           </div>);})}
           {QUIZZES[wD.quizId]&&(<div style={{marginTop:10,padding:10,background:qd?"rgba(16,185,129,0.06)":"rgba(0,212,255,0.05)",border:`1px solid ${qd?"rgba(16,185,129,0.3)":"rgba(0,212,255,0.2)"}`,borderRadius:8}}>
             {!qd?(<><div style={{color:"#00d4ff",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>📝 اختبار الأسبوع متاح!</div>
@@ -3191,12 +3633,12 @@ export default function CyberPath(){
       {/* ─ مراجعة Spaced Repetition ─ */}
       {reviewWks.length>0&&(<div style={{background:"rgba(251,191,36,0.05)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
         <div style={{color:"#fbbf24",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🔄 مراجعة مقترحة — Spaced Repetition</div>
-        <p style={{color:"#64748b",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
+        <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           {reviewWks.map(wk=>{const w=findWeek(wk);const ph=findPhase(wk);return w?(
             <div key={wk} style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:8,padding:"8px 12px",cursor:"pointer"}} onClick={()=>{setExpPhase(ph.id);setExpWeek(`${ph.id}-${wk}`);setPage("program");}}>
               <div style={{color:"#fbbf24",fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>Week {wk}</div>
-              <div style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
+              <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
             </div>
           ):null;})}
         </div>
@@ -3206,21 +3648,21 @@ export default function CyberPath(){
       {(weekReportOpen||savedReport)&&(<div style={{background:"rgba(0,255,136,0.04)",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:16,marginBottom:16}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
           <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📋 تقرير الأسبوع {s.currentWeek}</div>
-          <button style={{background:"transparent",border:"none",color:"#64748b",cursor:"pointer",fontSize:16}} onClick={()=>setWeekReportOpen(false)}>×</button>
+          <button style={{background:"transparent",border:"none",color:"var(--t1)",cursor:"pointer",fontSize:16}} onClick={()=>setWeekReportOpen(false)}>×</button>
         </div>
         {(()=>{const r=savedReport||generateWeekReport();if(!r)return null;return(
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:8}}>
             {[
               {label:"المرحلة",val:r.phase,color:"#3b82f6",icon:"🏗️"},
-              {label:"الموضوع",val:r.title,color:"#e2e8f0",icon:"📖"},
+              {label:"الموضوع",val:r.title,color:"var(--t0)",icon:"📖"},
               {label:"المهام",val:`${r.mDone}/${r.mTotal}`,color:"#00ff88",icon:"🎯"},
               {label:"المواضيع",val:`${r.tDone}/${r.tTotal}`,color:"#00d4ff",icon:"📚"},
               {label:"ساعات الدراسة",val:`${r.weekHrs}h`,color:"#a78bfa",icon:"⏱️"},
               {label:"نتيجة الاختبار",val:r.quizScore!==null?`${r.quizScore}%`:"لم يُجتز",color:r.quizScore>=80?"#10b981":"#f59e0b",icon:"📝"},
-            ].map((st,i)=>(<div key={i} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px",border:"1px solid rgba(255,255,255,0.06)"}}>
+            ].map((st,i)=>(<div key={i} style={{background:"var(--bo)",borderRadius:8,padding:"10px",border:"1px solid rgba(255,255,255,0.06)"}}>
               <div style={{fontSize:16,marginBottom:4}}>{st.icon}</div>
               <div style={{color:st.color,fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{st.val}</div>
-              <div style={{color:"#64748b",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{st.label}</div>
+              <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{st.label}</div>
             </div>))}
           </div>
         );})()}
@@ -3228,7 +3670,7 @@ export default function CyberPath(){
 
       {/* ─ زر التقدم للأسبوع التالي ─ */}
       {qd&&s.currentWeek<80&&(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.3)",borderRadius:12,padding:14,textAlign:"center"}}>
-        <div style={{color:"#e2e8f0",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>✅ أكملت اختبار هذا الأسبوع — جاهز للتقدم!</div>
+        <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>✅ أكملت اختبار هذا الأسبوع — جاهز للتقدم!</div>
         <button className="btn btn-g" style={{fontSize:13,padding:"10px 28px"}} onClick={()=>{saveWeekReport();advWeek();}}>🚀 الأسبوع {s.currentWeek+1} ←</button>
       </div>)}
     </div>);};
@@ -3237,14 +3679,14 @@ export default function CyberPath(){
   // ─── QUIZ ───
   const QuizPage=()=>{
     if(!quiz.active||!quiz.wkId)return(<div className="slide">
-      <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>📝 الاختبارات الأسبوعية</h1>
+      <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>📝 الاختبارات الأسبوعية</h1>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:10}}>
         {Object.entries(QUIZZES).map(([id,q])=>{const dn=s.quizHistory[id];const wn=parseInt(id.replace("wk",""));const ph=findPhase(wn);return(<div key={id} className="card" style={{padding:14,cursor:"pointer"}} onClick={()=>startQuiz(id)}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
             <span style={{fontSize:16}}>{ph?.icon||"📝"}</span>
             <div style={{flex:1}}>
-              <div style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{q.title}</div>
-              <div style={{color:"#475569",fontSize:10}}>Week {wn} — {q.qs.length} أسئلة</div>
+              <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{q.title}</div>
+              <div style={{color:"var(--t2)",fontSize:10}}>Week {wn} — {q.qs.length} أسئلة</div>
             </div>
             {dn&&<span style={{color:"#10b981",fontSize:10,background:"rgba(16,185,129,0.12)",padding:"2px 7px",borderRadius:4}}>{dn.score}% ✓</span>}
           </div>
@@ -3258,27 +3700,27 @@ export default function CyberPath(){
     return(<div className="slide">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
         <button className="btn btn-o" style={{fontSize:11,padding:"5px 10px"}} onClick={()=>setQuiz({active:false,wkId:null,ans:{},submitted:false,score:0})}>← رجوع</button>
-        <div><h1 style={{color:"#e2e8f0",fontSize:18,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{q.title}</h1><p style={{color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{q.qs.length} أسئلة</p></div>
+        <div><h1 style={{color:"var(--t0)",fontSize:18,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{q.title}</h1><p style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{q.qs.length} أسئلة</p></div>
       </div>
       {quiz.submitted?(<div>
         <div style={{background:quiz.score>=80?"rgba(16,185,129,0.08)":"rgba(239,68,68,0.08)",border:`1px solid ${quiz.score>=80?"#10b981":"#ef4444"}`,borderRadius:12,padding:18,marginBottom:18,textAlign:"center"}}>
           <div style={{fontSize:44,marginBottom:6}}>{quiz.score===100?"🏆":quiz.score>=80?"✅":"📖"}</div>
-          <div style={{color:"#e2e8f0",fontSize:26,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{quiz.score}%</div>
-          <div style={{color:"#94a3b8",fontSize:13,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{quiz.score===100?"ممتاز — علامة كاملة!":quiz.score>=80?"جيد جداً — تجاوزت الحد!":"تحتاج مزيداً من الدراسة"}</div>
+          <div style={{color:"var(--t0)",fontSize:26,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{quiz.score}%</div>
+          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{quiz.score===100?"ممتاز — علامة كاملة!":quiz.score>=80?"جيد جداً — تجاوزت الحد!":"تحتاج مزيداً من الدراسة"}</div>
         </div>
         {q.qs.map((qst,i)=>{const ans=quiz.ans[i];const ok=ans===qst.a;return(<div key={i} style={{background:"rgba(255,255,255,0.02)",border:`1px solid ${ok?"rgba(16,185,129,0.3)":"rgba(239,68,68,0.3)"}`,borderRadius:8,padding:12,marginBottom:8}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>{ok?"✅":"❌"} {qst.q}</div>
+          <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>{ok?"✅":"❌"} {qst.q}</div>
           <div style={{color:ok?"#6ee7b7":"#f87171",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>إجابتك: {ans!==undefined?qst.os[ans]:"لم تجب"}</div>
           {!ok&&<div style={{color:"#6ee7b7",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>الصحيح: {qst.os[qst.a]}</div>}
-          <div style={{color:"#64748b",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{qst.exp}</div>
+          <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{qst.exp}</div>
         </div>);})}
         <div style={{display:"flex",gap:8}}>
           <button className="btn btn-o" onClick={()=>setQuiz({active:true,wkId:quiz.wkId,ans:{},submitted:false,score:0})}>🔄 إعادة</button>
           <button className="btn btn-g" onClick={()=>setQuiz({active:false,wkId:null,ans:{},submitted:false,score:0})}>← الكل</button>
         </div>
       </div>):(<div>
-        {q.qs.map((qst,i)=>(<div key={i} style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,padding:14,marginBottom:14}}>
-          <div style={{color:"#e2e8f0",fontSize:14,fontFamily:"'Cairo',sans-serif",marginBottom:10,fontWeight:600}}>{i+1}. {qst.q}</div>
+        {q.qs.map((qst,i)=>(<div key={i} style={{background:"var(--bt)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,padding:14,marginBottom:14}}>
+          <div style={{color:"var(--t0)",fontSize:14,fontFamily:"'Cairo',sans-serif",marginBottom:10,fontWeight:600}}>{i+1}. {qst.q}</div>
           <div style={{display:"grid",gridTemplateColumns:g2,gap:8}}>
             {qst.os.map((opt,oi)=>(<button key={oi} className={`quiz-opt ${quiz.ans[i]===oi?"sel":""}`} onClick={()=>setQuiz(prev=>({...prev,ans:{...prev.ans,[i]:oi}}))}>
               {["A","B","C","D"][oi]}. {opt}
@@ -3301,27 +3743,27 @@ export default function CyberPath(){
       if(pd===pt&&quizzesDone&&!s.certificates?.includes(ph.id))earnCertificate(ph.id);
     });
     return(<div className="slide">
-    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🏅 الإنجازات والشهادات</h1>
-    <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{s.badges.length}/{BADGES.length} شارة · {s.certificates?.length||0}/5 شهادة</p>
+    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🏅 الإنجازات والشهادات</h1>
+    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{s.badges.length}/{BADGES.length} شارة · {s.certificates?.length||0}/5 شهادة</p>
 
     {/* ─ شهادات المراحل ─ */}
-    <h2 style={{color:"#e2e8f0",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎓 شهادات إنهاء المراحل</h2>
+    <h2 style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎓 شهادات إنهاء المراحل</h2>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:10,marginBottom:20}}>
       {PHASES.map(ph=>{
         const earned=s.certificates?.includes(ph.id);
         const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
         const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
         const pct=pt>0?Math.round(pd/pt*100):0;
-        return(<div key={ph.id} style={{background:earned?`linear-gradient(135deg,${ph.color}15,${ph.color}08)`:"rgba(0,0,0,0.3)",border:`2px solid ${earned?ph.color:"rgba(255,255,255,0.08)"}`,borderRadius:12,padding:14,position:"relative",overflow:"hidden",cursor:earned?"pointer":"default"}}
+        return(<div key={ph.id} style={{background:earned?`linear-gradient(135deg,${ph.color}15,${ph.color}08)`:"var(--bt)",border:`2px solid ${earned?ph.color:"var(--wb)"}`,borderRadius:12,padding:14,position:"relative",overflow:"hidden",cursor:earned?"pointer":"default"}}
           onClick={()=>earned&&setCertModal(ph)}>
-          {earned&&<div style={{position:"absolute",top:0,right:0,background:`linear-gradient(135deg,${ph.color},${ph.color}88)`,color:"#040810",fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:"0 12px 0 8px"}}>✓ مكتسبة</div>}
+          {earned&&<div style={{position:"absolute",top:0,right:0,background:`linear-gradient(135deg,${ph.color},${ph.color}88)`,color:"var(--bg4)",fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:"0 12px 0 8px"}}>✓ مكتسبة</div>}
           <div style={{fontSize:32,marginBottom:8,opacity:earned?1:0.3}}>{ph.icon}</div>
-          <div style={{color:earned?ph.color:"#64748b",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{ph.nameAr}</div>
-          <div style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:8}}>{ph.monthLabel} · Wk {ph.startWeek}–{ph.endWeek}</div>
+          <div style={{color:earned?ph.color:"var(--t1)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{ph.nameAr}</div>
+          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:8}}>{ph.monthLabel} · Wk {ph.startWeek}–{ph.endWeek}</div>
           <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-            <span style={{color:"#475569",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{pd}/{pt} موضوع</span>
-            <span style={{color:earned?ph.color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
+            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{pd}/{pt} موضوع</span>
+            <span style={{color:earned?ph.color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
           </div>
           {earned&&<div style={{color:"#fbbf24",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:6}}>🎓 انقر لعرض الشهادة</div>}
         </div>);
@@ -3334,40 +3776,40 @@ export default function CyberPath(){
         <div style={{textAlign:"center"}}>
           <div style={{fontSize:44}}>{lv.icon}</div>
           <div style={{color:lv.color,fontSize:13,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div>
-          <div style={{color:"#64748b",fontSize:11}}>{lv.en}</div>
+          <div style={{color:"var(--t1)",fontSize:11}}>{lv.en}</div>
         </div>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-            <span style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>Level {lv.lv} → {nlv?.lv||"MAX"}</span>
+            <span style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>Level {lv.lv} → {nlv?.lv||"MAX"}</span>
             <span style={{color:lv.color,fontSize:12,fontFamily:"'Fira Code',monospace"}}>{s.xp} XP</span>
           </div>
           <div className="bar" style={{height:10}}><div className="bar-fill" style={{width:`${lvPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
-          <div style={{color:"#475569",fontSize:11,marginTop:4,fontFamily:"'Cairo',sans-serif"}}>{nlv&&nlv.lv!==lv.lv?`${nlv.min-s.xp} XP للمستوى التالي: ${nlv.ar}`:"وصلت لأعلى مستوى 🏆"}</div>
+          <div style={{color:"var(--t2)",fontSize:11,marginTop:4,fontFamily:"'Cairo',sans-serif"}}>{nlv&&nlv.lv!==lv.lv?`${nlv.min-s.xp} XP للمستوى التالي: ${nlv.ar}`:"وصلت لأعلى مستوى 🏆"}</div>
         </div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(90px,1fr))",gap:7,marginTop:14}}>
-        {LEVELS.map(l=>(<div key={l.lv} style={{padding:"7px",borderRadius:7,background:lv.lv>=l.lv?`${l.color}15`:"rgba(0,0,0,0.2)",border:`1px solid ${lv.lv>=l.lv?l.color+"44":"rgba(255,255,255,0.05)"}`,textAlign:"center"}}>
+        {LEVELS.map(l=>(<div key={l.lv} style={{padding:"7px",borderRadius:7,background:lv.lv>=l.lv?`${l.color}15`:"var(--bo)",border:`1px solid ${lv.lv>=l.lv?l.color+"44":"var(--w5)"}`,textAlign:"center"}}>
           <div style={{fontSize:18,opacity:lv.lv>=l.lv?1:0.25}}>{l.icon}</div>
-          <div style={{color:lv.lv>=l.lv?l.color:"#334155",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:3}}>{l.ar}</div>
-          <div style={{color:"#334155",fontSize:9}}>{l.min} XP</div>
+          <div style={{color:lv.lv>=l.lv?l.color:"var(--t3)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:3}}>{l.ar}</div>
+          <div style={{color:"var(--t3)",fontSize:9}}>{l.min} XP</div>
         </div>))}
       </div>
     </div>
-    <h2 style={{color:"#e2e8f0",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎖️ الشارات</h2>
+    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎖️ الشارات</h2>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10}}>
-      {BADGES.map(b=>{const earned=s.badges.includes(b.id);return(<div key={b.id} style={{background:earned?"rgba(0,255,136,0.05)":"rgba(0,0,0,0.2)",border:`1px solid ${earned?"rgba(0,255,136,0.3)":"rgba(255,255,255,0.06)"}`,borderRadius:10,padding:12,opacity:earned?1:0.5}}>
+      {BADGES.map(b=>{const earned=s.badges.includes(b.id);return(<div key={b.id} style={{background:earned?"rgba(0,255,136,0.05)":"var(--bo)",border:`1px solid ${earned?"rgba(0,255,136,0.3)":"var(--wo)"}`,borderRadius:10,padding:12,opacity:earned?1:0.5}}>
         <div style={{fontSize:28,marginBottom:5}}>{b.icon}</div>
-        <div style={{color:earned?"#e2e8f0":"#64748b",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{b.ar}</div>
-        <div style={{color:"#64748b",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{b.desc}</div>
-        <div style={{color:earned?"#00ff88":"#334155",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{earned?"✓ مكتسبة":"+"+b.xp+" XP"}</div>
+        <div style={{color:earned?"var(--t0)":"var(--t1)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{b.ar}</div>
+        <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{b.desc}</div>
+        <div style={{color:earned?"#00ff88":"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{earned?"✓ مكتسبة":"+"+b.xp+" XP"}</div>
       </div>);})}
     </div>
   </div>);};
 
   // ─── RESOURCES ───
   const Resources=()=>(<div className="slide">
-    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📚 مكتبة الموارد الشاملة</h1>
-    <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:12}}>{allRes.length}+ مورد — روابط حقيقية ومتحقق منها من 16 تراك</p>
+    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📚 مكتبة الموارد الشاملة</h1>
+    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:12}}>{allRes.length}+ مورد — روابط حقيقية ومتحقق منها من 16 تراك</p>
     <div className="res-filters" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
       <select value={resType} onChange={e=>setResType(e.target.value)} style={{flex:"1 1 120px",fontSize:12}}>
         <option value="all">📋 كل الأنواع</option>
@@ -3383,13 +3825,13 @@ export default function CyberPath(){
         <option value="all">🗺️ كل التراكات</option>
         {TRACK_ORDER.map(tid=><option key={tid} value={tid}>{TRACKS[tid].icon} {TRACKS[tid].name}</option>)}
       </select>
-      <span style={{color:"#475569",fontSize:12,fontFamily:"'Fira Code',monospace",display:"flex",alignItems:"center",gap:4}}>{filtRes.length} نتيجة</span>
+      <span style={{color:"var(--t2)",fontSize:12,fontFamily:"'Fira Code',monospace",display:"flex",alignItems:"center",gap:4}}>{filtRes.length} نتيجة</span>
       {resTid!=="all"&&<button className="btn btn-o" style={{fontSize:11,padding:"4px 10px"}} onClick={()=>setResTid("all")}>× إزالة الفلتر</button>}
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:14}}>
       {[{type:"video",label:"Videos",color:"#ef4444"},{type:"lab",label:"Labs",color:"#10b981"},{type:"article",label:"Articles",color:"#f97316"},{type:"writeup",label:"Writeups",color:"#ec4899"},{type:"book",label:"Books",color:"#eab308"}].map(st=>(<div key={st.type} style={{padding:"8px",borderRadius:8,background:`${st.color}12`,border:`1px solid ${st.color}25`,textAlign:"center",cursor:"pointer",transition:"all .2s"}} onClick={()=>setResType(resType===st.type?"all":st.type)}>
         <div style={{color:st.color,fontSize:15,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{allRes.filter(r=>r.type===st.type).length}</div>
-        <div style={{color:"#64748b",fontSize:11}}>{st.label}</div>
+        <div style={{color:"var(--t1)",fontSize:11}}>{st.label}</div>
       </div>))}
     </div>
     <div style={{display:"flex",flexDirection:"column",gap:7}}>
@@ -3397,10 +3839,10 @@ export default function CyberPath(){
         <div className="res-card">
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
             <div style={{flex:1,minWidth:0}}>
-              <div style={{color:"#e2e8f0",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{r.title}</div>
+              <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{r.title}</div>
               <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}>
                 {TRACKS[r.tid]&&<span style={{fontSize:11,color:TRACKS[r.tid].color,fontFamily:"'Fira Code',monospace"}}>{TRACKS[r.tid].icon} {TRACKS[r.tid].name}</span>}
-                <span style={{color:"#334155",fontSize:10}}>{r.ph}</span>
+                <span style={{color:"var(--t3)",fontSize:10}}>{r.ph}</span>
               </div>
             </div>
             <Tag type={r.type} lang={r.lang}/>
@@ -3413,16 +3855,16 @@ export default function CyberPath(){
   // ─── TODO ───
   const Todo=()=>(<div className="slide">
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
-      <div><h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>✅ قائمة المهام</h1><p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{doneTd}/{todos.length} مكتمل</p></div>
+      <div><h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>✅ قائمة المهام</h1><p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{doneTd}/{todos.length} مكتمل</p></div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
         {[{id:"all",label:"الكل"},{id:"pending",label:"متبقية"},{id:"done",label:"مكتملة"},{id:"high",label:"⚡ عاجل"}].map(f=>(<button key={f.id} onClick={()=>setTodoFilter(f.id)}
-          style={{padding:"5px 11px",borderRadius:6,border:`1px solid ${todoFilter===f.id?"#00ff88":"rgba(255,255,255,0.1)"}`,background:todoFilter===f.id?"rgba(0,255,136,0.1)":"transparent",color:todoFilter===f.id?"#00ff88":"#94a3b8",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
+          style={{padding:"5px 11px",borderRadius:6,border:`1px solid ${todoFilter===f.id?"#00ff88":"var(--wh)"}`,background:todoFilter===f.id?"rgba(0,255,136,0.1)":"transparent",color:todoFilter===f.id?"#00ff88":"var(--t4)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
           {f.label}
         </button>))}
       </div>
     </div>
     <div style={{background:"rgba(0,255,136,0.04)",border:"1px solid rgba(0,255,136,0.15)",borderRadius:12,padding:12,marginBottom:14}}>
-      <div style={{color:"#64748b",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:7}}>// إضافة مهمة جديدة</div>
+      <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:7}}>// إضافة مهمة جديدة</div>
       <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
         <input type="text" placeholder="وصف المهمة..." value={newTask} onChange={e=>setNewTask(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTodo()} style={{flex:"1 1 180px",minWidth:0,direction:"rtl"}}/>
         <select value={newPri} onChange={e=>setNewPri(e.target.value)} style={{width:105,fontSize:12}}>
@@ -3435,28 +3877,28 @@ export default function CyberPath(){
         <button className="btn btn-g" onClick={addTodo}>+ إضافة</button>
       </div>
     </div>
-    {filtTd.length===0?(<div style={{textAlign:"center",padding:"40px 20px",color:"#334155"}}><div style={{fontSize:36,marginBottom:8}}>✅</div><div style={{fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام هنا</div></div>)
+    {filtTd.length===0?(<div style={{textAlign:"center",padding:"40px 20px",color:"var(--t3)"}}><div style={{fontSize:36,marginBottom:8}}>✅</div><div style={{fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام هنا</div></div>)
     :filtTd.map(t=>(<div key={t.id} className="todo-item" style={{opacity:t.done?0.6:1}}>
       <div style={{width:17,height:17,border:`2px solid ${t.done?"#00ff88":"rgba(0,255,136,0.4)"}`,borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,background:t.done?"#00ff88":"transparent"}} onClick={()=>togTodo(t.id)}>
-        {t.done&&<span style={{color:"#040810",fontSize:9,fontWeight:900}}>✓</span>}
+        {t.done&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}
       </div>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{color:t.done?"#475569":"#e2e8f0",fontSize:13,fontFamily:"'Cairo',sans-serif",textDecoration:t.done?"line-through":"none",wordBreak:"break-word"}}>{t.text}</div>
+        <div style={{color:t.done?"var(--t2)":"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",textDecoration:t.done?"line-through":"none",wordBreak:"break-word"}}>{t.text}</div>
         <div style={{display:"flex",gap:7,marginTop:3,flexWrap:"wrap"}}>
-          <span style={{fontSize:10,color:"#64748b",fontFamily:"'Fira Code',monospace"}}>{t.date}</span>
+          <span style={{fontSize:10,color:"var(--t1)",fontFamily:"'Fira Code',monospace"}}>{t.date}</span>
           {t.track!=="general"&&TRACKS[t.track]&&<span style={{fontSize:10,color:TRACKS[t.track].color}}>{TRACKS[t.track].icon} {TRACKS[t.track].name}</span>}
         </div>
       </div>
       <span style={{padding:"3px 9px",borderRadius:20,fontSize:10,fontFamily:"'Fira Code',monospace",background:PRI_BG[t.priority],color:PRI_COL[t.priority],border:`1px solid ${PRI_COL[t.priority]}40`,flexShrink:0}}>
         {t.priority==="high"?"⚡ عاجل":t.priority==="medium"?"📌 متوسط":"🟢 منخفض"}
       </span>
-      <button onClick={()=>delTodo(t.id)} style={{background:"transparent",border:"none",color:"#334155",cursor:"pointer",fontSize:15,padding:"0 3px",flexShrink:0}}>✕</button>
+      <button onClick={()=>delTodo(t.id)} style={{background:"transparent",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:15,padding:"0 3px",flexShrink:0}}>✕</button>
     </div>))}
-    <div style={{marginTop:14,background:"rgba(0,0,0,0.3)",borderRadius:10,padding:12,border:"1px solid rgba(255,255,255,0.06)"}}>
+    <div style={{marginTop:14,background:"var(--bt)",borderRadius:10,padding:12,border:"1px solid rgba(255,255,255,0.06)"}}>
       <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
-        {[{label:"إجمالي",val:todos.length,color:"#94a3b8"},{label:"مكتملة",val:doneTd,color:"#10b981"},{label:"متبقية",val:todos.filter(t=>!t.done).length,color:"#f59e0b"},{label:"عاجلة",val:todos.filter(t=>t.priority==="high"&&!t.done).length,color:"#ef4444"}].map((st,i)=>(<div key={i} style={{textAlign:"center",flex:1,minWidth:60}}>
+        {[{label:"إجمالي",val:todos.length,color:"var(--t4)"},{label:"مكتملة",val:doneTd,color:"#10b981"},{label:"متبقية",val:todos.filter(t=>!t.done).length,color:"#f59e0b"},{label:"عاجلة",val:todos.filter(t=>t.priority==="high"&&!t.done).length,color:"#ef4444"}].map((st,i)=>(<div key={i} style={{textAlign:"center",flex:1,minWidth:60}}>
           <div style={{color:st.color,fontSize:20,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</div>
-          <div style={{color:"#475569",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{st.label}</div>
+          <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{st.label}</div>
         </div>))}
       </div>
     </div>
@@ -3464,42 +3906,42 @@ export default function CyberPath(){
 
   // ─── ROUTINE ───
   const Routine=()=>(<div className="slide">
-    <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🕐 الروتين اليومي المتكامل</h1>
-    <p style={{color:"#64748b",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>روتين يومي محكم يجمع بين الجانب الإسلامي والتعلم المنظم — مستوحى من هدي النبي ﷺ</p>
+    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🕐 الروتين اليومي المتكامل</h1>
+    <p style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>روتين يومي محكم يجمع بين الجانب الإسلامي والتعلم المنظم — مستوحى من هدي النبي ﷺ</p>
     <div style={{display:"grid",gridTemplateColumns:g2,gap:10,marginBottom:14}}>
       <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.2)",borderRadius:12,padding:12}}>
         <div style={{color:"#fde047",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:5}}>🕌 يوم الجمعة — مميزات خاصة</div>
-        <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ قراءة سورة الكهف كاملة صباحاً<br/>✦ التبكير إلى صلاة الجمعة<br/>✦ الإكثار من الصلاة على النبي ﷺ<br/>✦ الدعاء في ساعة الإجابة (بعد العصر)<br/>✦ وقت مخفف للتعلم — يوم أسري</div>
+        <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ قراءة سورة الكهف كاملة صباحاً<br/>✦ التبكير إلى صلاة الجمعة<br/>✦ الإكثار من الصلاة على النبي ﷺ<br/>✦ الدعاء في ساعة الإجابة (بعد العصر)<br/>✦ وقت مخفف للتعلم — يوم أسري</div>
       </div>
       <div style={{background:"linear-gradient(135deg,rgba(52,211,153,0.1),rgba(250,204,21,0.04))",border:"1px solid rgba(52,211,153,0.2)",borderRadius:12,padding:12}}>
         <div style={{color:"#34d399",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:5}}>🌙 رمضان المبارك</div>
-        <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ السحور + التعلم قبل الفجر<br/>✦ النوم بعد الفجر → الاستيقاظ الضحى<br/>✦ تخفيف جلسات التعلم أثناء الصيام<br/>✦ الاستثمار في تلاوة القرآن وختمه<br/>✦ التراويح والقيام أولوية</div>
+        <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ السحور + التعلم قبل الفجر<br/>✦ النوم بعد الفجر → الاستيقاظ الضحى<br/>✦ تخفيف جلسات التعلم أثناء الصيام<br/>✦ الاستثمار في تلاوة القرآن وختمه<br/>✦ التراويح والقيام أولوية</div>
       </div>
     </div>
     <div style={{background:"rgba(52,211,153,0.06)",border:"1px solid rgba(52,211,153,0.2)",borderRadius:10,padding:12,marginBottom:12}}>
       <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
         <span style={{fontSize:20}}>🌙</span>
         <div><div style={{color:"#34d399",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>تذكير إسلامي</div>
-          <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>«إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلًا أَنْ يُتْقِنَهُ» — الإتقان في التعلم عبادة. ابدأ كل جلسة بالبسملة.</div>
+          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>«إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلًا أَنْ يُتْقِنَهُ» — الإتقان في التعلم عبادة. ابدأ كل جلسة بالبسملة.</div>
         </div>
       </div>
     </div>
     <div style={{display:"flex",gap:5,marginBottom:12,flexWrap:"wrap"}}>
-      {[{id:"all",label:"📋 الكل",c:"#94a3b8"},{id:"prayer",label:"🕌 الصلوات",c:"#fde047"},{id:"quran",label:"📖 القرآن",c:"#6ee7b7"},{id:"islamic",label:"📿 الأذكار",c:"#34d399"},{id:"study",label:"💻 التعلم",c:"#60a5fa"},{id:"health",label:"🏃 الصحة",c:"#4ade80"}].map(f=>(<button key={f.id} onClick={()=>setRoutineFilter(f.id)}
-        style={{padding:"5px 10px",borderRadius:6,border:`1px solid ${routineFilter===f.id?f.c:"rgba(255,255,255,0.08)"}`,background:routineFilter===f.id?`${f.c}18`:"transparent",color:routineFilter===f.id?f.c:"#64748b",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
+      {[{id:"all",label:"📋 الكل",c:"var(--t4)"},{id:"prayer",label:"🕌 الصلوات",c:"#fde047"},{id:"quran",label:"📖 القرآن",c:"#6ee7b7"},{id:"islamic",label:"📿 الأذكار",c:"#34d399"},{id:"study",label:"💻 التعلم",c:"#60a5fa"},{id:"health",label:"🏃 الصحة",c:"#4ade80"}].map(f=>(<button key={f.id} onClick={()=>setRoutineFilter(f.id)}
+        style={{padding:"5px 10px",borderRadius:6,border:`1px solid ${routineFilter===f.id?f.c:"var(--wb)"}`,background:routineFilter===f.id?`${f.c}18`:"transparent",color:routineFilter===f.id?f.c:"var(--t1)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
         {f.label}
       </button>))}
     </div>
     <div style={{position:"relative",paddingLeft:14}}>
       <div style={{position:"absolute",left:18,top:0,bottom:0,width:2,background:"linear-gradient(180deg,#00ff8822,#00d4ff22)",borderRadius:1}}/>
       {ROUTINE.filter(r=>routineFilter==="all"||r.type===routineFilter).map((r,i)=>(<div key={i} className="routine-row" style={{paddingLeft:30,position:"relative"}}>
-        <div style={{position:"absolute",left:8,top:12,width:18,height:18,borderRadius:"50%",background:R_COL[r.type]||"rgba(148,163,184,0.1)",border:`2px solid ${R_TXT[r.type]||"#64748b"}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,zIndex:1}}>{r.icon}</div>
-        <div style={{flex:1,background:R_COL[r.type]||"rgba(0,0,0,0)",padding:"9px 12px",borderRadius:8,border:`1px solid ${R_TXT[r.type]||"#64748b"}20`}}>
+        <div style={{position:"absolute",left:8,top:12,width:18,height:18,borderRadius:"50%",background:R_COL[r.type]||"rgba(148,163,184,0.1)",border:`2px solid ${R_TXT[r.type]||"var(--t1)"}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,zIndex:1}}>{r.icon}</div>
+        <div style={{flex:1,background:R_COL[r.type]||"rgba(0,0,0,0)",padding:"9px 12px",borderRadius:8,border:`1px solid ${R_TXT[r.type]||"var(--t1)"}20`}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
-            <span style={{color:"#475569",fontSize:10,fontFamily:"'Fira Code',monospace",flexShrink:0}}>{r.time}</span>
-            <span style={{color:R_TXT[r.type]||"#94a3b8",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{r.label}</span>
+            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",flexShrink:0}}>{r.time}</span>
+            <span style={{color:R_TXT[r.type]||"var(--t4)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{r.label}</span>
           </div>
-          <div style={{color:"#64748b",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.detail}</div>
+          <div style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.detail}</div>
         </div>
       </div>))}
     </div>
@@ -3516,8 +3958,8 @@ export default function CyberPath(){
     const totalReports=Object.keys(s.weeklyReports||{}).length;
     const totalCerts=s.certificates?.length||0;
     return(<div className="slide">
-      <h1 style={{color:"#e2e8f0",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📈 الإحصائيات التفصيلية</h1>
-      <p style={{color:"#64748b",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>تحليل شامل لرحلتك التعليمية كمنحة</p>
+      <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📈 الإحصائيات التفصيلية</h1>
+      <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>تحليل شامل لرحلتك التعليمية كمنحة</p>
 
       {/* ─ بطاقات رئيسية ─ */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10,marginBottom:18}}>
@@ -3534,12 +3976,12 @@ export default function CyberPath(){
           {label:"متوسط الاختبارات",val:`${qAvg}%`,color:"#10b981",icon:"✅"},
           {label:"الشهادات المكتسبة",val:`${totalCerts}/5`,color:"#fbbf24",icon:"🎓"},
           {label:"التقارير الأسبوعية",val:totalReports,color:"#00ff88",icon:"📋"},
-        ].map((st,i)=>(<div key={i} className="stat-card">
+        ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click">
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <span style={{fontSize:18}}>{st.icon}</span>
             <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
           </div>
-          <div style={{color:"#e2e8f0",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
+          <div style={{color:"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
         </div>))}
       </div>
 
@@ -3550,20 +3992,20 @@ export default function CyberPath(){
           {last14.map((d,i)=>{const h=s.studyLog?.[d]||0;const pct=maxHrs>0?h/maxHrs:0;const isToday=d===today();
             return(<div key={d} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <div style={{width:"100%",background:isToday?`rgba(0,255,136,${0.15+pct*0.7})`:`rgba(167,139,250,${0.1+pct*0.7})`,borderRadius:"3px 3px 0 0",height:`${Math.max(4,pct*60)}px`,border:`1px solid ${isToday?"rgba(0,255,136,0.4)":"rgba(167,139,250,0.3)"}`,transition:"height .3s"}}/>
-              <div style={{color:"#334155",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</div>
+              <div style={{color:"var(--t3)",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</div>
             </div>);
           })}
         </div>
         <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-          <span style={{color:"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{last14[0]?.slice(5)}</span>
-          <span style={{color:"#334155",fontSize:9,fontFamily:"'Fira Code',monospace"}}>اليوم ↑</span>
+          <span style={{color:"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{last14[0]?.slice(5)}</span>
+          <span style={{color:"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>اليوم ↑</span>
         </div>
       </div>
 
       {/* ─ تقدم المراحل + الاختبارات ─ */}
       <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم المراحل الخمس</div>
+          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم المراحل الخمس</div>
           {PHASES.map(ph=>{
             const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
             const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
@@ -3571,7 +4013,7 @@ export default function CyberPath(){
             const cert=s.certificates?.includes(ph.id);
             return(<div key={ph.id} style={{marginBottom:10}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{ph.icon} {ph.nameAr} {cert?"🎓":""}</span>
+                <span style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{ph.icon} {ph.nameAr} {cert?"🎓":""}</span>
                 <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
               </div>
               <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
@@ -3579,10 +4021,10 @@ export default function CyberPath(){
           })}
         </div>
         <div className="card" style={{padding:14}}>
-          <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📝 تاريخ الاختبارات</div>
-          {Object.entries(s.quizHistory).length===0?(<div style={{color:"#334155",fontFamily:"'Cairo',sans-serif",fontSize:12,textAlign:"center",padding:"20px 0"}}>لم تجتز أي اختبار بعد</div>)
+          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📝 تاريخ الاختبارات</div>
+          {Object.entries(s.quizHistory).length===0?(<div style={{color:"var(--t3)",fontFamily:"'Cairo',sans-serif",fontSize:12,textAlign:"center",padding:"20px 0"}}>لم تجتز أي اختبار بعد</div>)
           :Object.entries(s.quizHistory).map(([id,q])=>(<div key={id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid rgba(255,255,255,0.04)"}}>
-            <span style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{QUIZZES[id]?.title||id}</span>
+            <span style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{QUIZZES[id]?.title||id}</span>
             <span style={{color:q.score>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace",background:q.score>=80?"rgba(16,185,129,0.1)":"rgba(245,158,11,0.1)",padding:"1px 6px",borderRadius:4}}>{q.score}%</span>
           </div>))}
         </div>
@@ -3593,9 +4035,9 @@ export default function CyberPath(){
         <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📋 التقارير الأسبوعية المحفوظة</div>
         <div style={{display:"flex",flexDirection:"column",gap:6}}>
           {Object.entries(s.weeklyReports).map(([key,r])=>(
-            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"rgba(0,0,0,0.2)",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)",flexWrap:"wrap",gap:6}}>
-              <div><div style={{color:"#e2e8f0",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.phase} — الأسبوع {r.wk}</div>
-                <div style={{color:"#64748b",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{r.title} · {r.date}</div></div>
+            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"var(--bo)",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)",flexWrap:"wrap",gap:6}}>
+              <div><div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.phase} — الأسبوع {r.wk}</div>
+                <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{r.title} · {r.date}</div></div>
               <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
                 <span style={{color:"#00ff88",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.mDone}/{r.mTotal} مهام</span>
                 <span style={{color:"#00d4ff",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.tDone}/{r.tTotal} مواضيع</span>
@@ -3608,15 +4050,15 @@ export default function CyberPath(){
       </div>)}
 
       {/* ─ تقدم التراكات الـ 16 ─ */}
-      <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:14}}>
-        <div style={{color:"#e2e8f0",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🗺️ تقدم التراكات الـ 16</div>
+      <div style={{background:"var(--bt)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:14}}>
+        <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🗺️ تقدم التراكات الـ 16</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:8}}>
           {TRACK_ORDER.map(tid=>{const t=TRACKS[tid];const pct=getTrkPct(tid);return(<div key={tid} style={{padding:"9px",background:"rgba(255,255,255,0.02)",borderRadius:8,border:`1px solid ${t.color}22`}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
               <span style={{fontSize:14}}>{t.icon}</span>
               <span style={{color:t.color,fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
             </div>
-            <div style={{color:"#94a3b8",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{t.name}</div>
+            <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{t.name}</div>
             <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:t.color}}/></div>
           </div>);})}
         </div>
@@ -3634,22 +4076,22 @@ export default function CyberPath(){
     </nav>
   );
 
-  return(<div className="matrix-bg" style={{fontFamily:"'Fira Code',monospace",background:"#05080f",minHeight:"100vh",color:"#e2e8f0"}}>
+  return(<div className="matrix-bg" data-theme={theme} style={{fontFamily:"'Fira Code',monospace",background:"var(--bg)",minHeight:"100vh",color:"var(--t0)"}}>
     <style>{FONTS+CSS}</style>
     {toast&&<div className="xp-toast">{toast}</div>}
 
     {/* ─── مودال الشهادة ─── */}
     {certModal&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:9000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setCertModal(null)}>
-      <div style={{background:"linear-gradient(135deg,#060c1a,#04080f)",border:`2px solid ${certModal.color}`,borderRadius:20,padding:isMobile?"24px 20px":"40px",maxWidth:520,width:"100%",textAlign:"center",position:"relative",boxShadow:`0 0 60px ${certModal.color}33`}} onClick={e=>e.stopPropagation()}>
+      <div style={{background:"linear-gradient(135deg,var(--bg3),var(--bg))",border:`2px solid ${certModal.color}`,borderRadius:20,padding:isMobile?"24px 20px":"40px",maxWidth:520,width:"100%",textAlign:"center",position:"relative",boxShadow:`0 0 60px ${certModal.color}33`}} onClick={e=>e.stopPropagation()}>
         <div style={{position:"absolute",top:0,left:0,right:0,height:4,background:`linear-gradient(90deg,${certModal.color},${certModal.color}88)`,borderRadius:"20px 20px 0 0"}}/>
-        <div style={{fontSize:10,color:"#64748b",fontFamily:"'Fira Code',monospace",marginBottom:12,letterSpacing:3}}>CYBERPATH ACADEMY — CERTIFICATE OF COMPLETION</div>
+        <div style={{fontSize:10,color:"var(--t1)",fontFamily:"'Fira Code',monospace",marginBottom:12,letterSpacing:3}}>CYBERPATH ACADEMY — CERTIFICATE OF COMPLETION</div>
         <div style={{fontSize:64,marginBottom:8}}>{certModal.icon}</div>
-        <div style={{color:"#e2e8f0",fontSize:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>{certModal.nameAr}</div>
+        <div style={{color:"var(--t0)",fontSize:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>{certModal.nameAr}</div>
         <div style={{color:certModal.color,fontSize:14,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{certModal.nameEn}</div>
         <div style={{background:`${certModal.color}12`,border:`1px solid ${certModal.color}33`,borderRadius:10,padding:"12px 20px",marginBottom:16}}>
-          <div style={{color:"#94a3b8",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
+          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
             {certModal.desc}<br/>
-            <span style={{color:"#64748b",fontSize:10}}>الأسابيع {certModal.startWeek}–{certModal.endWeek} · {certModal.monthLabel}</span>
+            <span style={{color:"var(--t1)",fontSize:10}}>الأسابيع {certModal.startWeek}–{certModal.endWeek} · {certModal.monthLabel}</span>
           </div>
         </div>
         <div style={{color:"#fbbf24",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:20}}>🏆 +150 XP · تاريخ الإنجاز: {today()}</div>

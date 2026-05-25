@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --port 5000 --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist -m 'deploy: v0.1.0'"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
+    "gh-pages": "^6.3.0",
     "vite": "^5.2.0"
   }
 }
