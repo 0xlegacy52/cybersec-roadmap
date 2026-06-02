@@ -2,8 +2,62 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+function devServiceWorkerCleanup() {
+  const cleanupWorker = `
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    await self.registration.unregister();
+    const keys = await caches.keys();
+    await Promise.all(keys.map((key) => caches.delete(key)));
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    clients.forEach((client) => client.navigate(client.url));
+  })());
+});
+`;
+  const cleanupRegister = `
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations()
+    .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
+    .then(() => 'caches' in window ? caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))) : null)
+    .catch(() => {});
+}
+`;
+  const workerPaths = new Set(['/sw.js', '/dev-sw.js', '/cybersec-roadmap/sw.js', '/cybersec-roadmap/dev-sw.js']);
+  const registerPaths = new Set(['/registerSW.js', '/cybersec-roadmap/registerSW.js']);
+
+  return {
+    name: 'cyberpath-dev-service-worker-cleanup',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url || '').split('?')[0];
+        if (workerPaths.has(path)) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+          res.end(cleanupWorker);
+          return;
+        }
+        if (registerPaths.has(path)) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+          res.end(cleanupRegister);
+          return;
+        }
+        next();
+      });
+    }
+  };
+}
+
 export default defineConfig({
   plugins: [
+    devServiceWorkerCleanup(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
