@@ -9,6 +9,32 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="CyberPath" />
+    <script>
+      (function () {
+        var isDevHost = location.port === "5000" || location.port === "5001" || ["localhost", "127.0.0.1", "0.0.0.0"].includes(location.hostname);
+        if (!isDevHost || !("serviceWorker" in navigator)) return;
+        var cleanupKey = "cyberpath_dev_sw_cleanup";
+        navigator.serviceWorker.getRegistrations()
+          .then(function (registrations) {
+            return Promise.all(registrations.map(function (registration) {
+              return registration.unregister();
+            }));
+          })
+          .then(function () {
+            if (!("caches" in window)) return null;
+            return caches.keys().then(function (keys) {
+              return Promise.all(keys.map(function (key) { return caches.delete(key); }));
+            });
+          })
+          .then(function () {
+            if (navigator.serviceWorker.controller && sessionStorage.getItem(cleanupKey) !== "done") {
+              sessionStorage.setItem(cleanupKey, "done");
+              location.reload();
+            }
+          })
+          .catch(function () {});
+      })();
+    </script>
     <link rel="apple-touch-icon" href="./icon-192.svg" />
     <link rel="icon" type="image/svg+xml" href="./icon-192.svg" />
     <title>CyberPath Academy</title>
