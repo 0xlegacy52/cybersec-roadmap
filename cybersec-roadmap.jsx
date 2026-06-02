@@ -20978,6 +20978,17 @@ const LESSONS=[
 
 const COURSE_BY_ID=Object.fromEntries(COURSES.map(c=>[c.id,c]));
 const COURSE_LESSONS=COURSES.reduce((acc,c)=>({...acc,[c.id]:LESSONS.filter(l=>l.courseId===c.id)}),{});
+const TRACK_COURSE_TREE=TRACK_ORDER.map(tid=>{
+  const track=TRACKS[tid];
+  if(!track)return null;
+  const courses=COURSES.filter(course=>{
+    const lessons=COURSE_LESSONS[course.id]||[];
+    return (course.trackIds||[]).includes(tid)||lessons.some(lesson=>(lesson.trackIds||[]).includes(tid));
+  });
+  const lessonCount=courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]?.length||0),0);
+  return{tid,track,courses,lessonCount};
+}).filter(item=>item&&item.courses.length);
+const TRACK_TREE_COURSE_COUNT=new Set(TRACK_COURSE_TREE.flatMap(item=>item.courses.map(course=>course.id))).size;
 const RESOURCE_INDEX=TRACK_ORDER.flatMap(tid=>{
   const track=TRACKS[tid];
   if(!track)return[];
@@ -21127,6 +21138,8 @@ export default function CyberPath(){
   const [isMobile,setIsMobile]=useState(()=>typeof window!=="undefined"&&window.innerWidth<768);
   const [viewOffset,setViewOffset]=useState(0);
   const [courseOpen,setCourseOpen]=useState(false);
+  const [openTrackId,setOpenTrackId]=useState(null);
+  const [openCourseKey,setOpenCourseKey]=useState(null);
   const [roadmapOpen,setRoadmapOpen]=useState(false);
   const [theme,setTheme]=useState("dark");
 
@@ -21341,38 +21354,86 @@ export default function CyberPath(){
     </div>);
   };
 
-  const CourseLibrary=()=>(
+  const TrackPlaylistTree=()=>(
     <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:12}}>
-        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>كتالوج الكورسات الكامل</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{SOURCE_PLAYLIST_COUNT} links input · {UNIQUE_PLAYLIST_COUNT} playlists unique · {LESSONS.length} lessons</div></div>
-        <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء":"عرض الكورسات"}</button>
+        <div>
+          <div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>شجرة البلاليست حسب المسارات</div>
+          <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{TRACK_COURSE_TREE.length} tracks · {TRACK_TREE_COURSE_COUNT}/{UNIQUE_PLAYLIST_COUNT} playlists · {LESSONS.length} video lessons</div>
+        </div>
+        <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء الشجرة":"عرض الشجرة"}</button>
       </div>
-      {courseOpen&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
-        {COURSES.map(course=>{
-          const lessons=COURSE_LESSONS[course.id]||[];
-          const done=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
-          return(<details key={course.id} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
-            <summary style={{cursor:"pointer",listStyle:"none"}}>
+      <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8,marginBottom:12}}>
+        افتح المسار ثم افتح الـ playlist لترى كل فيديو كدرس مستقل برابطه، مع نفس حالة الإنجاز المحفوظة في Todo اليوم.
+      </div>
+      {courseOpen&&<div style={{display:"flex",flexDirection:"column",gap:9}}>
+        {TRACK_COURSE_TREE.map(item=>{
+          const trackOpen=openTrackId===item.tid;
+          const trackDone=item.courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.doneLessons?.[lesson.id]).length,0);
+          return(<div key={item.tid} style={{background:trackOpen?item.track.colorBg:"var(--bo)",border:`1px solid ${trackOpen?item.track.color+"66":"var(--wo)"}`,borderRadius:10,overflow:"hidden"}}>
+            <button onClick={()=>{setOpenTrackId(trackOpen?null:item.tid);setOpenCourseKey(null);}} style={{width:"100%",border:0,background:"transparent",cursor:"pointer",padding:isMobile?10:12,textAlign:"initial"}}>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
-                <div style={{minWidth:0}}>
-                  <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{course.title}</div>
-                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:5}}>
-                    <span style={{color:"#00ff88",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{lessons.length} lessons</span>
-                    {(course.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}
+                <div style={{minWidth:0,display:"flex",gap:10,alignItems:"center"}}>
+                  <span style={{fontSize:23}}>{item.track.icon}</span>
+                  <div style={{minWidth:0}}>
+                    <div style={{color:"var(--t0)",fontSize:14,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{item.track.name}</div>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:4}}>
+                      <span style={{color:item.track.color,fontSize:10,fontFamily:"'Fira Code',monospace"}}>{item.courses.length} playlists</span>
+                      <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{trackDone}/{item.lessonCount} video lessons</span>
+                      <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{item.track.duration}</span>
+                    </div>
                   </div>
                 </div>
-                <div style={{minWidth:120}}><div className="bar"><div className="bar-fill" style={{width:`${pct(done,lessons.length)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div></div>
-              </div>
-            </summary>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:7,marginTop:10}}>
-              {lessons.map(lesson=><a key={lesson.id} href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-                <div className="res-card" style={{marginBottom:0,borderColor:s.doneLessons?.[lesson.id]?"rgba(0,255,136,0.25)":"var(--wb)"}}>
-                  <div style={{color:s.doneLessons?.[lesson.id]?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.index}. {lesson.title}</div>
-                  <div style={{color:"var(--t2)",fontSize:10,marginTop:4}}>{formatDuration(lesson.durationSec)}</div>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <div style={{minWidth:isMobile?80:130}}><div className="bar"><div className="bar-fill" style={{width:`${pct(trackDone,item.lessonCount)}%`,background:item.track.color}}/></div></div>
+                  <span style={{color:item.track.color,fontSize:15,transform:trackOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
                 </div>
-              </a>)}
-            </div>
-          </details>);
+              </div>
+            </button>
+            {trackOpen&&<div style={{padding:isMobile?"0 10px 10px":"0 12px 12px",display:"flex",flexDirection:"column",gap:8}}>
+              {item.courses.map(course=>{
+                const lessons=COURSE_LESSONS[course.id]||[];
+                const courseKey=`${item.tid}-${course.id}`;
+                const courseOpenNow=openCourseKey===courseKey;
+                const done=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+                return(<div key={courseKey} style={{background:"var(--bo)",border:`1px solid ${courseOpenNow?item.track.color+"55":"var(--wo)"}`,borderRadius:9,overflow:"hidden"}}>
+                  <button onClick={()=>setOpenCourseKey(courseOpenNow?null:courseKey)} style={{width:"100%",border:0,background:"transparent",cursor:"pointer",padding:10,textAlign:"initial"}}>
+                    <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+                      <div style={{minWidth:0}}>
+                        <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{course.title}</div>
+                        <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:5}}>
+                          <span style={{color:"#00ff88",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{lessons.length} lessons</span>
+                          {course.channel&&<span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{course.channel}</span>}
+                          {(course.trackIds||[]).slice(0,5).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}
+                        </div>
+                      </div>
+                      <div style={{display:"flex",gap:8,alignItems:"center",justifyContent:isMobile?"flex-start":"flex-end",flexWrap:"wrap"}}>
+                        <a className="btn btn-o" href={course.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{textDecoration:"none",fontSize:11,padding:"6px 10px"}}>رابط البلاليست</a>
+                        <div style={{minWidth:100}}><div className="bar"><div className="bar-fill" style={{width:`${pct(done,lessons.length)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div></div>
+                        <span style={{color:"var(--t1)",fontSize:12,transform:courseOpenNow?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+                      </div>
+                    </div>
+                  </button>
+                  {courseOpenNow&&<div style={{padding:10,paddingTop:0,display:"flex",flexDirection:"column",gap:7}}>
+                    {lessons.map(lesson=>{
+                      const doneLesson=!!s.doneLessons?.[lesson.id];
+                      return(<div key={`${item.tid}-${lesson.id}`} style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:9,alignItems:"center",background:doneLesson?"rgba(0,255,136,0.06)":"var(--w3)",border:`1px solid ${doneLesson?"rgba(0,255,136,0.25)":"var(--wb)"}`,borderRadius:8,padding:9}}>
+                        <button onClick={()=>toggleLesson(lesson)} className={`chk ${doneLesson?"on":""}`} style={{border:"2px solid var(--sbd4)",background:doneLesson?"#00ff88":"transparent"}} aria-label={doneLesson?"إلغاء إنجاز الدرس":"إنهاء الدرس"}>{doneLesson&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
+                        <div style={{minWidth:0}}>
+                          <div style={{color:doneLesson?"var(--t2)":"var(--t0)",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere",textDecoration:doneLesson?"line-through":"none"}}>{lesson.index}. {lesson.title}</div>
+                          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:4}}>
+                            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{formatDuration(lesson.durationSec)}</span>
+                            {(lesson.topicTags||[]).slice(0,5).map(tag=><span key={tag} style={{color:"var(--t1)",fontSize:10}}>#{tag}</span>)}
+                          </div>
+                        </div>
+                        <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 11px",textAlign:"center",whiteSpace:"nowrap"}}>فتح الدرس</a>
+                      </div>);
+                    })}
+                  </div>}
+                </div>);
+              })}
+            </div>}
+          </div>);
         })}
       </div>}
     </div>
@@ -21439,7 +21500,7 @@ export default function CyberPath(){
         </div>
       )}
 
-      <CourseLibrary/>
+      <TrackPlaylistTree/>
       <RoadmapSummary/>
     </div>
   );
