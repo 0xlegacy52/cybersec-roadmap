@@ -21004,7 +21004,14 @@ const SESSION_TARGET_MIN=90;
 const DEFAULT_LESSON_MIN=30;
 const STUDY_DAYS=[0,1,2,3,4,6];
 const AR_DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[],trainingStartDate:null,doneLessons:{},doneDailySessions:{},lessonNotes:{}};
+const TAB_ITEMS=[
+  {id:"today",label:"اليوم",hint:"جلسة الدراسة"},
+  {id:"library",label:"المكتبة",hint:"المسارات والكورسات"},
+  {id:"search",label:"البحث",hint:"كل الدروس"},
+  {id:"review",label:"المراجعة",hint:"Queue ذكي"},
+  {id:"progress",label:"التقدم",hint:"إحصائيات"},
+];
+const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[],trainingStartDate:null,doneLessons:{},doneDailySessions:{},lessonNotes:{},activeTab:"today",sessionTimers:{},lessonReview:{},searchFilters:{q:"",track:"all",status:"all"},libraryFilter:"all"};
 
 const pad2=n=>String(n).padStart(2,"0");
 const parseDate=(value)=>{
@@ -21022,6 +21029,7 @@ const addDays=(dateLike,days)=>{
   d.setDate(d.getDate()+days);
   return d;
 };
+const addDaysKey=(dateLike,days)=>dateKey(addDays(dateLike,days));
 const isStudyDay=dateLike=>STUDY_DAYS.includes(parseDate(dateLike).getDay());
 const isFriday=dateLike=>parseDate(dateLike).getDay()===5;
 const dayLabel=dateLike=>AR_DAYS[parseDate(dateLike).getDay()];
@@ -21030,6 +21038,27 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const pct=(done,total)=>total?Math.round(done/total*100):0;
 const trackLabel=tid=>TRACKS[tid]?`${TRACKS[tid].icon} ${TRACKS[tid].name}`:tid;
 const textNorm=v=>String(v||"").toLowerCase().replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+const formatTimer=sec=>{
+  const safe=Math.max(0,Math.ceil(sec||0));
+  const h=Math.floor(safe/3600),m=Math.floor((safe%3600)/60),s=safe%60;
+  return h>0?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+};
+const getLessonVideoId=lesson=>{
+  const url=lesson?.url||"";
+  const match=url.match(/[?&]v=([^&]+)/)||url.match(/youtu\.be\/([^?&/]+)/)||lesson?.id?.match(/-([A-Za-z0-9_-]{8,})$/);
+  return match?match[1]:null;
+};
+const getLessonEmbedUrl=lesson=>{
+  const id=getLessonVideoId(lesson);
+  return id?`https://www.youtube.com/embed/${id}`:null;
+};
+const timerSnapshot=(timer)=>{
+  if(!timer)return{durationSec:SESSION_TARGET_MIN*60,remainingSec:SESSION_TARGET_MIN*60,startedAt:null,running:false,completed:false};
+  if(!timer.running||timer.completed)return{...timer,remainingSec:Math.max(0,timer.remainingSec??SESSION_TARGET_MIN*60)};
+  const elapsed=Math.floor((Date.now()-(timer.startedAt||Date.now()))/1000);
+  const remaining=Math.max(0,(timer.remainingSec??SESSION_TARGET_MIN*60)-elapsed);
+  return{...timer,remainingSec:remaining,running:remaining>0,completed:remaining<=0||timer.completed};
+};
 
 const getTrainingDay=(startDate,targetDate=today())=>{
   const start=parseDate(startDate||today());
@@ -21141,6 +21170,8 @@ export default function CyberPath(){
   const [openTrackId,setOpenTrackId]=useState(null);
   const [openCourseKey,setOpenCourseKey]=useState(null);
   const [roadmapOpen,setRoadmapOpen]=useState(false);
+  const [activeVideoLessonId,setActiveVideoLessonId]=useState(null);
+  const [timerTick,setTimerTick]=useState(0);
   const [theme,setTheme]=useState("dark");
 
   const saveState=useCallback(ns=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(ns));}catch(e){}},[]);
@@ -21150,6 +21181,11 @@ export default function CyberPath(){
     ns.doneLessons=raw?.doneLessons||{};
     ns.doneDailySessions=raw?.doneDailySessions||{};
     ns.lessonNotes=raw?.lessonNotes||{};
+    ns.activeTab=raw?.activeTab||"today";
+    ns.sessionTimers=raw?.sessionTimers||{};
+    ns.lessonReview=raw?.lessonReview||{};
+    ns.searchFilters={...D0.searchFilters,...(raw?.searchFilters||{})};
+    ns.libraryFilter=raw?.libraryFilter||"all";
     ns.badges=raw?.badges||[];
     ns.certificates=raw?.certificates||[];
     ns.totalDone=Object.values(ns.doneLessons).filter(Boolean).length||ns.totalDone||0;
@@ -21177,6 +21213,7 @@ export default function CyberPath(){
     setLoading(false);
   },[saveState]);
   useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
+  useEffect(()=>{const id=setInterval(()=>setTimerTick(t=>t+1),1000);return()=>clearInterval(id);},[]);
 
   const selectedDate=addDays(new Date(),viewOffset);
   const selectedDateKey=dateKey(selectedDate);
@@ -21194,6 +21231,9 @@ export default function CyberPath(){
   const currentRoadmapWeek=clamp(Math.ceil(Math.max(1,trainingDay)/6),1,80);
   const currentPhase=findPhase(currentRoadmapWeek);
   const SB=sideOpen?260:72;
+  const activeTab=s.activeTab||"today";
+  const searchFilters={...D0.searchFilters,...(s.searchFilters||{})};
+  const activeVideoLesson=activeVideoLessonId?LESSONS.find(lesson=>lesson.id===activeVideoLessonId):null;
 
   useEffect(()=>{
     if(loading)return;
@@ -21208,9 +21248,17 @@ export default function CyberPath(){
     const was=!!s.doneLessons?.[lesson.id];
     upd(prev=>{
       const doneLessons={...(prev.doneLessons||{})};
+      let reviewQueue=[...(prev.reviewQueue||[])];
       if(was)delete doneLessons[lesson.id];
-      else doneLessons[lesson.id]=today();
-      const next={...prev,doneLessons,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:Math.max(0,prev.xp+(was?-10:10))};
+      else{
+        doneLessons[lesson.id]=today();
+        reviewQueue=[
+          ...reviewQueue.filter(item=>item.lessonId!==lesson.id),
+          {lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null}
+        ];
+      }
+      if(was)reviewQueue=reviewQueue.filter(item=>item.lessonId!==lesson.id);
+      const next={...prev,doneLessons,reviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:Math.max(0,prev.xp+(was?-10:10))};
       next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
       return next;
     });
@@ -21222,15 +21270,26 @@ export default function CyberPath(){
     if(!missing.length){showToast("الجلسة مكتملة بالفعل");return;}
     upd(prev=>{
       const doneLessons={...(prev.doneLessons||{})};
+      const nextReviewQueue=[...(prev.reviewQueue||[])];
       missing.forEach(lesson=>{doneLessons[lesson.id]=today();});
-      const next={...prev,doneLessons,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:prev.xp+(missing.length*10)};
+      missing.forEach(lesson=>{
+        if(!nextReviewQueue.some(item=>item.lessonId===lesson.id))nextReviewQueue.push({lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null});
+      });
+      const next={...prev,doneLessons,reviewQueue:nextReviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:prev.xp+(missing.length*10)};
       next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
       return next;
     });
     showToast(`الجلسة اكتملت +${missing.length*10} XP`);
   };
 
-  const saveLessonNote=(lessonId,value)=>upd(prev=>({...prev,lessonNotes:{...(prev.lessonNotes||{}),[lessonId]:value}}));
+  const saveLessonNote=(lessonId,value)=>upd(prev=>{
+    const lesson=LESSONS.find(l=>l.id===lessonId);
+    let reviewQueue=[...(prev.reviewQueue||[])];
+    if(value.trim()&&lesson&&!reviewQueue.some(item=>item.lessonId===lessonId)){
+      reviewQueue.push({lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});
+    }
+    return{...prev,reviewQueue,lessonNotes:{...(prev.lessonNotes||{}),[lessonId]:value}};
+  });
   const goToday=()=>setViewOffset(0);
   const doCheckIn=()=>{
     const t=today();
@@ -21240,6 +21299,29 @@ export default function CyberPath(){
     upd(prev=>({...prev,lastCheckIn:t,streak,bestStreak:Math.max(streak,prev.bestStreak||0),xp:prev.xp+15,islamicDays:(prev.islamicDays||0)+1}));
     showToast(`حضور اليومي مسجل: سلسلة ${streak} يوم`);
   };
+  const setActiveTab=id=>upd(prev=>({...prev,activeTab:id}));
+  const timerFor=key=>{timerTick;return timerSnapshot(s.sessionTimers?.[key]);};
+  const updateTimer=(key,fn)=>upd(prev=>{
+    const current=timerSnapshot(prev.sessionTimers?.[key]);
+    const nextTimer=fn(current);
+    return{...prev,sessionTimers:{...(prev.sessionTimers||{}),[key]:nextTimer}};
+  });
+  const startTimer=key=>updateTimer(key,t=>{
+    const remaining=t.completed||t.remainingSec<=0?SESSION_TARGET_MIN*60:t.remainingSec;
+    return{durationSec:SESSION_TARGET_MIN*60,remainingSec:remaining,startedAt:Date.now(),running:true,completed:false};
+  });
+  const pauseTimer=key=>updateTimer(key,t=>({...t,remainingSec:t.remainingSec,startedAt:null,running:false,completed:false}));
+  const resetTimer=key=>updateTimer(key,()=>({durationSec:SESSION_TARGET_MIN*60,remainingSec:SESSION_TARGET_MIN*60,startedAt:null,running:false,completed:false}));
+  const completeTimer=key=>updateTimer(key,t=>({...t,remainingSec:0,startedAt:null,running:false,completed:true}));
+  const markReviewed=lesson=>{
+    const current=s.lessonReview?.[lesson.id]||{reviewCount:0};
+    const reviewCount=(current.reviewCount||0)+1;
+    const nextReviewAt=addDaysKey(today(),reviewCount===1?3:reviewCount===2?7:14);
+    upd(prev=>({...prev,lessonReview:{...(prev.lessonReview||{}),[lesson.id]:{reviewCount,lastReviewedAt:today(),nextReviewAt}},reviewQueue:(prev.reviewQueue||[]).map(item=>item.lessonId===lesson.id?{...item,reason:"scheduled",dueDate:nextReviewAt,lastReviewedAt:today()}:item)}));
+    showToast(`تمت مراجعة الدرس. المراجعة القادمة: ${nextReviewAt}`);
+  };
+  const postponeReview=lesson=>upd(prev=>({...prev,reviewQueue:(prev.reviewQueue||[]).map(item=>item.lessonId===lesson.id?{...item,dueDate:addDaysKey(today(),2)}:item)}));
+  const setSearchFilter=patch=>upd(prev=>({...prev,searchFilters:{...D0.searchFilters,...(prev.searchFilters||{}),...patch}}));
 
   const Sidebar=()=>(<div className={isMobile?"sidebar-mobile":"sidebar-glow sidebar-desktop"} style={{width:isMobile?260:(sideOpen?260:72),minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:isMobile&&!sideOpen?"none":"flex",flexDirection:"column",padding:"20px 10px",gap:10,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
     <div style={{display:"flex",alignItems:"center",gap:10,padding:"0 4px"}}>
@@ -21270,6 +21352,92 @@ export default function CyberPath(){
       <button className="btn btn-o" onClick={doCheckIn} style={{fontSize:12,padding:"9px 12px"}}>تسجيل حضور اليومي</button>
     </>)}
   </div>);
+
+  const StudyTabs=()=>(
+    <div style={{display:"flex",gap:6,overflowX:"auto",padding:"4px",background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:12,marginBottom:14}}>
+      {TAB_ITEMS.map(tab=><button key={tab.id} onClick={()=>setActiveTab(tab.id)} style={{minWidth:isMobile?92:120,padding:isMobile?"9px 10px":"10px 12px",borderRadius:9,border:`1px solid ${activeTab===tab.id?"var(--sbd3)":"transparent"}`,background:activeTab===tab.id?"var(--sbg12)":"transparent",color:activeTab===tab.id?"#00ff88":"var(--t4)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",textAlign:"center"}}>
+        <div style={{fontSize:13,fontWeight:800}}>{tab.label}</div>
+        {!isMobile&&<div style={{fontSize:10,color:activeTab===tab.id?"var(--t5)":"var(--t2)",marginTop:2}}>{tab.hint}</div>}
+      </button>)}
+    </div>
+  );
+
+  const StudyTimer=({timerKey})=>{
+    const timer=timerFor(timerKey);
+    const progress=pct((timer.durationSec||SESSION_TARGET_MIN*60)-timer.remainingSec,timer.durationSec||SESSION_TARGET_MIN*60);
+    return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:10}}>
+        <div>
+          <div style={{color:"var(--t0)",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>مؤقت الجلس</div>
+          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{timer.completed?"completed":timer.running?"running":"paused"} · saved in localStorage</div>
+        </div>
+        <div style={{color:timer.completed?"#00ff88":timer.running?"#00d4ff":"var(--t0)",fontSize:24,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{formatTimer(timer.remainingSec)}</div>
+      </div>
+      <div className="bar" style={{height:8,marginBottom:10}}><div className="bar-fill" style={{width:`${progress}%`,background:timer.completed?"#00ff88":"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+        <button className="btn btn-g" onClick={()=>startTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>{timer.running?"استكمال":"ابدأ"}</button>
+        <button className="btn btn-o" onClick={()=>pauseTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>إيقاف</button>
+        <button className="btn btn-o" onClick={()=>resetTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>إعادة</button>
+        <button className="btn btn-o" onClick={()=>completeTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>تمت الجلسة</button>
+      </div>
+    </div>);
+  };
+
+  const InlineVideoPanel=({lesson,compact=false})=>{
+    if(!lesson)return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:14,color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>اختر درسًا لعرض الفيديو والملاحظات.</div>);
+    const course=COURSE_BY_ID[lesson.courseId],embed=getLessonEmbedUrl(lesson),note=s.lessonNotes?.[lesson.id]||"",done=!!s.doneLessons?.[lesson.id];
+    return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:compact?10:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",flexWrap:"wrap",marginBottom:10}}>
+        <div style={{minWidth:0}}>
+          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:3}}>{course?.title} · lesson #{lesson.index}</div>
+          <div style={{color:"var(--t0)",fontSize:compact?13:15,fontWeight:900,fontFamily:"'Cairo',sans-serif",lineHeight:1.6,overflowWrap:"anywhere"}}>{lesson.title}</div>
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          <button className="btn btn-o" onClick={()=>toggleLesson(lesson)} style={{fontSize:11,padding:"7px 10px"}}>{done?"إلغاء الإنجاز":"إنهاء الدرس"}</button>
+          <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 10px"}}>فتح YouTube</a>
+        </div>
+      </div>
+      {embed?(<div style={{aspectRatio:"16 / 9",width:"100%",borderRadius:10,overflow:"hidden",border:"1px solid var(--wo)",background:"#000",marginBottom:10}}>
+        <iframe title={lesson.title} src={embed} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen style={{width:"100%",height:"100%",border:0}}/>
+      </div>):(<div style={{background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.24)",borderRadius:8,padding:10,color:"#f87171",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>تعذر استخراج embed لهذا الفيديو، استخدم زر YouTube.</div>)}
+      <textarea value={note} onChange={e=>saveLessonNote(lesson.id,e.target.value)} placeholder="ملاحظات الدرس، نقاط صعبة، أسئلة للمراجعة..." style={{width:"100%",minHeight:compact?64:86,resize:"vertical",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--w3)",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}/>
+    </div>);
+  };
+
+  const StudySessionPanel=({session})=>{
+    const timerKey=sessionKey(selectedDateKey,session.id);
+    const done=session.lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length,total=session.lessons.length;
+    const active=session.lessons.find(lesson=>lesson.id===activeVideoLessonId)||session.lessons.find(lesson=>!s.doneLessons?.[lesson.id])||session.lessons[0]||null;
+    return(<div className="card" style={{padding:isMobile?12:14,borderColor:done===total&&total?"rgba(0,255,136,0.3)":"var(--sbd)",background:"var(--sbg)"}}>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 280px",gap:12,alignItems:"start",marginBottom:12}}>
+        <div>
+          <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap"}}>
+            <div><div style={{color:"var(--t0)",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{session.title}</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{done}/{total} lessons · {session.usedMin}m scheduled</div></div>
+            <button className="btn btn-o" disabled={!total} onClick={()=>{completeSession(session);completeTimer(timerKey);}} style={{fontSize:12,padding:"8px 12px",opacity:total?1:.45}}>إنهاء الجلسة</button>
+          </div>
+          <div className="bar" style={{height:8,marginTop:10}}><div className="bar-fill" style={{width:`${pct(done,total)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+        </div>
+        <StudyTimer timerKey={timerKey}/>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"minmax(260px,.75fr) minmax(0,1.25fr)",gap:12}}>
+        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+          {total?session.lessons.map(lesson=>{
+            const doneLesson=!!s.doneLessons?.[lesson.id],sel=active?.id===lesson.id;
+            return(<button key={lesson.id} onClick={()=>setActiveVideoLessonId(lesson.id)} style={{textAlign:"initial",cursor:"pointer",background:sel?"var(--sbg12)":doneLesson?"rgba(0,255,136,0.05)":"var(--bo)",border:`1px solid ${sel?"var(--sbd3)":doneLesson?"rgba(0,255,136,0.22)":"var(--wo)"}`,borderRadius:8,padding:9}}>
+              <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+                <span className={`chk ${doneLesson?"on":""}`} style={{width:18,height:18,marginTop:1}}>{doneLesson&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</span>
+                <div style={{minWidth:0}}>
+                  <div style={{color:doneLesson?"var(--t2)":"var(--t0)",fontSize:12,fontWeight:800,fontFamily:"'Cairo',sans-serif",lineHeight:1.45,overflowWrap:"anywhere"}}>{lesson.index}. {lesson.title}</div>
+                  <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:3}}>{formatDuration(lesson.durationSec)}</div>
+                </div>
+              </div>
+            </button>);
+          }):<div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>لا توجد دروس في هذه الجلس.</div>}
+        </div>
+        <InlineVideoPanel lesson={active}/>
+      </div>
+    </div>);
+  };
 
   const LessonRow=({lesson})=>{
     const course=COURSE_BY_ID[lesson.courseId];
@@ -21361,7 +21529,10 @@ export default function CyberPath(){
           <div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>شجرة البلاليست حسب المسارات</div>
           <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{TRACK_COURSE_TREE.length} tracks · {TRACK_TREE_COURSE_COUNT}/{UNIQUE_PLAYLIST_COUNT} playlists · {LESSONS.length} video lessons</div>
         </div>
-        <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء الشجرة":"عرض الشجرة"}</button>
+        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+          <button className="btn btn-o" onClick={()=>upd(prev=>({...prev,libraryFilter:prev.libraryFilter==="undone"?"all":"undone"}))} style={{fontSize:12,padding:"8px 12px"}}>{s.libraryFilter==="undone"?"عرض الكل":"غير المكتمل فقط"}</button>
+          <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء الشجرة":"عرض الشجرة"}</button>
+        </div>
       </div>
       <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8,marginBottom:12}}>
         افتح المسار ثم افتح الـ playlist لترى كل فيديو كدرس مستقل برابطه، مع نفس حالة الإنجاز المحفوظة في Todo اليوم.
@@ -21391,8 +21562,9 @@ export default function CyberPath(){
               </div>
             </button>
             {trackOpen&&<div style={{padding:isMobile?"0 10px 10px":"0 12px 12px",display:"flex",flexDirection:"column",gap:8}}>
-              {item.courses.map(course=>{
+              {item.courses.filter(course=>s.libraryFilter!=="undone"||(COURSE_LESSONS[course.id]||[]).some(lesson=>!s.doneLessons?.[lesson.id])).map(course=>{
                 const lessons=COURSE_LESSONS[course.id]||[];
+                const visibleLessons=s.libraryFilter==="undone"?lessons.filter(lesson=>!s.doneLessons?.[lesson.id]):lessons;
                 const courseKey=`${item.tid}-${course.id}`;
                 const courseOpenNow=openCourseKey===courseKey;
                 const done=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
@@ -21415,7 +21587,7 @@ export default function CyberPath(){
                     </div>
                   </button>
                   {courseOpenNow&&<div style={{padding:10,paddingTop:0,display:"flex",flexDirection:"column",gap:7}}>
-                    {lessons.map(lesson=>{
+                    {visibleLessons.map(lesson=>{
                       const doneLesson=!!s.doneLessons?.[lesson.id];
                       return(<div key={`${item.tid}-${lesson.id}`} style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:9,alignItems:"center",background:doneLesson?"rgba(0,255,136,0.06)":"var(--w3)",border:`1px solid ${doneLesson?"rgba(0,255,136,0.25)":"var(--wb)"}`,borderRadius:8,padding:9}}>
                         <button onClick={()=>toggleLesson(lesson)} className={`chk ${doneLesson?"on":""}`} style={{border:"2px solid var(--sbd4)",background:doneLesson?"#00ff88":"transparent"}} aria-label={doneLesson?"إلغاء إنجاز الدرس":"إنهاء الدرس"}>{doneLesson&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
@@ -21426,7 +21598,10 @@ export default function CyberPath(){
                             {(lesson.topicTags||[]).slice(0,5).map(tag=><span key={tag} style={{color:"var(--t1)",fontSize:10}}>#{tag}</span>)}
                           </div>
                         </div>
-                        <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 11px",textAlign:"center",whiteSpace:"nowrap"}}>فتح الدرس</a>
+                        <div style={{display:"flex",gap:7,flexWrap:"wrap",justifyContent:isMobile?"flex-start":"flex-end"}}>
+                          <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 11px",whiteSpace:"nowrap"}}>داخل التطبيق</button>
+                          <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 11px",textAlign:"center",whiteSpace:"nowrap"}}>YouTube</a>
+                        </div>
                       </div>);
                     })}
                   </div>}
@@ -21438,6 +21613,134 @@ export default function CyberPath(){
       </div>}
     </div>
   );
+
+  const TodayStudyCockpit=()=>{
+    const activeOutsideDay=activeVideoLesson&&!dailyPlan.sessions.some(session=>session.lessons.some(lesson=>lesson.id===activeVideoLesson.id));
+    return(<div>
+      {activeOutsideDay&&<div style={{marginBottom:12}}>
+        <div style={{color:"var(--t1)",fontSize:12,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:7}}>درس مفتوح من البحث أو المكتبة</div>
+        <InlineVideoPanel lesson={activeVideoLesson}/>
+      </div>}
+      {restDay?<RestDay/>:dailyPlan.exhausted?(
+        <div className="card" style={{padding:18,marginBottom:14}}>
+          <div style={{color:"#00ff88",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>أكملت كل الدروس المستخرجة</div>
+          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>لا توجد دروس جديدة لهذا اليوم التدريبي. راجع المكتبة أو المراجعة.</div>
+        </div>
+      ):(
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          {dailyPlan.sessions.map(session=><StudySessionPanel key={session.id} session={session}/>)}
+        </div>
+      )}
+    </div>);
+  };
+
+  const GlobalSearchPanel=()=>{
+    const q=textNorm(searchFilters.q);
+    const results=LESSONS.filter(lesson=>{
+      const course=COURSE_BY_ID[lesson.courseId];
+      const hay=textNorm(`${lesson.title} ${course?.title||""} ${(lesson.topicTags||[]).join(" ")} ${(lesson.trackIds||[]).join(" ")} ${(lesson.trackIds||[]).map(trackLabel).join(" ")}`);
+      const trackOk=searchFilters.track==="all"||(lesson.trackIds||[]).includes(searchFilters.track)||(course?.trackIds||[]).includes(searchFilters.track);
+      const done=!!s.doneLessons?.[lesson.id];
+      const statusOk=searchFilters.status==="all"||(searchFilters.status==="done"&&done)||(searchFilters.status==="undone"&&!done);
+      return trackOk&&statusOk&&(!q||hay.includes(q));
+    });
+    return(<div className="card" style={{padding:isMobile?12:16}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:12}}>
+        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>بحث شامل في الدروس</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{results.length}/{LESSONS.length} results</div></div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1.2fr .7fr .7fr",gap:8,marginBottom:12}}>
+        <input value={searchFilters.q||""} onChange={e=>setSearchFilter({q:e.target.value})} placeholder="ابحث عن XSS, Linux, Android..." style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--bo)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}/>
+        <select value={searchFilters.track||"all"} onChange={e=>setSearchFilter({track:e.target.value})} style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--select-bg)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}>
+          <option value="all">كل المسارات</option>
+          {TRACK_COURSE_TREE.map(item=><option key={item.tid} value={item.tid}>{item.track.name}</option>)}
+        </select>
+        <select value={searchFilters.status||"all"} onChange={e=>setSearchFilter({status:e.target.value})} style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--select-bg)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}>
+          <option value="all">كل الحالات</option><option value="undone">غير مكتمل</option><option value="done">مكتمل</option>
+        </select>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:isMobile?"none":"70vh",overflowY:isMobile?"visible":"auto",paddingRight:isMobile?0:4}}>
+        {results.map(lesson=>{
+          const course=COURSE_BY_ID[lesson.courseId],done=!!s.doneLessons?.[lesson.id];
+          return(<div key={lesson.id} style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:9,alignItems:"center",background:done?"rgba(0,255,136,0.06)":"var(--bo)",border:`1px solid ${done?"rgba(0,255,136,0.25)":"var(--wo)"}`,borderRadius:9,padding:10}}>
+            <button onClick={()=>toggleLesson(lesson)} className={`chk ${done?"on":""}`} style={{border:"2px solid var(--sbd4)",background:done?"#00ff88":"transparent"}}>{done&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
+            <div style={{minWidth:0}}>
+              <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{course?.title} · #{lesson.index}</div>
+              <div style={{color:done?"var(--t2)":"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:5}}>{(lesson.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}</div>
+            </div>
+            <div style={{display:"flex",gap:7,flexWrap:"wrap",justifyContent:isMobile?"flex-start":"flex-end"}}>
+              <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 10px"}}>مشاهدة داخل التطبيق</button>
+              <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 10px"}}>YouTube</a>
+            </div>
+          </div>);
+        })}
+      </div>
+    </div>);
+  };
+
+  const ReviewPanel=()=>{
+    const byId=new Map((s.reviewQueue||[]).map(item=>[item.lessonId,item]));
+    Object.entries(s.lessonNotes||{}).forEach(([lessonId,note])=>{if(note?.trim()&&!byId.has(lessonId))byId.set(lessonId,{lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});});
+    const items=[...byId.values()].map(item=>({item,lesson:LESSONS.find(lesson=>lesson.id===item.lessonId)})).filter(row=>row.lesson).sort((a,b)=>String(a.item.dueDate||"").localeCompare(String(b.item.dueDate||"")));
+    const due=items.filter(row=>(row.item.dueDate||today())<=today());
+    const later=items.filter(row=>(row.item.dueDate||today())>today());
+    const renderRow=({item,lesson})=>{
+      const course=COURSE_BY_ID[lesson.courseId],review=s.lessonReview?.[lesson.id]||{};
+      return(<div key={lesson.id} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+          <div style={{minWidth:0}}>
+            <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{item.reason} · due {item.dueDate} · reviewed {review.reviewCount||0}x</div>
+            <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
+            <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:3}}>{course?.title}</div>
+          </div>
+          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+            <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 10px"}}>راجع الآن</button>
+            <button className="btn btn-g" onClick={()=>markReviewed(lesson)} style={{fontSize:11,padding:"7px 10px"}}>تمت المراجعة</button>
+            <button className="btn btn-o" onClick={()=>postponeReview(lesson)} style={{fontSize:11,padding:"7px 10px"}}>أجل يومين</button>
+          </div>
+        </div>
+      </div>);
+    };
+    return(<div className="card" style={{padding:isMobile?12:16}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:12}}>
+        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>المراجعة الذكية</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{due.length} due · {later.length} scheduled</div></div>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{color:"#00ff88",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>مستحق الآن</div>
+        {due.length?due.map(renderRow):<div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}>لا توجد مراجعات مستحقة الآن.</div>}
+        <div style={{color:"var(--t1)",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginTop:8}}>قادمة</div>
+        {later.slice(0,20).map(renderRow)}
+      </div>
+    </div>);
+  };
+
+  const ProgressPanel=()=>{
+    const courseDone=COURSES.filter(course=>(COURSE_LESSONS[course.id]||[]).every(lesson=>s.doneLessons?.[lesson.id])).length;
+    const studiedDays=new Set(Object.values(s.doneLessons||{})).size;
+    const avgPerDay=studiedDays?doneLessonCount/studiedDays:0;
+    const remaining=Math.max(0,totalLessonCount-doneLessonCount);
+    const etaDays=avgPerDay?Math.ceil(remaining/avgPerDay):null;
+    return(<div>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:9,marginBottom:12}}>
+        {[{label:"الدروس المكتملة",val:`${doneLessonCount}/${totalLessonCount}`,color:"#00ff88"},{label:"الكورسات المكتملة",val:`${courseDone}/${COURSES.length}`,color:"#00d4ff"},{label:"أيام بها إنجاز",val:studiedDays,color:"#a78bfa"},{label:"تقدير الإكمال",val:etaDays?`${etaDays} يوم`:"ابدأ أولًا",color:"#fbbf24"}].map((item,i)=><div key={i} className="stat-card" style={{padding:12}}>
+          <div style={{color:item.color,fontSize:17,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{item.val}</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{item.label}</div>
+        </div>)}
+      </div>
+      <div className="card" style={{padding:isMobile?12:16}}>
+        <div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>تقدم المسارات</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:9}}>
+          {TRACK_COURSE_TREE.map(item=>{
+            const done=item.courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.doneLessons?.[lesson.id]).length,0);
+            return(<div key={item.tid} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}><span style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif"}}>{item.track.icon} {item.track.name}</span><span style={{color:item.track.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct(done,item.lessonCount)}%</span></div>
+              <div className="bar" style={{marginTop:8}}><div className="bar-fill" style={{width:`${pct(done,item.lessonCount)}%`,background:item.track.color}}/></div>
+              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{done}/{item.lessonCount} lessons · {item.courses.length} playlists</div>
+            </div>);
+          })}
+        </div>
+      </div>
+    </div>);
+  };
 
   const RoadmapSummary=()=>(
     <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
@@ -21470,8 +21773,8 @@ export default function CyberPath(){
       <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"20px 24px",marginBottom:14,position:"relative",overflow:"hidden"}}>
         <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
           <div style={{minWidth:0}}>
-            <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// Today-first YouTube training plan</div>
-            <h1 style={{color:"var(--t0)",fontSize:isMobile?22:30,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>Todo اليوم</h1>
+            <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// Study Cockpit v2</div>
+            <h1 style={{color:"var(--t0)",fontSize:isMobile?22:30,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>مركز الدراسة اليومي</h1>
             <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif"}}>{fmtDate(selectedDate)} · {restDay?"جمعة راحة":`يوم تدريبي ${trainingDay}`} · البداية {s.trainingStartDate}</div>
           </div>
           <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
@@ -21489,19 +21792,12 @@ export default function CyberPath(){
         <div className="bar" style={{height:8,marginTop:12}}><div className="bar-fill" style={{width:`${overallPct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
       </div>
 
-      {restDay?<RestDay/>:dailyPlan.exhausted?(
-        <div className="card" style={{padding:18,marginBottom:14}}>
-          <div style={{color:"#00ff88",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>أكملت كل الدروس المستخرجة</div>
-          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>لا توجد دروس جديدة لهذا اليوم التدريبي. راجع الكتالوج أو أعد تثبيت تاريخ البداية.</div>
-        </div>
-      ):(
-        <div style={{display:"flex",flexDirection:"column",gap:12}}>
-          {dailyPlan.sessions.map(session=><SessionCard key={session.id} session={session}/>)}
-        </div>
-      )}
-
-      <TrackPlaylistTree/>
-      <RoadmapSummary/>
+      <StudyTabs/>
+      {activeTab==="today"&&<TodayStudyCockpit/>}
+      {activeTab==="library"&&<TrackPlaylistTree/>}
+      {activeTab==="search"&&<GlobalSearchPanel/>}
+      {activeTab==="review"&&<ReviewPanel/>}
+      {activeTab==="progress"&&<><ProgressPanel/><RoadmapSummary/></>}
     </div>
   );
 
@@ -21520,7 +21816,7 @@ export default function CyberPath(){
         <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
           <span style={{fontSize:16,color:"#050810",fontWeight:900}}>☰</span>
         </div>
-        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">Todo اليوم</div>
+        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">{TAB_ITEMS.find(tab=>tab.id===activeTab)?.label||"Study Cockpit"}</div>
         <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"} style={{margin:0}}>{theme==="dark"?"☀":"☾"}</button>
       </div>}
       <Dashboard/>
