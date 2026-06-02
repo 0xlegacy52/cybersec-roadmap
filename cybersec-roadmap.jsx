@@ -59,6 +59,11 @@ body{background:var(--bg);font-family:'Fira Code',monospace}
 .phase-hd:hover{background:var(--sbg04)}
 .res-card{background:var(--w3);border:1px solid var(--wb);border-radius:8px;padding:10px 14px;margin-bottom:8px;transition:all .2s;text-decoration:none;display:block}
 .res-card:hover{border-color:var(--sbd25);background:var(--sbg04)}
+details>summary::-webkit-details-marker{display:none}
+details>summary::marker{display:none;content:''}
+details[open] summary span:last-child{transform:rotate(-90deg)}
+details>summary{transition:all .2s}
+details>summary:hover{opacity:0.85}
 .todo-item{background:var(--w3);border:1px solid var(--wb);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .2s}
 .todo-item:hover{border-color:var(--sbd2)}
 .routine-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--w5);align-items:flex-start}
@@ -3021,61 +3026,18094 @@ const TRACKS={
 };
 
 const TRACK_ORDER=["foundations","web","mobile","api","network","ad","malware","ctf","cloud","osint","web3track","dfir","wireless","crypto","pwn","social","general"];
-const PRI_COL={high:"#ef4444",medium:"#f59e0b",low:"#10b981"};
-const PRI_BG={high:"rgba(239,68,68,0.12)",medium:"rgba(245,158,11,0.12)",low:"rgba(16,185,129,0.12)"};
-const R_COL={prayer:"rgba(250,204,21,0.15)",islamic:"rgba(52,211,153,0.15)",quran:"rgba(52,211,153,0.2)",study:"rgba(59,130,246,0.12)",health:"rgba(34,197,94,0.12)",break:"rgba(148,163,184,0.08)",project:"rgba(168,85,247,0.12)",community:"rgba(236,72,153,0.12)",personal:"rgba(249,115,22,0.1)"};
-const R_TXT={prayer:"#fde047",islamic:"#34d399",quran:"#6ee7b7",study:"#60a5fa",health:"#4ade80",break:"var(--t4)",project:"#c084fc",community:"#f472b6",personal:"#fb923c"};
+
+const SOURCE_PLAYLIST_COUNT=31;
+const UNIQUE_PLAYLIST_COUNT=30;
+const COURSES=[
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "title": "Cybersecurity Basics For Beginners",
+    "url": "https://www.youtube.com/playlist?list=PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "channel": "BlackSilence",
+    "lessonCount": 25,
+    "trackIds": [
+      "foundations"
+    ],
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "title": "كورس Cybersecurity for beginner to master bug bounty hunter",
+    "url": "https://www.youtube.com/playlist?list=PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "channel": "CyMatriX",
+    "lessonCount": 12,
+    "trackIds": [
+      "web",
+      "network",
+      "crypto",
+      "foundations"
+    ],
+    "topicTags": [
+      "web",
+      "network",
+      "crypto",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "title": "Malware Analysis Fundamentals",
+    "url": "https://www.youtube.com/playlist?list=PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "channel": "BlackSilence",
+    "lessonCount": 69,
+    "trackIds": [
+      "web",
+      "malware",
+      "foundations",
+      "network"
+    ],
+    "topicTags": [
+      "web",
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "title": "Android Applications Penetration Testing (بالعربى)",
+    "url": "https://www.youtube.com/playlist?list=PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "channel": "Abdulrahman",
+    "lessonCount": 17,
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ],
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "title": "eJPTv2",
+    "url": "https://www.youtube.com/playlist?list=PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "channel": "Cyberock",
+    "lessonCount": 35,
+    "trackIds": [
+      "web"
+    ],
+    "topicTags": [
+      "web",
+      "ejptv2"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "title": "Mobile Application Pentesting",
+    "url": "https://www.youtube.com/playlist?list=PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "channel": "PentestHint - The Tech Fellow",
+    "lessonCount": 21,
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ],
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "title": "Mobile Applications Penetration Testing",
+    "url": "https://www.youtube.com/playlist?list=PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "channel": "Mohamed Alama",
+    "lessonCount": 8,
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ],
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "title": "Full Android Penetration Testing Course Playlist",
+    "url": "https://www.youtube.com/playlist?list=PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "channel": "AppSec Hub",
+    "lessonCount": 36,
+    "trackIds": [
+      "web",
+      "cloud",
+      "mobile",
+      "foundations"
+    ],
+    "topicTags": [
+      "web",
+      "cloud",
+      "mobile",
+      "foundations",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "title": "Zero to Hero: A Practical Network Penetration Testing Course",
+    "url": "https://www.youtube.com/playlist?list=PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "channel": "The Cyber Mentor",
+    "lessonCount": 11,
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ],
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "title": "Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/playlist?list=PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "channel": "تكناوي دوت نيت",
+    "lessonCount": 12,
+    "trackIds": [
+      "ctf"
+    ],
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "title": "Security (in Arabic)",
+    "url": "https://www.youtube.com/playlist?list=PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "channel": "Ayman Bahaa-Eldin",
+    "lessonCount": 29,
+    "trackIds": [
+      "ctf"
+    ],
+    "topicTags": [
+      "ctf",
+      "security"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "title": "Bug Bounty Hunting For...",
+    "url": "https://www.youtube.com/playlist?list=PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "channel": "rs0n_live",
+    "lessonCount": 10,
+    "trackIds": [
+      "web",
+      "social",
+      "network"
+    ],
+    "topicTags": [
+      "web",
+      "social",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "title": "MOBISEC Course",
+    "url": "https://www.youtube.com/playlist?list=PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "channel": "Mohamed Sayed - محمد سيد",
+    "lessonCount": 22,
+    "trackIds": [
+      "web"
+    ],
+    "topicTags": [
+      "web",
+      "mobisec"
+    ]
+  },
+  {
+    "id": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "title": "The Art of DFIR & Threat Hunting - Arabic Training",
+    "url": "https://www.youtube.com/playlist?list=PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "channel": "Muhammed Talaat",
+    "lessonCount": 4,
+    "trackIds": [
+      "dfir",
+      "ad"
+    ],
+    "topicTags": [
+      "dfir",
+      "ad",
+      "the",
+      "art",
+      "threat"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "title": "Web Pen-Testing Course",
+    "url": "https://www.youtube.com/playlist?list=PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "channel": "Mohamed Sayed - محمد سيد",
+    "lessonCount": 19,
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ],
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "full"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "title": "florida state university offensive security lectures",
+    "url": "https://www.youtube.com/playlist?list=PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "channel": "Abdulrahman",
+    "lessonCount": 33,
+    "trackIds": [
+      "malware",
+      "dfir"
+    ],
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "title": "Intrduction to CTF in arabic",
+    "url": "https://www.youtube.com/playlist?list=PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "channel": "DFIRHub",
+    "lessonCount": 11,
+    "trackIds": [
+      "ctf",
+      "cloud"
+    ],
+    "topicTags": [
+      "ctf",
+      "cloud",
+      "intrduction"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "title": "CTF Course",
+    "url": "https://www.youtube.com/playlist?list=PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "channel": "SATTAM",
+    "lessonCount": 8,
+    "trackIds": [
+      "ctf",
+      "osint"
+    ],
+    "topicTags": [
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "title": "Web Application Security Course (Arabic)",
+    "url": "https://www.youtube.com/playlist?list=PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "channel": "Mohamed Sayed - محمد سيد",
+    "lessonCount": 36,
+    "trackIds": [
+      "web",
+      "foundations",
+      "mobile"
+    ],
+    "topicTags": [
+      "web",
+      "foundations",
+      "mobile",
+      "application",
+      "security",
+      "udemy"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "title": "Learn CTF and cyber security in Arabic from zero to hero",
+    "url": "https://www.youtube.com/playlist?list=PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "channel": "Mina Ashraf",
+    "lessonCount": 39,
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ],
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "title": "Cyber Weapons Lab",
+    "url": "https://www.youtube.com/playlist?list=PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "channel": "Null Byte",
+    "lessonCount": 224,
+    "trackIds": [
+      "network",
+      "foundations",
+      "pwn"
+    ],
+    "topicTags": [
+      "network",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "join"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "title": "Cissp- Exam preparation Arabic course-Ahmed Abdelhamid",
+    "url": "https://www.youtube.com/playlist?list=PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "channel": "Spectrum CyberSecurity",
+    "lessonCount": 10,
+    "trackIds": [
+      "wireless"
+    ],
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "title": "cybrary web application pen testing course in arabic مترجم",
+    "url": "https://www.youtube.com/playlist?list=PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "channel": "CWWC",
+    "lessonCount": 9,
+    "trackIds": [
+      "web",
+      "foundations"
+    ],
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "title": "penetration testing - arabic",
+    "url": "https://www.youtube.com/playlist?list=PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "channel": "ahmed abdelazeem",
+    "lessonCount": 8,
+    "trackIds": [
+      "foundations",
+      "web"
+    ],
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "title": "BugCast Podcast",
+    "url": "https://www.youtube.com/playlist?list=PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "channel": "سايبر عرب | Cyber 3rb",
+    "lessonCount": 13,
+    "trackIds": [
+      "api"
+    ],
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "cyber",
+      "security"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "title": "Ramadan Nights 2025",
+    "url": "https://www.youtube.com/playlist?list=PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "channel": "Cyber Security Club - AOU",
+    "lessonCount": 18,
+    "trackIds": [
+      "cloud"
+    ],
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "title": "my fav bug -*-*-*",
+    "url": "https://www.youtube.com/playlist?list=PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "channel": "mahdi",
+    "lessonCount": 54,
+    "trackIds": [
+      "mobile"
+    ],
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "title": "Android Pentesting Series",
+    "url": "https://www.youtube.com/playlist?list=PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "channel": "AumLayer",
+    "lessonCount": 20,
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ],
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "the"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "title": "Free Android Application Security Course",
+    "url": "https://www.youtube.com/playlist?list=PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "channel": "Mobile Hacking Lab",
+    "lessonCount": 31,
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "dfir"
+    ],
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "title": "Testing Workshops",
+    "url": "https://www.youtube.com/playlist?list=PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "channel": "Rania Mokhtar (ويبقى الأثر)",
+    "lessonCount": 31,
+    "trackIds": [
+      "web",
+      "social",
+      "foundations"
+    ],
+    "topicTags": [
+      "web",
+      "social",
+      "foundations",
+      "testing",
+      "workshops"
+    ]
+  }
+];
+const LESSONS=[
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-yPrsMK6q9GA",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 1,
+    "title": "01- Introduction To Workshop",
+    "url": "https://www.youtube.com/watch?v=yPrsMK6q9GA",
+    "durationSec": 2090,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-ZuddmvRGGAM",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 2,
+    "title": "02- Introduction To Cybersecurity : Part 1",
+    "url": "https://www.youtube.com/watch?v=ZuddmvRGGAM",
+    "durationSec": 8073,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-PvGWUtIQPSY",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 3,
+    "title": "03- Introduction To Cybersecurity : Part 2",
+    "url": "https://www.youtube.com/watch?v=PvGWUtIQPSY",
+    "durationSec": 5551,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5--8-NrN1O3jY",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 4,
+    "title": "04- Important Cybersecurity Concepts And Definitions : Part 1",
+    "url": "https://www.youtube.com/watch?v=-8-NrN1O3jY",
+    "durationSec": 4260,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-7i7XlluKpIU",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 5,
+    "title": "05- Important Cybersecurity Concepts And Definitions : Part 2",
+    "url": "https://www.youtube.com/watch?v=7i7XlluKpIU",
+    "durationSec": 6171,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-ks1WxiD4EqY",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 6,
+    "title": "06- Network Basics : Part 1",
+    "url": "https://www.youtube.com/watch?v=ks1WxiD4EqY",
+    "durationSec": 4114,
+    "topicTags": [
+      "network",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-cR7iYJ1b91g",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 7,
+    "title": "07- Network Basics : Part 2",
+    "url": "https://www.youtube.com/watch?v=cR7iYJ1b91g",
+    "durationSec": 4635,
+    "topicTags": [
+      "network",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-T1T60ZWuPS8",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 8,
+    "title": "08- Network Basics : Part 3",
+    "url": "https://www.youtube.com/watch?v=T1T60ZWuPS8",
+    "durationSec": 4312,
+    "topicTags": [
+      "network",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-TZR0Zwor_xc",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 9,
+    "title": "09- Network Basics : Part 4",
+    "url": "https://www.youtube.com/watch?v=TZR0Zwor_xc",
+    "durationSec": 2159,
+    "topicTags": [
+      "network",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-S0ao461rV9E",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 10,
+    "title": "10- Network Basics : Part 5",
+    "url": "https://www.youtube.com/watch?v=S0ao461rV9E",
+    "durationSec": 2407,
+    "topicTags": [
+      "network",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-jU_6oNbNQRQ",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 11,
+    "title": "11- Linux Basics : Part 1",
+    "url": "https://www.youtube.com/watch?v=jU_6oNbNQRQ",
+    "durationSec": 2518,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-FrZA4TQEgFc",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 12,
+    "title": "12- Linux Basics : Part 2",
+    "url": "https://www.youtube.com/watch?v=FrZA4TQEgFc",
+    "durationSec": 2961,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-h1zv1TqDQd4",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 13,
+    "title": "13- Linux Basics : Part 3",
+    "url": "https://www.youtube.com/watch?v=h1zv1TqDQd4",
+    "durationSec": 890,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-mt6OaqkMhc4",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 14,
+    "title": "14- Linux Basics : Part 4",
+    "url": "https://www.youtube.com/watch?v=mt6OaqkMhc4",
+    "durationSec": 2008,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-gUA2A2wf6PQ",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 15,
+    "title": "15- Linux Basics : Part 5",
+    "url": "https://www.youtube.com/watch?v=gUA2A2wf6PQ",
+    "durationSec": 1783,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-tOQ8UxvUXgo",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 16,
+    "title": "16- Linux Basics : Part 6",
+    "url": "https://www.youtube.com/watch?v=tOQ8UxvUXgo",
+    "durationSec": 1902,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-Cgda61SaDGs",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 17,
+    "title": "17- Linux Basics : Part 7",
+    "url": "https://www.youtube.com/watch?v=Cgda61SaDGs",
+    "durationSec": 1864,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-koYwU0P2evE",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 18,
+    "title": "18- Linux Basics : Part 8",
+    "url": "https://www.youtube.com/watch?v=koYwU0P2evE",
+    "durationSec": 2067,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-_rvxwdWVQ_Q",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 19,
+    "title": "19- Windows Basics",
+    "url": "https://www.youtube.com/watch?v=_rvxwdWVQ_Q",
+    "durationSec": 1888,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-U_QQ-7wLIFE",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 20,
+    "title": "20- Python Basics : Part 1",
+    "url": "https://www.youtube.com/watch?v=U_QQ-7wLIFE",
+    "durationSec": 2976,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-lFoJ6iT1tsU",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 21,
+    "title": "21- Python Basics : Part 2",
+    "url": "https://www.youtube.com/watch?v=lFoJ6iT1tsU",
+    "durationSec": 1701,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-nxkHzp2rA0s",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 22,
+    "title": "22- Python Basics : Part 3",
+    "url": "https://www.youtube.com/watch?v=nxkHzp2rA0s",
+    "durationSec": 2163,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-P4KeXwN9wlk",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 23,
+    "title": "23- Python Basics : Part 4",
+    "url": "https://www.youtube.com/watch?v=P4KeXwN9wlk",
+    "durationSec": 1084,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-00xLOd-6Va4",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 24,
+    "title": "24- Cryptography, Encoding, and Data Protection",
+    "url": "https://www.youtube.com/watch?v=00xLOd-6Va4",
+    "durationSec": 2085,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5-CDA0Y3TgZO0",
+    "courseId": "PLgKWvRMsdLZ6k109C1TsTTv5AbCM_-Lq5",
+    "index": 25,
+    "title": "25- What's The Next Step ?",
+    "url": "https://www.youtube.com/watch?v=CDA0Y3TgZO0",
+    "durationSec": 1094,
+    "topicTags": [
+      "foundations",
+      "cybersecurity",
+      "basics",
+      "for",
+      "beginners"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-TkOtGpTv8_c",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 1,
+    "title": "Introduction to Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=TkOtGpTv8_c",
+    "durationSec": 7004,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-Nuqm43aaCvo",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 2,
+    "title": "Network Introduction and Protocols  | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=Nuqm43aaCvo",
+    "durationSec": 9996,
+    "topicTags": [
+      "web",
+      "network",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-9Lx3Ah5GbAk",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 3,
+    "title": "Network + شرح | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=9Lx3Ah5GbAk",
+    "durationSec": 5937,
+    "topicTags": [
+      "web",
+      "network",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-XKpmjlggzWk",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 4,
+    "title": "Network Revision (الزيتونة)  | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=XKpmjlggzWk",
+    "durationSec": 7146,
+    "topicTags": [
+      "web",
+      "network",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-V5oKavuI4Jc",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 5,
+    "title": "Kali Linux for Beginners | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=V5oKavuI4Jc",
+    "durationSec": 3385,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-vfZ-b1NAXMI",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 6,
+    "title": "شرح + Security بالكامل",
+    "url": "https://www.youtube.com/watch?v=vfZ-b1NAXMI",
+    "durationSec": 4454,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-_Bev9ckPOXY",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 7,
+    "title": "Cryptography Basics | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=_Bev9ckPOXY",
+    "durationSec": 7648,
+    "topicTags": [
+      "web",
+      "crypto",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "crypto",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-pgf-uImxeqQ",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 8,
+    "title": "Web Basics (Part 1) | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=pgf-uImxeqQ",
+    "durationSec": 7739,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-Yd7yIfZeA1M",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 9,
+    "title": "Web Basics (Part 2) | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=Yd7yIfZeA1M",
+    "durationSec": 4306,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-j1FKUA53PPg",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 10,
+    "title": "Authentication ثغرة | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=j1FKUA53PPg",
+    "durationSec": 6695,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-nhwrfHC47xE",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 11,
+    "title": "Path Traversal ثغرة  | Cybersecurity",
+    "url": "https://www.youtube.com/watch?v=nhwrfHC47xE",
+    "durationSec": 7900,
+    "topicTags": [
+      "web",
+      "crypto",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "crypto",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez-gtfIsd5w5XA",
+    "courseId": "PLsIGT4L3dt7Np5LAIKzC3Bg_HDBglA0Ez",
+    "index": 12,
+    "title": "Advanced bug bounty tips & tricks (محتوي عربي)",
+    "url": "https://www.youtube.com/watch?v=gtfIsd5w5XA",
+    "durationSec": 11251,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybersecurity",
+      "for",
+      "beginner",
+      "master"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-6P8N7VW21MQ",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 1,
+    "title": "01- Introduction To The Workshop",
+    "url": "https://www.youtube.com/watch?v=6P8N7VW21MQ",
+    "durationSec": 9130,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-FPSBYUdvpm8",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 2,
+    "title": "02- Programming Basics Concepts For Malware Analysts P1",
+    "url": "https://www.youtube.com/watch?v=FPSBYUdvpm8",
+    "durationSec": 8790,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "programming"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-WW5xideeUDA",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 3,
+    "title": "03- Programming Basics Concepts For Malware Analysts P2",
+    "url": "https://www.youtube.com/watch?v=WW5xideeUDA",
+    "durationSec": 10080,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "programming"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-m4HoXbxGSsc",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 4,
+    "title": "04- Discussion About CTFs & Programming Basics : Python P1",
+    "url": "https://www.youtube.com/watch?v=m4HoXbxGSsc",
+    "durationSec": 9602,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "discussion"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-4TJOQaOGDrk",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 5,
+    "title": "05- Programming Basics : Python P2",
+    "url": "https://www.youtube.com/watch?v=4TJOQaOGDrk",
+    "durationSec": 11663,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "programming"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-OZyjwTbPnmA",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 6,
+    "title": "06- Revision And Task Discussion",
+    "url": "https://www.youtube.com/watch?v=OZyjwTbPnmA",
+    "durationSec": 7901,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-yIjt8ZfvB80",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 7,
+    "title": "07- Revision & Task Discussion P2 And Introduction To C Programming",
+    "url": "https://www.youtube.com/watch?v=yIjt8ZfvB80",
+    "durationSec": 9400,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-v4P8m1u_7ik",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 8,
+    "title": "08- Introduction To C Programming P2",
+    "url": "https://www.youtube.com/watch?v=v4P8m1u_7ik",
+    "durationSec": 7983,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-z5qwaZLHep4",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 9,
+    "title": "09- Introduction To C Programming P3",
+    "url": "https://www.youtube.com/watch?v=z5qwaZLHep4",
+    "durationSec": 6406,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9c7nb4KcNfM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 10,
+    "title": "10- Introduction To C Programming P4",
+    "url": "https://www.youtube.com/watch?v=9c7nb4KcNfM",
+    "durationSec": 7414,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-ijc55rW_5z4",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 11,
+    "title": "11- Introduction To C Programming P5",
+    "url": "https://www.youtube.com/watch?v=ijc55rW_5z4",
+    "durationSec": 7117,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-ImrcMr0NgZA",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 12,
+    "title": "12- Introduction To C Programming P6",
+    "url": "https://www.youtube.com/watch?v=ImrcMr0NgZA",
+    "durationSec": 9197,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "introduction"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9AG-fTGbyo8",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 13,
+    "title": "13- CPU Arch Basics P1",
+    "url": "https://www.youtube.com/watch?v=9AG-fTGbyo8",
+    "durationSec": 10263,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "cpu"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-dMVb4_aAhvE",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 14,
+    "title": "14- Network Basics P1",
+    "url": "https://www.youtube.com/watch?v=dMVb4_aAhvE",
+    "durationSec": 7398,
+    "topicTags": [
+      "network",
+      "malware",
+      "foundations",
+      "analysis",
+      "fundamentals"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-OHsGkcptwiM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 15,
+    "title": "15- Network Basics P2",
+    "url": "https://www.youtube.com/watch?v=OHsGkcptwiM",
+    "durationSec": 8686,
+    "topicTags": [
+      "network",
+      "malware",
+      "foundations",
+      "analysis",
+      "fundamentals"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4--Xs2Xw9oSb8",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 16,
+    "title": "16- Revision And Task Discussion P1",
+    "url": "https://www.youtube.com/watch?v=-Xs2Xw9oSb8",
+    "durationSec": 7875,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-dJFCOuMS4WQ",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 17,
+    "title": "17- Revision And Task Discussion P2",
+    "url": "https://www.youtube.com/watch?v=dJFCOuMS4WQ",
+    "durationSec": 5238,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-MY9E4Hf4VeE",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 18,
+    "title": "18- Encode , Encryption And Hashing Basics",
+    "url": "https://www.youtube.com/watch?v=MY9E4Hf4VeE",
+    "durationSec": 5425,
+    "topicTags": [
+      "malware",
+      "crypto",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "encode"
+    ],
+    "trackIds": [
+      "malware",
+      "crypto",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-6nKfDXZwUHE",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 19,
+    "title": "19- Revision & Task Discussion ( Reverse Tasks )",
+    "url": "https://www.youtube.com/watch?v=6nKfDXZwUHE",
+    "durationSec": 6959,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-QrCffV5C-hE",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 20,
+    "title": "20- OS Basics P1 : OS Introduction",
+    "url": "https://www.youtube.com/watch?v=QrCffV5C-hE",
+    "durationSec": 5468,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basics"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-2gDHaS8QWoY",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 21,
+    "title": "21- OS Basics P2 : OS Structures",
+    "url": "https://www.youtube.com/watch?v=2gDHaS8QWoY",
+    "durationSec": 6154,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basics"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-pSxob9kkAKI",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 22,
+    "title": "22- OS Basics P3 : Processes & Threads",
+    "url": "https://www.youtube.com/watch?v=pSxob9kkAKI",
+    "durationSec": 4922,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basics"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-v4I7N7bIdoY",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 23,
+    "title": "23- OS Basics P4 : System Calls And Windows APIs",
+    "url": "https://www.youtube.com/watch?v=v4I7N7bIdoY",
+    "durationSec": 5836,
+    "topicTags": [
+      "api",
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basics"
+    ],
+    "trackIds": [
+      "api",
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-SUFQKgP7F4U",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 24,
+    "title": "24- OS Basics P5 : System Calls And Windows APIs P2",
+    "url": "https://www.youtube.com/watch?v=SUFQKgP7F4U",
+    "durationSec": 6549,
+    "topicTags": [
+      "api",
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basics"
+    ],
+    "trackIds": [
+      "api",
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-RjOR2ACYS2o",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 25,
+    "title": "25- Dive Into Malwares World",
+    "url": "https://www.youtube.com/watch?v=RjOR2ACYS2o",
+    "durationSec": 5439,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-jIIzm6Rv6Qk",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 26,
+    "title": "26- How To Setup Your Malware Analysis Machine ?",
+    "url": "https://www.youtube.com/watch?v=jIIzm6Rv6Qk",
+    "durationSec": 5821,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "how"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-VVIQ_VE7VRs",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 27,
+    "title": "27- Revision & Task Discussion",
+    "url": "https://www.youtube.com/watch?v=VVIQ_VE7VRs",
+    "durationSec": 6034,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-W8P-22-ts6k",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 28,
+    "title": "28- Basic Static Analysis : Intro & Some Important Techniques And Tools",
+    "url": "https://www.youtube.com/watch?v=W8P-22-ts6k",
+    "durationSec": 5826,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basic"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-Z7i4ff_2q1E",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 29,
+    "title": "29- Basic Static Analysis : PE Files And Some Operations And Tools To Deal With It",
+    "url": "https://www.youtube.com/watch?v=Z7i4ff_2q1E",
+    "durationSec": 5576,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basic"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-Z6Gysvkie58",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 30,
+    "title": "30- Meaning & Types Of Packing And How To Deal With It",
+    "url": "https://www.youtube.com/watch?v=Z6Gysvkie58",
+    "durationSec": 7965,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "meaning"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4--pjhEwyXcHg",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 31,
+    "title": "31- Basic Dynamic Analysis : Get Familiar With Sandboxes",
+    "url": "https://www.youtube.com/watch?v=-pjhEwyXcHg",
+    "durationSec": 6415,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "basic"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-DSbtOqb9vMY",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 32,
+    "title": "32- Get Into Assembly Language x86 P1 : Introduction To Assembly Language",
+    "url": "https://www.youtube.com/watch?v=DSbtOqb9vMY",
+    "durationSec": 7722,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9vxizL6z-08",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 33,
+    "title": "33- Get Into Assembly Language x86 P2 : Data Moving Instructions In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=9vxizL6z-08",
+    "durationSec": 8000,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-rE7paYGmvpw",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 34,
+    "title": "34- Get Into Assembly Language x86 P3 : Arithmetic Instructions In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=rE7paYGmvpw",
+    "durationSec": 5406,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9r8EaqOt-bg",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 35,
+    "title": "35- Get Into Assembly Language x86 P4 : Logical Instructions In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=9r8EaqOt-bg",
+    "durationSec": 3481,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-KqUe8hR6lLM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 36,
+    "title": "36- Get Into Assembly Language x86 P5 : Control Instructions In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=KqUe8hR6lLM",
+    "durationSec": 4763,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-8db8mgzEmT4",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 37,
+    "title": "37- Get Into Assembly Language x86 P6 : String And Miscellaneous Instructions In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=8db8mgzEmT4",
+    "durationSec": 4878,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "get"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-fgqd5s62x_c",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 38,
+    "title": "38- Revision And Task Discussion P1",
+    "url": "https://www.youtube.com/watch?v=fgqd5s62x_c",
+    "durationSec": 7343,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-xb8Xh20QkO4",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 39,
+    "title": "39- Q&A Session",
+    "url": "https://www.youtube.com/watch?v=xb8Xh20QkO4",
+    "durationSec": 7192,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-eoVi6Y7FXtQ",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 40,
+    "title": "40- Revision And Task Discussion P2",
+    "url": "https://www.youtube.com/watch?v=eoVi6Y7FXtQ",
+    "durationSec": 5556,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "revision"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-G-PijruvTpk",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 41,
+    "title": "41- Dive Into Assembly x86 P1 : Functions Calls With Stack Layout In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=G-PijruvTpk",
+    "durationSec": 9019,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-os5pwt9AKpU",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 42,
+    "title": "42- Dive Into Assembly x86 P2 : If Conditions & Switch Cases In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=os5pwt9AKpU",
+    "durationSec": 2260,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-IbiePhG0Ot0",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 43,
+    "title": "43- Dive Into Assembly x86 P3 : Loops In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=IbiePhG0Ot0",
+    "durationSec": 2791,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-48Z4WiVfU4w",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 44,
+    "title": "44- Dive Into Assembly x86 P4 : Arrays & Structs With Loops In Assembly Language",
+    "url": "https://www.youtube.com/watch?v=48Z4WiVfU4w",
+    "durationSec": 4567,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-sHdh01b6Stw",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 45,
+    "title": "45- Dive Into IDA & Disassemble Algorithms P1 : Get Familiar With IDA Pro",
+    "url": "https://www.youtube.com/watch?v=sHdh01b6Stw",
+    "durationSec": 6000,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-_9H3MVPrGos",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 46,
+    "title": "46- Dive Into IDA & Disassemble Algorithms P2 : Plugins & Python IDAScripting In IDA Pro",
+    "url": "https://www.youtube.com/watch?v=_9H3MVPrGos",
+    "durationSec": 6152,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-C3mg6JpxTxU",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 47,
+    "title": "47- Dive Into IDA & Disassemble Algorithms P3 : Solve First CTF Challenge Using IDA Pro",
+    "url": "https://www.youtube.com/watch?v=C3mg6JpxTxU",
+    "durationSec": 5023,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-dMfdaZKo9LM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 48,
+    "title": "48- General Revision : Solve 2 CTFs Challenges Using IDA \"Debugging And Disassembled Python Code\"",
+    "url": "https://www.youtube.com/watch?v=dMfdaZKo9LM",
+    "durationSec": 6018,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "general"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-ouLhx2WPEsM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 49,
+    "title": "49- Dive Into Ghidra & Disassemble Algorithms P1 : Get Familiar With Ghidra",
+    "url": "https://www.youtube.com/watch?v=ouLhx2WPEsM",
+    "durationSec": 4027,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-UNZLbIN2ZgI",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 50,
+    "title": "50- Dive Into Ghidra & Disassemble Algorithms P2 : Work With Ghidra Scripts & Plugins",
+    "url": "https://www.youtube.com/watch?v=UNZLbIN2ZgI",
+    "durationSec": 3266,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-WhrSNDURFgw",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 51,
+    "title": "51- Dive Into Ghidra & Disassemble Algorithms P3 : Full Java Ransomware Analysis Using Ghidra & Jadx",
+    "url": "https://www.youtube.com/watch?v=WhrSNDURFgw",
+    "durationSec": 4694,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-aZIFLTiCNFQ",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 52,
+    "title": "52- Intro To Debuggers P1 : What Is Debuggers, Why We Need It, And Get Familiar With IDAdbg & x64dbg",
+    "url": "https://www.youtube.com/watch?v=aZIFLTiCNFQ",
+    "durationSec": 5559,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "intro"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-gOIRWdyQEjQ",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 53,
+    "title": "53- Intro To Debuggers P2 : Working With Debuggers ( With .EXEs And .DLLs )",
+    "url": "https://www.youtube.com/watch?v=gOIRWdyQEjQ",
+    "durationSec": 4759,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "intro"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-UqowHfzPbak",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 54,
+    "title": "54- Intro To Debuggers P3 : Tracing And Patching With x64dbg",
+    "url": "https://www.youtube.com/watch?v=UqowHfzPbak",
+    "durationSec": 3573,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "intro"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-4x2Mg0pgXYc",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 55,
+    "title": "55- Intro To Debuggers P4 : Some Important Plugins And Its Functionality In x64dbg",
+    "url": "https://www.youtube.com/watch?v=4x2Mg0pgXYc",
+    "durationSec": 2842,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "intro"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-gGkbEuOzLvw",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 56,
+    "title": "56- General Revision : Full Static And Basic Dynamic Analysis For BadRabbit Malware Sample",
+    "url": "https://www.youtube.com/watch?v=gGkbEuOzLvw",
+    "durationSec": 7012,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "general"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-So97VTqXQJw",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 57,
+    "title": "58- Dive Into Debuggers : Understanding Advanced Debugging Concepts",
+    "url": "https://www.youtube.com/watch?v=So97VTqXQJw",
+    "durationSec": 1953,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9bkqw8YMrWM",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 58,
+    "title": "59- General Practice : Solve RAR-CVE Lab From CyberDefenders",
+    "url": "https://www.youtube.com/watch?v=9bkqw8YMrWM",
+    "durationSec": 3934,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "general"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-08LFW9-KzP0",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 59,
+    "title": "60- Dive Into Debuggers : Anti-Debugging Techniques",
+    "url": "https://www.youtube.com/watch?v=08LFW9-KzP0",
+    "durationSec": 5235,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-l54YJPFfJCY",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 60,
+    "title": "61- Dive Into Debuggers : Bypassing Anti-Debugging Techniques P1",
+    "url": "https://www.youtube.com/watch?v=l54YJPFfJCY",
+    "durationSec": 5987,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-_w_AuARPkY4",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 61,
+    "title": "62- Dive Into Debuggers : Bypassing Anti-Debugging Techniques P2",
+    "url": "https://www.youtube.com/watch?v=_w_AuARPkY4",
+    "durationSec": 5368,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-uhRDHWrSXIg",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 62,
+    "title": "63- Bounce Session : Install MCP Tools For IDA Pro And Ghidra And Configure Network Of The Machine",
+    "url": "https://www.youtube.com/watch?v=uhRDHWrSXIg",
+    "durationSec": 7908,
+    "topicTags": [
+      "network",
+      "malware",
+      "foundations",
+      "analysis",
+      "fundamentals",
+      "bounce"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-9VNDqBPu-dc",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 63,
+    "title": "64- Dive Into Debugging : Kernel Debugging P1",
+    "url": "https://www.youtube.com/watch?v=9VNDqBPu-dc",
+    "durationSec": 5573,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-PX-Fe0N6a0s",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 64,
+    "title": "65- Dive Into Debugging : Kernel Debugging P2",
+    "url": "https://www.youtube.com/watch?v=PX-Fe0N6a0s",
+    "durationSec": 6316,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-x5IYye6TlBg",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 65,
+    "title": "66- Back Again And General Revision",
+    "url": "https://www.youtube.com/watch?v=x5IYye6TlBg",
+    "durationSec": 3205,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "back"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-_MwB06OuA-k",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 66,
+    "title": "67- Dive Into Debugging : Kernel Debugging P3",
+    "url": "https://www.youtube.com/watch?v=_MwB06OuA-k",
+    "durationSec": 4456,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-96-xHnuTWKI",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 67,
+    "title": "68- Dive Into Debugging : Kernel Debugging P4",
+    "url": "https://www.youtube.com/watch?v=96-xHnuTWKI",
+    "durationSec": 5055,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals",
+      "dive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-5P5xBmmzogU",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 68,
+    "title": "69- Malware Packing : Introduction To Packing",
+    "url": "https://www.youtube.com/watch?v=5P5xBmmzogU",
+    "durationSec": 3497,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4-xHGLR5Cwnw8",
+    "courseId": "PLgKWvRMsdLZ4N_okwVWqB6cgqeVQtZNC4",
+    "index": 69,
+    "title": "70- Malware Packing : Introduction To Unpacking \"Automatic Approach\"",
+    "url": "https://www.youtube.com/watch?v=xHGLR5Cwnw8",
+    "durationSec": 5484,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "network",
+      "analysis",
+      "fundamentals"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "network"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-uyo9GUmI1YI",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 1,
+    "title": "Android applications penetration testing Basics (1)",
+    "url": "https://www.youtube.com/watch?v=uyo9GUmI1YI",
+    "durationSec": 2342,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-3YBtng_NmS4",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 2,
+    "title": "Insecure data storage, Insecure Logging, APK Extraction (2)",
+    "url": "https://www.youtube.com/watch?v=3YBtng_NmS4",
+    "durationSec": 1266,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-vZKC6iQeKD4",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 3,
+    "title": "Android Components Attacks and Firebase Misconfiguration. (3)",
+    "url": "https://www.youtube.com/watch?v=vZKC6iQeKD4",
+    "durationSec": 2902,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-7o3bU_b1hfo",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 4,
+    "title": "Android Native Library Analysis (4)",
+    "url": "https://www.youtube.com/watch?v=7o3bU_b1hfo",
+    "durationSec": 1158,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-DN74aXwaEZA",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 5,
+    "title": "C# based Android Apps Analysis (5)",
+    "url": "https://www.youtube.com/watch?v=DN74aXwaEZA",
+    "durationSec": 970,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-6GKTS6SOHkQ",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 6,
+    "title": "Dynamic Application Analysis using drozer framework (6)",
+    "url": "https://www.youtube.com/watch?v=6GKTS6SOHkQ",
+    "durationSec": 3063,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-DSnyzsulsiM",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 7,
+    "title": "Dynamic Application Analysis using Frida framework (7)",
+    "url": "https://www.youtube.com/watch?v=DSnyzsulsiM",
+    "durationSec": 4360,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-cLec3Ov84JM",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 8,
+    "title": "Patching Android Applications (8)",
+    "url": "https://www.youtube.com/watch?v=cLec3Ov84JM",
+    "durationSec": 731,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-y1Ghdg7Xesk",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 9,
+    "title": "Traffic Interception and SSL Pinning (9)",
+    "url": "https://www.youtube.com/watch?v=y1Ghdg7Xesk",
+    "durationSec": 3551,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-E2S0pws7evM",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 10,
+    "title": "Root Detection Bypass (10)",
+    "url": "https://www.youtube.com/watch?v=E2S0pws7evM",
+    "durationSec": 727,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-JPIgbjqsqoo",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 11,
+    "title": "Dynamic Application Analysis using Objection Framework.",
+    "url": "https://www.youtube.com/watch?v=JPIgbjqsqoo",
+    "durationSec": 1765,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-ESNeN1zckRI",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 12,
+    "title": "Hack The Box: Introduction to Android Exploitation Track | Part 1",
+    "url": "https://www.youtube.com/watch?v=ESNeN1zckRI",
+    "durationSec": 2177,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-i1NXriMNiM8",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 13,
+    "title": "Hack The Box: Introduction to Android Exploitation Track | Part 2",
+    "url": "https://www.youtube.com/watch?v=i1NXriMNiM8",
+    "durationSec": 2127,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-kkRrDZmHEPs",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 14,
+    "title": "Task Hijacking Vulnerability",
+    "url": "https://www.youtube.com/watch?v=kkRrDZmHEPs",
+    "durationSec": 1187,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-rOj2OVcUC8M",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 15,
+    "title": "Android Apps Web View Security Testing",
+    "url": "https://www.youtube.com/watch?v=rOj2OVcUC8M",
+    "durationSec": 1785,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-EZwp2VNLxeg",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 16,
+    "title": "Android Apps dev for Hackers: Basic Concepts",
+    "url": "https://www.youtube.com/watch?v=EZwp2VNLxeg",
+    "durationSec": 2991,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F-6-9rfPbt5FM",
+    "courseId": "PLNwotgTQ6zKEcBp3EOmDqw-DKRdOEHl_F",
+    "index": 17,
+    "title": "Android App dev for Hackers: Activity Lifecycle & Intents",
+    "url": "https://www.youtube.com/watch?v=6-9rfPbt5FM",
+    "durationSec": 3604,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "android",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-0hL4Vg9e0sY",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 1,
+    "title": "eJPTv2(Course) | Information gathering  Passive Information Gathering#1 | تجميع المعلومات بشكل باسيف",
+    "url": "https://www.youtube.com/watch?v=0hL4Vg9e0sY",
+    "durationSec": 1571,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "information",
+      "gathering"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-nv4_Q_HJoaI",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 2,
+    "title": "eJPT2(Course)Passive Information Gathering#2 |تجميع المعلومات بشكل باسيف | eJPTv2 كورس بالعربي",
+    "url": "https://www.youtube.com/watch?v=nv4_Q_HJoaI",
+    "durationSec": 627,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "ejpt2",
+      "passive",
+      "information"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-ZygcQN5NQas",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 3,
+    "title": "Passive Information Gathering#3 | تجميع المعلومات بشكل باسيف | eJPTv2 كورس بالعربي|",
+    "url": "https://www.youtube.com/watch?v=ZygcQN5NQas",
+    "durationSec": 1142,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "passive",
+      "information",
+      "gathering#3"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-UKW8y2jPKsg",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 4,
+    "title": "Passive Information Gathering#4 |تجميع المعلومات بشكل باسيف | eJPTv2 كورس بالعربي",
+    "url": "https://www.youtube.com/watch?v=UKW8y2jPKsg",
+    "durationSec": 1477,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "passive",
+      "information",
+      "gathering#4"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-1i7VMrdVGUM",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 5,
+    "title": "Active Information Gathering#1 | تجميع المعلومات بشكل فعال | eJPTv2 كورس بالعربي",
+    "url": "https://www.youtube.com/watch?v=1i7VMrdVGUM",
+    "durationSec": 1158,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "active",
+      "information",
+      "gathering#1"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-RyS4uQIsbD4",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 6,
+    "title": "Active Information Gathering#2 with lab| تجميع المعلومات بشكل فعال مع تطبيق عملي eJPTv2 كورس بالعربي",
+    "url": "https://www.youtube.com/watch?v=RyS4uQIsbD4",
+    "durationSec": 1855,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "active",
+      "information",
+      "gathering#2"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-nkfbUl5VttM",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 7,
+    "title": "Assessment Methodologies: Footprinting & Scanning ejptv2 course|  القسم الثاني ٫ اساسيات الشبكات #1",
+    "url": "https://www.youtube.com/watch?v=nkfbUl5VttM",
+    "durationSec": 1087,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "footprinting"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-_W9azG7sY2g",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 8,
+    "title": "Assessment Methodologies: Footprinting & Scanning ejptv2 course| القسم الثاني  اساسيات الشبكات #2 |",
+    "url": "https://www.youtube.com/watch?v=_W9azG7sY2g",
+    "durationSec": 1491,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "footprinting"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-Wr3ZAlSHc5s",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 9,
+    "title": "تابع اساسيات الشبكات #2",
+    "url": "https://www.youtube.com/watch?v=Wr3ZAlSHc5s",
+    "durationSec": 281,
+    "topicTags": [
+      "web",
+      "ejptv2"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-gbKwGZgFUgU",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 10,
+    "title": "Assessment Methodologies: Footprinting & Scanning ejptv2 course| القسم الثاني  اساسيات الشبكات #3 |",
+    "url": "https://www.youtube.com/watch?v=gbKwGZgFUgU",
+    "durationSec": 1177,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "footprinting"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-Nnr6V0cqMDk",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 11,
+    "title": "Assessment Methodologies:Host Discovery",
+    "url": "https://www.youtube.com/watch?v=Nnr6V0cqMDk",
+    "durationSec": 1906,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "host"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-0o0UDEfH6xI",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 12,
+    "title": "Host Discovery | اكتشاف الاجهزة عملي",
+    "url": "https://www.youtube.com/watch?v=0o0UDEfH6xI",
+    "durationSec": 454,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "host",
+      "discovery"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-UrnoEZy6oR8",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 13,
+    "title": "Assessment Methodologies: Port Scanning",
+    "url": "https://www.youtube.com/watch?v=UrnoEZy6oR8",
+    "durationSec": 619,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "port"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-YlBCfeNiH5A",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 14,
+    "title": "port scanning#2  |  2#فحص البورتات",
+    "url": "https://www.youtube.com/watch?v=YlBCfeNiH5A",
+    "durationSec": 1108,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "port",
+      "scanning#2"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-vwdPeh4IisI",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 15,
+    "title": "Nmap Script | استعمال السكربتات",
+    "url": "https://www.youtube.com/watch?v=vwdPeh4IisI",
+    "durationSec": 529,
+    "topicTags": [
+      "network",
+      "web",
+      "ejptv2",
+      "nmap",
+      "script"
+    ],
+    "trackIds": [
+      "network",
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-E2R36donibs",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 16,
+    "title": "tryhackme#nmap script ine",
+    "url": "https://www.youtube.com/watch?v=E2R36donibs",
+    "durationSec": 816,
+    "topicTags": [
+      "network",
+      "ctf",
+      "web",
+      "ejptv2",
+      "tryhackme#nmap",
+      "script",
+      "ine"
+    ],
+    "trackIds": [
+      "network",
+      "ctf",
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-F8ZjbOstJDY",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 17,
+    "title": "Assessment Methodologies: Enumeration#1",
+    "url": "https://www.youtube.com/watch?v=F8ZjbOstJDY",
+    "durationSec": 275,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#1"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-ezHq12OAhJo",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 18,
+    "title": "Assessment Methodologies: Enumeration#2 | تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=ezHq12OAhJo",
+    "durationSec": 427,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#2"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-ApSaRYGkmNM",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 19,
+    "title": "Assessment Methodologies: Enumeration#3 | تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=ApSaRYGkmNM",
+    "durationSec": 472,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#3"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-MUDeGCopOzA",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 20,
+    "title": "Assessment Methodologies: Enumeration#4 | تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=MUDeGCopOzA",
+    "durationSec": 614,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#4"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-7zvEBYJPzzk",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 21,
+    "title": "Assessment Methodologies: Enumeration#5 | Samba تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=7zvEBYJPzzk",
+    "durationSec": 760,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#5"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-AS7dBgZ5vo8",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 22,
+    "title": "Assessment Methodologies: Enumeration#6 | تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=AS7dBgZ5vo8",
+    "durationSec": 586,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#6"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-nWuuNgCHae0",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 23,
+    "title": "Assessment Methodologies: Enumeration#7 SMB Dictionary attack  | الهجوم  على السيرفس",
+    "url": "https://www.youtube.com/watch?v=nWuuNgCHae0",
+    "durationSec": 1158,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#7"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-5bGOQzIK2d8",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 24,
+    "title": "Assessment Methodologies: Enumeration#8 FTP | تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=5bGOQzIK2d8",
+    "durationSec": 514,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#8"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-AzLpqcM9-3E",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 25,
+    "title": "Assessment Methodologies: Enumeration#9 SSH | #1تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=AzLpqcM9-3E",
+    "durationSec": 857,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#9"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-6_kz3fKkzYQ",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 26,
+    "title": "Assessment Methodologies: Enumeration#11 http| تجميع المعلومات عن السيرفس",
+    "url": "https://www.youtube.com/watch?v=6_kz3fKkzYQ",
+    "durationSec": 420,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#11"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-0iYSeOqD19E",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 27,
+    "title": "Assessment Methodologies: Enumeration#12 http| تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=0iYSeOqD19E",
+    "durationSec": 637,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#12"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-6feZJmiZ568",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 28,
+    "title": "Assessment Methodologies: Enumeration#13 http apache| تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=6feZJmiZ568",
+    "durationSec": 798,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#13"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-_eMxbjTSXGo",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 29,
+    "title": "Assessment Methodologies: Enumeration#16 MySQL | تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=_eMxbjTSXGo",
+    "durationSec": 416,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#16"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-9qLBuhJNNA0",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 30,
+    "title": "Assessment Methodologies: Enumeration#15 MySQL#2 | تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=9qLBuhJNNA0",
+    "durationSec": 580,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#15"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-VgtTvXgjvqQ",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 31,
+    "title": "Assessment Methodologies: Enumeration#14 MySQL#1 | تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=VgtTvXgjvqQ",
+    "durationSec": 1416,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#14"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-81oaTXTuY_w",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 32,
+    "title": "Assessment Methodologies: Enumeration#17 SSH | تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=81oaTXTuY_w",
+    "durationSec": 640,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#17"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-vgHuktHoTRs",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 33,
+    "title": "Assessment Methodologies: Enumeration#18 SMTP | تجميع المعلومات عن السيرفيس",
+    "url": "https://www.youtube.com/watch?v=vgHuktHoTRs",
+    "durationSec": 465,
+    "topicTags": [
+      "web",
+      "ejptv2",
+      "assessment",
+      "methodologies",
+      "enumeration#18"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-Um3J0MQHBmU",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 34,
+    "title": "Host & Network Penetration Testing: System/Host Based Attacks#1-Intro",
+    "url": "https://www.youtube.com/watch?v=Um3J0MQHBmU",
+    "durationSec": 876,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "ejptv2",
+      "host",
+      "penetration"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b-uwfQzI47WSw",
+    "courseId": "PLzAnkOon0V20z7t7F0lCOU9T9fL54Li7b",
+    "index": 35,
+    "title": "Host & Network Penetration Testing: System/Host Based Attacks#2",
+    "url": "https://www.youtube.com/watch?v=uwfQzI47WSw",
+    "durationSec": 1543,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "ejptv2",
+      "host",
+      "penetration"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-iIwohkJjXMs",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 1,
+    "title": "Android Pentesting Approach and Checklist | Android Application Security Audit | Explain in HINDI",
+    "url": "https://www.youtube.com/watch?v=iIwohkJjXMs",
+    "durationSec": 2209,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "android"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-LIi-_Mp581U",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 2,
+    "title": "Decompile Android APK to a JAR file with dex2jar and JDGUI | Android Application Static Analysis",
+    "url": "https://www.youtube.com/watch?v=LIi-_Mp581U",
+    "durationSec": 467,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "decompile"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-dHMiW1zqiSk",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 3,
+    "title": "How to read AndroidManifest.xml file manually with APKTOOL after decompile | Static Analysis HINDI",
+    "url": "https://www.youtube.com/watch?v=dHMiW1zqiSk",
+    "durationSec": 575,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-psDnefFUjyg",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 4,
+    "title": "How to deploy ROOT/Non-ROOT Phone on Android Studio | Android Pentesting Lab Setup with Emulator",
+    "url": "https://www.youtube.com/watch?v=psDnefFUjyg",
+    "durationSec": 920,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-K0MqTlAZQpY",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 5,
+    "title": "How to setup MOBSF on Docker and Manually | Mobile Application Static Analyzer | Macbook | Hindi",
+    "url": "https://www.youtube.com/watch?v=K0MqTlAZQpY",
+    "durationSec": 932,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-uf40r5CZumc",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 6,
+    "title": "How to Install/Setup Genymotion | Virtual Phone Setup | Android Virtualization | Macbook",
+    "url": "https://www.youtube.com/watch?v=uf40r5CZumc",
+    "durationSec": 584,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-4Tk6cFKcGDQ",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 7,
+    "title": "Android Debug Bridge | ADB Commands | Explain in HINDI",
+    "url": "https://www.youtube.com/watch?v=4Tk6cFKcGDQ",
+    "durationSec": 1036,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "android"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-3f9FvikLcuI",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 8,
+    "title": "How to Intercept HTTPs Request of Android Emulator with BURP SUITE | Android Pentesting in Hindi",
+    "url": "https://www.youtube.com/watch?v=3f9FvikLcuI",
+    "durationSec": 487,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-XhTLIux8vw8",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 9,
+    "title": "How to Export IPA file from iPhone without iTunes | HINDI with English Subtitles | PentestHint",
+    "url": "https://www.youtube.com/watch?v=XhTLIux8vw8",
+    "durationSec": 311,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-6huL0KVtYl4",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 10,
+    "title": "How to Export IPA file from iPhone without iTunes in Windows 11 | PentestHint",
+    "url": "https://www.youtube.com/watch?v=6huL0KVtYl4",
+    "durationSec": 253,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-d2MrKVdKjzY",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 11,
+    "title": "How to Jailbreak iPhone 7 (iOS 14.8) | PentestHint",
+    "url": "https://www.youtube.com/watch?v=d2MrKVdKjzY",
+    "durationSec": 415,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-GH5wHTj5Kf0",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 12,
+    "title": "Yubikey 5 NFC Review & Tutorial | The Best Hardware Security Key | Advance 2FA options |  @Yubico",
+    "url": "https://www.youtube.com/watch?v=GH5wHTj5Kf0",
+    "durationSec": 379,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "yubikey"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-CIvMIdt4Tkc",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 13,
+    "title": "What is Code Obfuscation in Android Pentesting | Static Analysis Complication | Explain in HINDI",
+    "url": "https://www.youtube.com/watch?v=CIvMIdt4Tkc",
+    "durationSec": 277,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "what"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-iRTNpvTy9zs",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 14,
+    "title": "How To Manually Sign APK's with keytool Jarsigner & Zipalign | Explain in HINDI | Android Pentesting",
+    "url": "https://www.youtube.com/watch?v=iRTNpvTy9zs",
+    "durationSec": 443,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-Tx2Qft6SAEk",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 15,
+    "title": "Mobile Pentesting Lab Setup | Mobile Penetration Testing Operating System | How to setup Mobexler",
+    "url": "https://www.youtube.com/watch?v=Tx2Qft6SAEk",
+    "durationSec": 582,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-OTZI71j8LnU",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 16,
+    "title": "[HINDI] Mobile Application Security Testing Methodology | From OSINT to Report Writing | PentestHint",
+    "url": "https://www.youtube.com/watch?v=OTZI71j8LnU",
+    "durationSec": 356,
+    "topicTags": [
+      "osint",
+      "mobile",
+      "social",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "hindi"
+    ],
+    "trackIds": [
+      "osint",
+      "mobile",
+      "social",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-lKWM2ALU7_w",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 17,
+    "title": "[ENGLISH] How to Export IPA file from iPhone without iTunes in Windows 11 | PentestHint",
+    "url": "https://www.youtube.com/watch?v=lKWM2ALU7_w",
+    "durationSec": 219,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "english"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-qzGAXsnWAS0",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 18,
+    "title": "Android Application Architecture as a Pentester | Android Penetration Testing |  PentestHint",
+    "url": "https://www.youtube.com/watch?v=qzGAXsnWAS0",
+    "durationSec": 1049,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "android"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-RvJRAKDZ1sQ",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 19,
+    "title": "[HINDI] Android Manifest.xml file as a pentester | Android Penetration Testing | PentestHint",
+    "url": "https://www.youtube.com/watch?v=RvJRAKDZ1sQ",
+    "durationSec": 517,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "hindi"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-nEpl0XIik2M",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 20,
+    "title": "Android SSL Pinning Bypass Using Frida Objection in Genymotion Virtual Phone | PentestHint",
+    "url": "https://www.youtube.com/watch?v=nEpl0XIik2M",
+    "durationSec": 1896,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "android"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ-6FbwYglVEGE",
+    "courseId": "PLxlnw7Sfbtf9pBNKKQPJTSyI8KNHvgoMJ",
+    "index": 21,
+    "title": "Android Penetration Testing Checklist with Explanation [HINDI] | PentestHint",
+    "url": "https://www.youtube.com/watch?v=6FbwYglVEGE",
+    "durationSec": 970,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "api",
+      "application",
+      "pentesting",
+      "android"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-gRT0O76D77M",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 1,
+    "title": "Course Intro",
+    "url": "https://www.youtube.com/watch?v=gRT0O76D77M",
+    "durationSec": 574,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-NAYhuf2cu3Y",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 2,
+    "title": "1-Android Architecture",
+    "url": "https://www.youtube.com/watch?v=NAYhuf2cu3Y",
+    "durationSec": 1214,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-d8VVg2YVdMs",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 3,
+    "title": "2-Android_Security_Model",
+    "url": "https://www.youtube.com/watch?v=d8VVg2YVdMs",
+    "durationSec": 788,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-yzNL-sxnXds",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 4,
+    "title": "3-Android_Application_permissions",
+    "url": "https://www.youtube.com/watch?v=yzNL-sxnXds",
+    "durationSec": 1128,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-CozVXV-3lUA",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 5,
+    "title": "4-App_Journey",
+    "url": "https://www.youtube.com/watch?v=CozVXV-3lUA",
+    "durationSec": 936,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-uB-FQ9xT3C4",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 6,
+    "title": "5-adp_part1",
+    "url": "https://www.youtube.com/watch?v=uB-FQ9xT3C4",
+    "durationSec": 1084,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-NIJI-1cKqZA",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 7,
+    "title": "6-adb_part2",
+    "url": "https://www.youtube.com/watch?v=NIJI-1cKqZA",
+    "durationSec": 766,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q-U1bOqH4l7KQ",
+    "courseId": "PLA3ZYReIVnJfTZSFmCbhTRzah1ypMEA3Q",
+    "index": 8,
+    "title": "7-Reverse_Engineering",
+    "url": "https://www.youtube.com/watch?v=U1bOqH4l7KQ",
+    "durationSec": 383,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web",
+      "applications",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-HJkYdkewlpI",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 1,
+    "title": "Android Penetration Testing Process - Part 1",
+    "url": "https://www.youtube.com/watch?v=HJkYdkewlpI",
+    "durationSec": 497,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-JTZzfA9ZZfc",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 2,
+    "title": "Android Penetration Testing Process - Part 2",
+    "url": "https://www.youtube.com/watch?v=JTZzfA9ZZfc",
+    "durationSec": 1227,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-kdHs1ZK-kdw",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 3,
+    "title": "Android Security Architecture - Part 3",
+    "url": "https://www.youtube.com/watch?v=kdHs1ZK-kdw",
+    "durationSec": 1326,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-3V3ad-pFeAs",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 4,
+    "title": "Application Security and Signing Process - Part 4",
+    "url": "https://www.youtube.com/watch?v=3V3ad-pFeAs",
+    "durationSec": 353,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-Pmu05nLPZGg",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 5,
+    "title": "Windows JADX GUI - Part 5",
+    "url": "https://www.youtube.com/watch?v=Pmu05nLPZGg",
+    "durationSec": 110,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-MFwo81eSK9Y",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 6,
+    "title": "Windows adb Install - Part 6",
+    "url": "https://www.youtube.com/watch?v=MFwo81eSK9Y",
+    "durationSec": 174,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-AOJUwuD0uJ0",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 7,
+    "title": "Windows apktool install - Part 7",
+    "url": "https://www.youtube.com/watch?v=AOJUwuD0uJ0",
+    "durationSec": 250,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-xAPc1ryTyyM",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 8,
+    "title": "Windows Android Studio Install - Part 8",
+    "url": "https://www.youtube.com/watch?v=xAPc1ryTyyM",
+    "durationSec": 116,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-567gyDt_9eU",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 9,
+    "title": "Kali Linux adb Install - Part 9",
+    "url": "https://www.youtube.com/watch?v=567gyDt_9eU",
+    "durationSec": 21,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-6DI8eMJ7Cdc",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 10,
+    "title": "Kali Linux apktool Install - Part 10",
+    "url": "https://www.youtube.com/watch?v=6DI8eMJ7Cdc",
+    "durationSec": 73,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-mxcNqKjNDfc",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 11,
+    "title": "Kali Linux JADX GUI Install - Part 11",
+    "url": "https://www.youtube.com/watch?v=mxcNqKjNDfc",
+    "durationSec": 155,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-hohbLSWQaoI",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 12,
+    "title": "Kali Linux Android Studio Install - Part 12",
+    "url": "https://www.youtube.com/watch?v=hohbLSWQaoI",
+    "durationSec": 264,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-tHaH1q04JVw",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 13,
+    "title": "Mac Brew Installation and Guidance - Part 13",
+    "url": "https://www.youtube.com/watch?v=tHaH1q04JVw",
+    "durationSec": 77,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-P_hYt6TH_nw",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 14,
+    "title": "Mac JADX GUI - Part 14",
+    "url": "https://www.youtube.com/watch?v=P_hYt6TH_nw",
+    "durationSec": 46,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-70cLDIZaGY4",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 15,
+    "title": "Mac Apktool - Part 15",
+    "url": "https://www.youtube.com/watch?v=70cLDIZaGY4",
+    "durationSec": 48,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-sJvPyMmZ630",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 16,
+    "title": "Mac Android Studio - Part 16",
+    "url": "https://www.youtube.com/watch?v=sJvPyMmZ630",
+    "durationSec": 364,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-KQ7YlgxpzrQ",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 17,
+    "title": "Emulator Setup & Recommendations (All Platforms) - Part 17",
+    "url": "https://www.youtube.com/watch?v=KQ7YlgxpzrQ",
+    "durationSec": 639,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-Fe-MtoWBNWY",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 18,
+    "title": "Additional Emulator Options Android (Optional) - Part 18",
+    "url": "https://www.youtube.com/watch?v=Fe-MtoWBNWY",
+    "durationSec": 154,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-GtzHuXtf9Rg",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 19,
+    "title": "Physical Android Device Setup (Optional) - Part - 19",
+    "url": "https://www.youtube.com/watch?v=GtzHuXtf9Rg",
+    "durationSec": 291,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-bJDcEpb5XGQ",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 20,
+    "title": "Pulling an APK From the Google Play Store - Part 20",
+    "url": "https://www.youtube.com/watch?v=bJDcEpb5XGQ",
+    "durationSec": 337,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-TE9ucy4P1Mg",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 21,
+    "title": "Introduction to Injured Android APK for Penetration Testing - 21",
+    "url": "https://www.youtube.com/watch?v=TE9ucy4P1Mg",
+    "durationSec": 195,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-iR51r1Oqjz0",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 22,
+    "title": "Introduction to Android Manifest.xml file - Part 22",
+    "url": "https://www.youtube.com/watch?v=iR51r1Oqjz0",
+    "durationSec": 567,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-HlPLNBao4zg",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 23,
+    "title": "Manual Static Analysis of APK Penetration Testing - Part 23",
+    "url": "https://www.youtube.com/watch?v=HlPLNBao4zg",
+    "durationSec": 591,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-mqYYyYcCPoM",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 24,
+    "title": "How to Find Hardcoded Strings (Android Penetration Testing) - Part - 24",
+    "url": "https://www.youtube.com/watch?v=mqYYyYcCPoM",
+    "durationSec": 714,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-loal5yRXebQ",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 25,
+    "title": "Injured Android Static Analysis (CTF Flags 1-4) Android Penetration Testing) - Part - 25",
+    "url": "https://www.youtube.com/watch?v=loal5yRXebQ",
+    "durationSec": 720,
+    "topicTags": [
+      "ctf",
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "ctf",
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-qhjZXnmEH2M",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 26,
+    "title": "Enumerating AWS Storage Buckets via Static Analysis (Android Penetration Testing) - Part - 26",
+    "url": "https://www.youtube.com/watch?v=qhjZXnmEH2M",
+    "durationSec": 546,
+    "topicTags": [
+      "cloud",
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "cloud",
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-py45gKkVahw",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 27,
+    "title": "Enumerating Firebase Databases via Static Analysis (Android Penetration Testing) - Part - 27",
+    "url": "https://www.youtube.com/watch?v=py45gKkVahw",
+    "durationSec": 446,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-Rb4M6ep9ols",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 28,
+    "title": "Introduction to SSL Pinning Dynamic Analysis (Android Penetration Testing) - Part - 28",
+    "url": "https://www.youtube.com/watch?v=Rb4M6ep9ols",
+    "durationSec": 554,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-J3LZZcm73RQ",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 29,
+    "title": "Burp Suite Install and Overview Penetration Testing - Part 29",
+    "url": "https://www.youtube.com/watch?v=J3LZZcm73RQ",
+    "durationSec": 460,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-u5lbT1bM12o",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 30,
+    "title": "Burp Suite Setup Intercept APK Traffic (Android Penetration Testing) - Part - 30",
+    "url": "https://www.youtube.com/watch?v=u5lbT1bM12o",
+    "durationSec": 489,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-7-MlL0iGxag",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 31,
+    "title": "Proxyman Install & Usage (Full Android Penetration Testing) - Part - 31",
+    "url": "https://www.youtube.com/watch?v=7-MlL0iGxag",
+    "durationSec": 762,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-Hu8m_XseXm4",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 32,
+    "title": "Patching Applications Automatically using Objection (Android Penetration Testing) - Part 32",
+    "url": "https://www.youtube.com/watch?v=Hu8m_XseXm4",
+    "durationSec": 468,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-Uon3Qlt76v0",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 33,
+    "title": "Patching Applications Manually (Android Penetration Testing) - 33",
+    "url": "https://www.youtube.com/watch?v=Uon3Qlt76v0",
+    "durationSec": 966,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-09vFb8jp6vk",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 34,
+    "title": "Dynamic Analysis Final Notes and Vectors (Android Penetration Testing) Part - 34",
+    "url": "https://www.youtube.com/watch?v=09vFb8jp6vk",
+    "durationSec": 371,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-fHgUYT2h8pY",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 35,
+    "title": "Live Android Penetration Testing on APK: Joann Fabrics #bughunt Part - 35",
+    "url": "https://www.youtube.com/watch?v=fHgUYT2h8pY",
+    "durationSec": 2042,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t-oYEcNOKj_C0",
+    "courseId": "PLwk2o8vr7P8EyIA27vaxCXUUaGHRZj49t",
+    "index": 36,
+    "title": "Live Android Penetration Testing on APK: Sam's Club App #bughunt Part - 36",
+    "url": "https://www.youtube.com/watch?v=oYEcNOKj_C0",
+    "durationSec": 1198,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "full",
+      "android",
+      "penetration",
+      "testing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-qlK174d_uu8",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 1,
+    "title": "Zero to Hero Pentesting: Episode 1 - Course Introduction, Notekeeping, Introductory Linux, and AMA",
+    "url": "https://www.youtube.com/watch?v=qlK174d_uu8",
+    "durationSec": 14928,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-egg-GoT5iVk",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 2,
+    "title": "Zero to Hero Pentesting: Episode 2 - Python 101",
+    "url": "https://www.youtube.com/watch?v=egg-GoT5iVk",
+    "durationSec": 10158,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-3GriwyvJzio",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 3,
+    "title": "Zero to Hero Pentesting: Episode 3 - Python 102, Building a Terrible Port Scanner, and a Giveaway",
+    "url": "https://www.youtube.com/watch?v=3GriwyvJzio",
+    "durationSec": 9247,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-ChdUC32lsYQ",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 4,
+    "title": "Zero to Hero Pentesting: Episode 4 - Five Phases of Hacking + Passive OSINT",
+    "url": "https://www.youtube.com/watch?v=ChdUC32lsYQ",
+    "durationSec": 11050,
+    "topicTags": [
+      "network",
+      "osint",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "osint",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-t9aAhuG0LkE",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 5,
+    "title": "Zero to Hero Pentesting: Episode 5 - Scanning Tools (Nmap, Nessus, BurpSuite, etc.) & Tactics",
+    "url": "https://www.youtube.com/watch?v=t9aAhuG0LkE",
+    "durationSec": 11263,
+    "topicTags": [
+      "web",
+      "network",
+      "foundations",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-BWE51iudbPo",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 6,
+    "title": "Zero to Hero Pentesting: Episode 6 - Enumeration (Kioptrix & Hack The Box)",
+    "url": "https://www.youtube.com/watch?v=BWE51iudbPo",
+    "durationSec": 10114,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-gGNjDwnXgsg",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 7,
+    "title": "Zero to Hero Pentesting: Episode 7 - Exploitation, Shells, and Some Credential Stuffing",
+    "url": "https://www.youtube.com/watch?v=gGNjDwnXgsg",
+    "durationSec": 10070,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-_OseTyfXr3Q",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 8,
+    "title": "Zero to Hero: Week 8 - Building an AD Lab, LLMNR Poisoning, and NTLMv2 Cracking with Hashcat",
+    "url": "https://www.youtube.com/watch?v=_OseTyfXr3Q",
+    "durationSec": 8205,
+    "topicTags": [
+      "network",
+      "ad",
+      "crypto",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "ad",
+      "crypto",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-QvMeLoyS944",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 9,
+    "title": "Zero to Hero: Week 9 - NTLM Relay, Token Impersonation, Pass the Hash, PsExec, and more",
+    "url": "https://www.youtube.com/watch?v=QvMeLoyS944",
+    "durationSec": 7697,
+    "topicTags": [
+      "network",
+      "ad",
+      "crypto",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "ad",
+      "crypto",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-6rZddmB0fug",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 10,
+    "title": "Zero to Hero: Episode 10 - MS17-010/EternalBlue, GPP/cPasswords, and Kerberoasting",
+    "url": "https://www.youtube.com/watch?v=6rZddmB0fug",
+    "durationSec": 5575,
+    "topicTags": [
+      "network",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj-MxjIDoGsGCQ",
+    "courseId": "PLLKT__MCUeiwBa7d7F_vN1GUwz_2TmVQj",
+    "index": 11,
+    "title": "Zero to Hero: Week 11 - File Transfers, Pivoting, and Reporting Writing",
+    "url": "https://www.youtube.com/watch?v=MxjIDoGsGCQ",
+    "durationSec": 5147,
+    "topicTags": [
+      "network",
+      "social",
+      "foundations",
+      "web",
+      "zero",
+      "hero",
+      "practical"
+    ],
+    "trackIds": [
+      "network",
+      "social",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-OpYXo_wrLXk",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 1,
+    "title": "مقدمة دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=OpYXo_wrLXk",
+    "durationSec": 791,
+    "topicTags": [
+      "foundations",
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-37jNDg4WZ4g",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 2,
+    "title": "كيف يعمل نظام تشغيل ويندوز |  دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=37jNDg4WZ4g",
+    "durationSec": 2157,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-Jm47MZzxNRs",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 3,
+    "title": "أساسيات التعامل مع أوامر CMD | دورةWindows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=Jm47MZzxNRs",
+    "durationSec": 5111,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-6GPZthxEKU0",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 4,
+    "title": "أساسيات التعامل مع أوامر Powershell | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=6GPZthxEKU0",
+    "durationSec": 5038,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-98HX_jtsutk",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 5,
+    "title": "التعامل مع الـ Processes في ويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=98HX_jtsutk",
+    "durationSec": 2667,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-ZZRk_OG7WvM",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 6,
+    "title": "التعامل مع الـ Services في ويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=ZZRk_OG7WvM",
+    "durationSec": 4081,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-k6fDr2wqM9k",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 7,
+    "title": "التعامل مع الـ Scheduled Tasks في ويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=k6fDr2wqM9k",
+    "durationSec": 1931,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-D_GV0MqgiKs",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 8,
+    "title": "أهم الـ System Utilities في نظام تشغيل ويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=D_GV0MqgiKs",
+    "durationSec": 1744,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-8A-mhUlxLsQ",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 9,
+    "title": "التعامل مع الـ Registry في الويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=8A-mhUlxLsQ",
+    "durationSec": 2675,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-FnNtAIp_sXI",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 10,
+    "title": "التعامل مع الـ Sharing في الويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=FnNtAIp_sXI",
+    "durationSec": 1924,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-Dcok0hpaB9c",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 11,
+    "title": "التعامل مع الـ Logging في الويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=Dcok0hpaB9c",
+    "durationSec": 3489,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv-Ud0j6wL1rRY",
+    "courseId": "PLroS9tRyoUGrC8GOzQRhyYOfwnub2bvQv",
+    "index": 12,
+    "title": "التعامل مع الـ WSL في الويندوز | دورة Windows for Cybersecurity Professionals",
+    "url": "https://www.youtube.com/watch?v=Ud0j6wL1rRY",
+    "durationSec": 986,
+    "topicTags": [
+      "ctf",
+      "windows",
+      "for",
+      "cybersecurity",
+      "professionals"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-sIPOIeeSmxw",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 1,
+    "title": "Security Lecture 1  Introduction",
+    "url": "https://www.youtube.com/watch?v=sIPOIeeSmxw",
+    "durationSec": 4812,
+    "topicTags": [
+      "foundations",
+      "ctf",
+      "security",
+      "lecture",
+      "introduction"
+    ],
+    "trackIds": [
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-DongSm0NXGc",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 2,
+    "title": "Security Lecture 2 Part 1 Definitions and Terms",
+    "url": "https://www.youtube.com/watch?v=DongSm0NXGc",
+    "durationSec": 3009,
+    "topicTags": [
+      "ctf",
+      "security",
+      "lecture",
+      "definitions"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-gF4hBrp80dI",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 3,
+    "title": "Security Lecture 2 Part 2  Classical Ciphers",
+    "url": "https://www.youtube.com/watch?v=gF4hBrp80dI",
+    "durationSec": 5256,
+    "topicTags": [
+      "ctf",
+      "security",
+      "lecture",
+      "classical"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-rALbHDgKEBE",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 4,
+    "title": "Modern Block Ciphers:  Block Cipher Operation",
+    "url": "https://www.youtube.com/watch?v=rALbHDgKEBE",
+    "durationSec": 859,
+    "topicTags": [
+      "ctf",
+      "security",
+      "modern",
+      "block",
+      "ciphers"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-X6aTyc1pG8I",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 5,
+    "title": "Modern Block Ciphers:  Concepts, Diffusion and Confusion",
+    "url": "https://www.youtube.com/watch?v=X6aTyc1pG8I",
+    "durationSec": 2717,
+    "topicTags": [
+      "ctf",
+      "security",
+      "modern",
+      "block",
+      "ciphers"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-Q7fgsbO0Pmg",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 6,
+    "title": "Modern Block Ciphers: DES",
+    "url": "https://www.youtube.com/watch?v=Q7fgsbO0Pmg",
+    "durationSec": 3691,
+    "topicTags": [
+      "ctf",
+      "security",
+      "modern",
+      "block",
+      "ciphers"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-RugWgBLbK9o",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 7,
+    "title": "Number Theory P1",
+    "url": "https://www.youtube.com/watch?v=RugWgBLbK9o",
+    "durationSec": 1208,
+    "topicTags": [
+      "ctf",
+      "security",
+      "number",
+      "theory"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-5AnduNqEV2M",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 8,
+    "title": "Number Theory P2",
+    "url": "https://www.youtube.com/watch?v=5AnduNqEV2M",
+    "durationSec": 1655,
+    "topicTags": [
+      "ctf",
+      "security",
+      "number",
+      "theory"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-21u_6aek4fg",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 9,
+    "title": "Number Theory P3",
+    "url": "https://www.youtube.com/watch?v=21u_6aek4fg",
+    "durationSec": 2220,
+    "topicTags": [
+      "ctf",
+      "security",
+      "number",
+      "theory"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-baJp5VLjLMk",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 10,
+    "title": "Number Theory P4",
+    "url": "https://www.youtube.com/watch?v=baJp5VLjLMk",
+    "durationSec": 316,
+    "topicTags": [
+      "ctf",
+      "security",
+      "number",
+      "theory"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-8lNaf7IprS8",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 11,
+    "title": "Number Theory P5",
+    "url": "https://www.youtube.com/watch?v=8lNaf7IprS8",
+    "durationSec": 4252,
+    "topicTags": [
+      "ctf",
+      "security",
+      "number",
+      "theory"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-KINXoG_FAik",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 12,
+    "title": "AES",
+    "url": "https://www.youtube.com/watch?v=KINXoG_FAik",
+    "durationSec": 3332,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "aes"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-TtReVW_Q2Zo",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 13,
+    "title": "Block Cipher Operation",
+    "url": "https://www.youtube.com/watch?v=TtReVW_Q2Zo",
+    "durationSec": 3556,
+    "topicTags": [
+      "ctf",
+      "security",
+      "block",
+      "cipher",
+      "operation"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-wcc6ue2WULI",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 14,
+    "title": "Security: Random Numbers and Stream Ciphers",
+    "url": "https://www.youtube.com/watch?v=wcc6ue2WULI",
+    "durationSec": 3032,
+    "topicTags": [
+      "ctf",
+      "security",
+      "random",
+      "numbers"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-SNtyt-C2Auw",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 15,
+    "title": "Cryptography: More Number Theory",
+    "url": "https://www.youtube.com/watch?v=SNtyt-C2Auw",
+    "durationSec": 4489,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "cryptography",
+      "more",
+      "number"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-LLRem_TWNKo",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 16,
+    "title": "RSA",
+    "url": "https://www.youtube.com/watch?v=LLRem_TWNKo",
+    "durationSec": 4307,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "rsa"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-lPl8RXfSrCQ",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 17,
+    "title": "Hashing Algorithm",
+    "url": "https://www.youtube.com/watch?v=lPl8RXfSrCQ",
+    "durationSec": 3782,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "hashing",
+      "algorithm"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-b0hncc2LosM",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 18,
+    "title": "Security: Key Management and Distribution",
+    "url": "https://www.youtube.com/watch?v=b0hncc2LosM",
+    "durationSec": 4348,
+    "topicTags": [
+      "ctf",
+      "security",
+      "key",
+      "management"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-e-XxOoW66Ls",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 19,
+    "title": "Simple Network Security Part 1/4 (in Arabic)",
+    "url": "https://www.youtube.com/watch?v=e-XxOoW66Ls",
+    "durationSec": 852,
+    "topicTags": [
+      "network",
+      "ctf",
+      "security",
+      "simple"
+    ],
+    "trackIds": [
+      "network",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-Z4f5_XjJP0w",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 20,
+    "title": "Simple Network Security Part 2/4 (in Arabic), The language of Cryptography",
+    "url": "https://www.youtube.com/watch?v=Z4f5_XjJP0w",
+    "durationSec": 1062,
+    "topicTags": [
+      "network",
+      "crypto",
+      "ctf",
+      "security",
+      "simple"
+    ],
+    "trackIds": [
+      "network",
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-kvhdNxk5rOs",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 21,
+    "title": "Simple Network Security Part 3/4 (in Arabic), The SSL",
+    "url": "https://www.youtube.com/watch?v=kvhdNxk5rOs",
+    "durationSec": 1293,
+    "topicTags": [
+      "network",
+      "ctf",
+      "security",
+      "simple"
+    ],
+    "trackIds": [
+      "network",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-Ds_Y-93o8qk",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 22,
+    "title": "Simple Network Security Part 4/4 (in Arabic), The Onion Routing (TOR)",
+    "url": "https://www.youtube.com/watch?v=Ds_Y-93o8qk",
+    "durationSec": 2631,
+    "topicTags": [
+      "network",
+      "ctf",
+      "security",
+      "simple"
+    ],
+    "trackIds": [
+      "network",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-H9smdichcXI",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 23,
+    "title": "Introduction to Cryptography Part (1)",
+    "url": "https://www.youtube.com/watch?v=H9smdichcXI",
+    "durationSec": 4252,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "ctf",
+      "security",
+      "introduction",
+      "cryptography"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-JbGE83KkaPE",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 24,
+    "title": "Introduction to Cryptography Part (2)",
+    "url": "https://www.youtube.com/watch?v=JbGE83KkaPE",
+    "durationSec": 2032,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "ctf",
+      "security",
+      "introduction",
+      "cryptography"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-kFF6kD2P98k",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 25,
+    "title": "Introduction to Cryptography, Part 3: Product Ciphers",
+    "url": "https://www.youtube.com/watch?v=kFF6kD2P98k",
+    "durationSec": 1710,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "ctf",
+      "security",
+      "introduction",
+      "cryptography",
+      "product"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-qyQ-N1ktCXs",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 26,
+    "title": "Introduction to Cryptography Part 4, Block Ciphers and the DES",
+    "url": "https://www.youtube.com/watch?v=qyQ-N1ktCXs",
+    "durationSec": 3463,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "ctf",
+      "security",
+      "introduction",
+      "cryptography",
+      "block"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-Usr67XnWIOA",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 27,
+    "title": "Security: Advanced Encryption Standard",
+    "url": "https://www.youtube.com/watch?v=Usr67XnWIOA",
+    "durationSec": 3841,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "advanced",
+      "encryption"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-b36vd4QP6YM",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 28,
+    "title": "Security: Block Cipher Operation",
+    "url": "https://www.youtube.com/watch?v=b36vd4QP6YM",
+    "durationSec": 2226,
+    "topicTags": [
+      "ctf",
+      "security",
+      "block",
+      "cipher"
+    ],
+    "trackIds": [
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV-Te2lG2XRMbI",
+    "courseId": "PLy_2fgXkPiZt3oJcHalAWy9uhQ3wd2fTV",
+    "index": 29,
+    "title": "RSA Algorithm",
+    "url": "https://www.youtube.com/watch?v=Te2lG2XRMbI",
+    "durationSec": 4323,
+    "topicTags": [
+      "crypto",
+      "ctf",
+      "security",
+      "rsa",
+      "algorithm"
+    ],
+    "trackIds": [
+      "crypto",
+      "ctf"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-cnL7CB-Gak0",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 1,
+    "title": "Bug Bounty Hunting for Client-Side Injection Vulnerabilities | Part I",
+    "url": "https://www.youtube.com/watch?v=cnL7CB-Gak0",
+    "durationSec": 17402,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-jTdqM2aO4Ys",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 2,
+    "title": "[Part II] Bug Bounty Hunting for IDORs and Access Control Violations",
+    "url": "https://www.youtube.com/watch?v=jTdqM2aO4Ys",
+    "durationSec": 8263,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-BfbS8uRjeAg",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 3,
+    "title": "[Part I] Bug Bounty Hunting for IDORs and Access Control Violations",
+    "url": "https://www.youtube.com/watch?v=BfbS8uRjeAg",
+    "durationSec": 5598,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-EeBSqo7N2Bs",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 4,
+    "title": "[Part III] Bug Bounty Hunting for IDORs & Access Controls",
+    "url": "https://www.youtube.com/watch?v=EeBSqo7N2Bs",
+    "durationSec": 14917,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-gZUxroaY6rY",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 5,
+    "title": "Bug Bounty Hunting | Weaponizing Cross-Site Scripting (XSS) to Show Impact -- * PREVIEW of Part II *",
+    "url": "https://www.youtube.com/watch?v=gZUxroaY6rY",
+    "durationSec": 765,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-4wAFYEGEvbo",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 6,
+    "title": "Bug Bounty | Scan ALL HackerOne & BugCrowd Public Programs for Cross-Site Scripting (XSS) Targets",
+    "url": "https://www.youtube.com/watch?v=4wAFYEGEvbo",
+    "durationSec": 2477,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-2IZYwRQ43zw",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 7,
+    "title": "Bug Bounty Hunting | Methodology to Bypass Security Controls & Exploit XSS on Real World Targets",
+    "url": "https://www.youtube.com/watch?v=2IZYwRQ43zw",
+    "durationSec": 4645,
+    "topicTags": [
+      "web",
+      "social",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "social",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1--sLYakVUIuk",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 8,
+    "title": "Bug Bounty Hunting For Client-Side Injections Part II - Reflected & Stored Cross-Site Scripting XSS",
+    "url": "https://www.youtube.com/watch?v=-sLYakVUIuk",
+    "durationSec": 26589,
+    "topicTags": [
+      "web",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-eWa90bduYsw",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 9,
+    "title": "What can we learn from these three simple bug bounty reports?",
+    "url": "https://www.youtube.com/watch?v=eWa90bduYsw",
+    "durationSec": 930,
+    "topicTags": [
+      "web",
+      "social",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "social",
+      "network"
+    ]
+  },
+  {
+    "id": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1-QEyOJ86dpz0",
+    "courseId": "PLwfoGUoc87Ct-EUzW1mUa8Tlv1cktoCx1",
+    "index": 10,
+    "title": "Three Common OAuth Misconfigurations That Lead to Account Takeover (Bug Bounty Reports)",
+    "url": "https://www.youtube.com/watch?v=QEyOJ86dpz0",
+    "durationSec": 1621,
+    "topicTags": [
+      "web",
+      "social",
+      "network",
+      "bug",
+      "bounty",
+      "hunting",
+      "for..."
+    ],
+    "trackIds": [
+      "web",
+      "social",
+      "network"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-zmwj4JJ-f-k",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 1,
+    "title": "MOBISEC 2020 - 01-02-03 - Welcome + Intro to Smartphones and App Development",
+    "url": "https://www.youtube.com/watch?v=zmwj4JJ-f-k",
+    "durationSec": 9983,
+    "topicTags": [
+      "foundations",
+      "web",
+      "mobisec",
+      "2020",
+      "welcome"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-x8I5jwN6XFk",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 2,
+    "title": "MOBISEC 2020 - 04 - Intro to Android Architecture and Security",
+    "url": "https://www.youtube.com/watch?v=x8I5jwN6XFk",
+    "durationSec": 4990,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "web",
+      "mobisec",
+      "2020",
+      "intro"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-F1bDH3GSuBQ",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 3,
+    "title": "MOBISEC 2020 - 05 - Real-World Android Apps",
+    "url": "https://www.youtube.com/watch?v=F1bDH3GSuBQ",
+    "durationSec": 2821,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "real"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-jVqJ5O92nr8",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 4,
+    "title": "MOBISEC 2020 - 06 - More on Key Android Aspects",
+    "url": "https://www.youtube.com/watch?v=jVqJ5O92nr8",
+    "durationSec": 2456,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "more"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-Rhvpm8UP2Vc",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 5,
+    "title": "MOBISEC 2020 - 07 - Messing with Android Apps",
+    "url": "https://www.youtube.com/watch?v=Rhvpm8UP2Vc",
+    "durationSec": 5322,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "messing"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-d7OgZ2TReOM",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 6,
+    "title": "MOBISEC 2020 - DEMO - Apps, APKs, and Dalvik",
+    "url": "https://www.youtube.com/watch?v=d7OgZ2TReOM",
+    "durationSec": 3726,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "demo"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-pOFUjcvzA0w",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 7,
+    "title": "MOBISEC 2020 - 08 - Reverse Engineering",
+    "url": "https://www.youtube.com/watch?v=pOFUjcvzA0w",
+    "durationSec": 4123,
+    "topicTags": [
+      "malware",
+      "web",
+      "mobisec",
+      "2020",
+      "reverse"
+    ],
+    "trackIds": [
+      "malware",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-YVcDVY-5aYc",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 8,
+    "title": "MOBISEC 2020 - 09 - Frida Overview",
+    "url": "https://www.youtube.com/watch?v=YVcDVY-5aYc",
+    "durationSec": 1330,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "frida"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-0zYWr68ebjs",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 9,
+    "title": "MOBISEC 2020 - 10 - Native Code",
+    "url": "https://www.youtube.com/watch?v=0zYWr68ebjs",
+    "durationSec": 2164,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "native"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-s9RDrbf_R0Q",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 10,
+    "title": "MOBISEC 2020 - DEMO - Emulator CLI and Adb",
+    "url": "https://www.youtube.com/watch?v=s9RDrbf_R0Q",
+    "durationSec": 2544,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "demo"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-DPYYm7SiMdw",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 11,
+    "title": "MOBISEC 2020 - DEMO - Debugging and Reverse Engineering",
+    "url": "https://www.youtube.com/watch?v=DPYYm7SiMdw",
+    "durationSec": 5458,
+    "topicTags": [
+      "malware",
+      "web",
+      "mobisec",
+      "2020",
+      "demo"
+    ],
+    "trackIds": [
+      "malware",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-d_J7-i-eVuQ",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 12,
+    "title": "MOBISEC 2020 - 11 - Advanced Topics on Android System and Security",
+    "url": "https://www.youtube.com/watch?v=d_J7-i-eVuQ",
+    "durationSec": 9076,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "advanced"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-iZQ3LXt-FQo",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 13,
+    "title": "MOBISEC 2020 - 12 - Advanced Topics on Android System and Security (Part 2)",
+    "url": "https://www.youtube.com/watch?v=iZQ3LXt-FQo",
+    "durationSec": 8120,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "advanced"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-jlo3jQyghss",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 14,
+    "title": "MOBISEC 2020 - 13 - Advanced Topics on Android System and Security (Part 3)",
+    "url": "https://www.youtube.com/watch?v=jlo3jQyghss",
+    "durationSec": 7020,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "advanced"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-Xcazmkshzw4",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 15,
+    "title": "MOBISEC 2020 - 14 - Overview on Mobile Ecosystem and Security",
+    "url": "https://www.youtube.com/watch?v=Xcazmkshzw4",
+    "durationSec": 2760,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "overview"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-nQ8IBx6HwsI",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 16,
+    "title": "MOBISEC 2020 - 15 - Mobile Malware",
+    "url": "https://www.youtube.com/watch?v=nQ8IBx6HwsI",
+    "durationSec": 6511,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "web",
+      "mobisec",
+      "2020"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-K2JX_dUHjGw",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 17,
+    "title": "MOBISEC 2020 - 16 - Vulnerability Analysis and Exploitation",
+    "url": "https://www.youtube.com/watch?v=K2JX_dUHjGw",
+    "durationSec": 10195,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "vulnerability"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK--b9tVysdhfc",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 18,
+    "title": "MOBISEC 2020 - 17 - Vulnerability Discovery and Prevention",
+    "url": "https://www.youtube.com/watch?v=-b9tVysdhfc",
+    "durationSec": 4971,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "vulnerability"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-b4t6LMgntuU",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 19,
+    "title": "MOBISEC 2020 - 18 - Mobile UI Security",
+    "url": "https://www.youtube.com/watch?v=b4t6LMgntuU",
+    "durationSec": 4000,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-GBHAuWGpy2A",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 20,
+    "title": "MOBISEC 2020 - 19 - Automated Program Analysis",
+    "url": "https://www.youtube.com/watch?v=GBHAuWGpy2A",
+    "durationSec": 5686,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "automated"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-IZRhsI0QdbU",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 21,
+    "title": "MOBISEC 2020 - 20 - iOS Security",
+    "url": "https://www.youtube.com/watch?v=IZRhsI0QdbU",
+    "durationSec": 3879,
+    "topicTags": [
+      "mobile",
+      "web",
+      "mobisec",
+      "2020",
+      "ios"
+    ],
+    "trackIds": [
+      "mobile",
+      "web"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK-elB0QhVfXzM",
+    "courseId": "PLsB1gqjeUAh8GUzHv_jYmUxuix_n7bfrK",
+    "index": 22,
+    "title": "MOBISEC 2020 - 21 - Big Recap, The Future, and The Meaning of Life",
+    "url": "https://www.youtube.com/watch?v=elB0QhVfXzM",
+    "durationSec": 2548,
+    "topicTags": [
+      "web",
+      "mobisec",
+      "2020",
+      "big"
+    ],
+    "trackIds": [
+      "web"
+    ]
+  },
+  {
+    "id": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL-acLJgyHyN3I",
+    "courseId": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "index": 1,
+    "title": "Session 1: DFIR & Threat Hunting - Initial Access - Malicious PowerShell and VBS Execution",
+    "url": "https://www.youtube.com/watch?v=acLJgyHyN3I",
+    "durationSec": 4034,
+    "topicTags": [
+      "dfir",
+      "ad",
+      "the",
+      "art",
+      "threat"
+    ],
+    "trackIds": [
+      "dfir",
+      "ad"
+    ]
+  },
+  {
+    "id": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL-EA2kod-okIg",
+    "courseId": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "index": 2,
+    "title": "Session 2: DFIR & Threat Hunting - Investigating Lateral Movement - OverPass-The-Hash",
+    "url": "https://www.youtube.com/watch?v=EA2kod-okIg",
+    "durationSec": 5392,
+    "topicTags": [
+      "dfir",
+      "crypto",
+      "ad",
+      "the",
+      "art",
+      "threat"
+    ],
+    "trackIds": [
+      "dfir",
+      "crypto",
+      "ad"
+    ]
+  },
+  {
+    "id": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL-PTepERrlwn0",
+    "courseId": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "index": 3,
+    "title": "Session 3:  DFIR & Threat Hunting - Investigating Lateral Movement - PSExec",
+    "url": "https://www.youtube.com/watch?v=PTepERrlwn0",
+    "durationSec": 3712,
+    "topicTags": [
+      "dfir",
+      "ad",
+      "the",
+      "art",
+      "threat"
+    ],
+    "trackIds": [
+      "dfir",
+      "ad"
+    ]
+  },
+  {
+    "id": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL-FCtWh31HWSE",
+    "courseId": "PLGJmR5eX86b2XaFa6rDb6Cc8cIgsmzqEL",
+    "index": 4,
+    "title": "Session 4:  DFIR & Threat Hunting - Defense Evasion - Mshta HTML Application (HTA) Execution",
+    "url": "https://www.youtube.com/watch?v=FCtWh31HWSE",
+    "durationSec": 3469,
+    "topicTags": [
+      "dfir",
+      "ad",
+      "the",
+      "art",
+      "threat"
+    ],
+    "trackIds": [
+      "dfir",
+      "ad"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-V30CtIXouhY",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 1,
+    "title": "01- Intro to Web App Pen Testing",
+    "url": "https://www.youtube.com/watch?v=V30CtIXouhY",
+    "durationSec": 582,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "intro"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-Vr8nSmDz5B4",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 2,
+    "title": "02- Vulnerabilities - Cross Site Scripting (XSS) Part 1",
+    "url": "https://www.youtube.com/watch?v=Vr8nSmDz5B4",
+    "durationSec": 1890,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-hWQ4LuwVAsg",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 3,
+    "title": "02- Vulnerabilities - Cross Site Scripting (XSS) Part 2",
+    "url": "https://www.youtube.com/watch?v=hWQ4LuwVAsg",
+    "durationSec": 1861,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-Mvl-0CBcj4I",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 4,
+    "title": "03- Vulnerabilities - Cross Site Request Forgery (CSRF)",
+    "url": "https://www.youtube.com/watch?v=Mvl-0CBcj4I",
+    "durationSec": 1061,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-LLMFEf90p5A",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 5,
+    "title": "04- Vulnerabilities - Local File Inclusion & Path Traversal",
+    "url": "https://www.youtube.com/watch?v=LLMFEf90p5A",
+    "durationSec": 831,
+    "topicTags": [
+      "web",
+      "crypto",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "crypto",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-FrF-1VofaAc",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 6,
+    "title": "05- Vulnerabilities - Insecure Direct Object Reference (IDOR)",
+    "url": "https://www.youtube.com/watch?v=FrF-1VofaAc",
+    "durationSec": 574,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-LHFzBv85EUc",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 7,
+    "title": "06- Vulnerabilities - File Upload",
+    "url": "https://www.youtube.com/watch?v=LHFzBv85EUc",
+    "durationSec": 789,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-uemVoLzn6pY",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 8,
+    "title": "07- Vulnerabilities - SQL Injection",
+    "url": "https://www.youtube.com/watch?v=uemVoLzn6pY",
+    "durationSec": 1840,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-4BbhCAy9wmM",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 9,
+    "title": "08- Vulnerabilities - Insecure Deserialization",
+    "url": "https://www.youtube.com/watch?v=4BbhCAy9wmM",
+    "durationSec": 1013,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-Ns6XKX_gcqM",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 10,
+    "title": "09- Vulnerabilities - XML External Entities (XXE)",
+    "url": "https://www.youtube.com/watch?v=Ns6XKX_gcqM",
+    "durationSec": 935,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-DkFmGfsPKYg",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 11,
+    "title": "10- Vulnerabilities - Clickjacking",
+    "url": "https://www.youtube.com/watch?v=DkFmGfsPKYg",
+    "durationSec": 284,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-ojwEl4Rtw3Q",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 12,
+    "title": "11- Vulnerabilities - JSON With Padding",
+    "url": "https://www.youtube.com/watch?v=ojwEl4Rtw3Q",
+    "durationSec": 432,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-qewY9EQFQ6E",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 13,
+    "title": "12- Vulnerabilities - Account Takeover (ATO)",
+    "url": "https://www.youtube.com/watch?v=qewY9EQFQ6E",
+    "durationSec": 1415,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-52neBd8xaAA",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 14,
+    "title": "13- Vulnerabilities - PostMessage",
+    "url": "https://www.youtube.com/watch?v=52neBd8xaAA",
+    "durationSec": 453,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-vhpvZGFh0nY",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 15,
+    "title": "14- Vulnerabilities - Cross-origin resource sharing (CORS)",
+    "url": "https://www.youtube.com/watch?v=vhpvZGFh0nY",
+    "durationSec": 765,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-3wQfrJ42W_M",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 16,
+    "title": "15- Vulnerabilities - Chain Bugs",
+    "url": "https://www.youtube.com/watch?v=3wQfrJ42W_M",
+    "durationSec": 440,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "vulnerabilities"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-mFNXJ9cLgBw",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 17,
+    "title": "16- Write Pen-Testing Report",
+    "url": "https://www.youtube.com/watch?v=mFNXJ9cLgBw",
+    "durationSec": 958,
+    "topicTags": [
+      "web",
+      "social",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "write"
+    ],
+    "trackIds": [
+      "web",
+      "social",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-PRotZzBEi6g",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 18,
+    "title": "17- Skills You Need",
+    "url": "https://www.youtube.com/watch?v=PRotZzBEi6g",
+    "durationSec": 562,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "skills"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp-833C21oclb0",
+    "courseId": "PLsB1gqjeUAh_yEuLgtZ0ppLlExcYOL2Kp",
+    "index": 19,
+    "title": "18- Be Good & Next Step",
+    "url": "https://www.youtube.com/watch?v=833C21oclb0",
+    "durationSec": 270,
+    "topicTags": [
+      "web",
+      "foundations",
+      "malware",
+      "pen",
+      "testing",
+      "good"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-lk3rp53b2NA",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 1,
+    "title": "Offensive Computer Security 2014 - Lecture 01",
+    "url": "https://www.youtube.com/watch?v=lk3rp53b2NA",
+    "durationSec": 3599,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-lbjS2mXyMEQ",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 2,
+    "title": "Offensive Computer Security 2014 - Lecture 02",
+    "url": "https://www.youtube.com/watch?v=lbjS2mXyMEQ",
+    "durationSec": 4442,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-yXX6DWFTLaQ",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 3,
+    "title": "Offensive Computer Security 2014 - Lecture 03",
+    "url": "https://www.youtube.com/watch?v=yXX6DWFTLaQ",
+    "durationSec": 3371,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-MnmX911MqMU",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 4,
+    "title": "Offensive Computer Security 2014 - Lecture 04",
+    "url": "https://www.youtube.com/watch?v=MnmX911MqMU",
+    "durationSec": 3961,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-qlPhpvZCWAI",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 5,
+    "title": "Offensive Computer Security 2014 - Lecture 05",
+    "url": "https://www.youtube.com/watch?v=qlPhpvZCWAI",
+    "durationSec": 4606,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-F4WC26_SpKA",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 6,
+    "title": "Offensive Computer Security 2014 - Lecture 08",
+    "url": "https://www.youtube.com/watch?v=F4WC26_SpKA",
+    "durationSec": 2312,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-P7xUEUJFSA0",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 7,
+    "title": "[FSU Cybersecurty Club] Fuzzing Presentation 2014",
+    "url": "https://www.youtube.com/watch?v=P7xUEUJFSA0",
+    "durationSec": 1804,
+    "topicTags": [
+      "malware",
+      "social",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "social",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-kWmyGZsFc2c",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 8,
+    "title": "Offensive Computer Security 2014 - Lecture 10 (Part 1 Advanced Fuzzing Topics)",
+    "url": "https://www.youtube.com/watch?v=kWmyGZsFc2c",
+    "durationSec": 2205,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-Opz9xIYthD4",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 9,
+    "title": "Offensive Computer Security 2014 - Lecture 07",
+    "url": "https://www.youtube.com/watch?v=Opz9xIYthD4",
+    "durationSec": 3409,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-1UzOTsvPYYg",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 10,
+    "title": "Offensive Computer Security 2014 - Lecture 10 (Part 1 Exploit Development 101)",
+    "url": "https://www.youtube.com/watch?v=1UzOTsvPYYg",
+    "durationSec": 2080,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-jF1tQk270b0",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 11,
+    "title": "Offensive Computer Security 2014 - Lecture 11 (Exploit Development 102)",
+    "url": "https://www.youtube.com/watch?v=jF1tQk270b0",
+    "durationSec": 2933,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-lhAyUSM1hyA",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 12,
+    "title": "Offensive Computer Security 2014 - Lecture 12 (Exploit Development 103)",
+    "url": "https://www.youtube.com/watch?v=lhAyUSM1hyA",
+    "durationSec": 4802,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-xG2VBysUaCY",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 13,
+    "title": "Offensive Computer Security 2014 - Lecture 13 (Networking 101)",
+    "url": "https://www.youtube.com/watch?v=xG2VBysUaCY",
+    "durationSec": 4689,
+    "topicTags": [
+      "network",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-JK0BsefRdJ0",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 14,
+    "title": "Offensive Computer Security 2014 - Lecture 14 (Networking 102)",
+    "url": "https://www.youtube.com/watch?v=JK0BsefRdJ0",
+    "durationSec": 5792,
+    "topicTags": [
+      "network",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-g8hxbWKqI9w",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 15,
+    "title": "Offensive Computer Security 2014 - Lecture 15 (Web Application Hacking/Security 101)",
+    "url": "https://www.youtube.com/watch?v=g8hxbWKqI9w",
+    "durationSec": 2195,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-PpKjY00b0mY",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 16,
+    "title": "Offensive Computer Security 2014 - Lecture 17 (Web Application Hacking/Security 103)",
+    "url": "https://www.youtube.com/watch?v=PpKjY00b0mY",
+    "durationSec": 3930,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-WE2q9jpz7oM",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 17,
+    "title": "Offensive Computer Security 2014 - Lecture 16 (Web Application Hacking/Security 102)",
+    "url": "https://www.youtube.com/watch?v=WE2q9jpz7oM",
+    "durationSec": 4760,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-W_RP7F7MDkM",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 18,
+    "title": "Offensive Computer Security 2014 - Lecture 18",
+    "url": "https://www.youtube.com/watch?v=W_RP7F7MDkM",
+    "durationSec": 4305,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-WbinXJxBJXI",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 19,
+    "title": "Offensive Computer Security 2014 - MIDTERM#2 Review",
+    "url": "https://www.youtube.com/watch?v=WbinXJxBJXI",
+    "durationSec": 1418,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-QD_N7CJ1f2s",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 20,
+    "title": "Offensive Computer Security 2014 - Lecture 19 (Exploit Development 105)",
+    "url": "https://www.youtube.com/watch?v=QD_N7CJ1f2s",
+    "durationSec": 2711,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-JH6iHY3jMAE",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 21,
+    "title": "Offensive Computer Security 2014 - Lecture 22 (Metasploit)",
+    "url": "https://www.youtube.com/watch?v=JH6iHY3jMAE",
+    "durationSec": 4040,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-2OdI5KBKglg",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 22,
+    "title": "Offensive Computer Security 2014 - Lecture 23 (Post Exploitation)",
+    "url": "https://www.youtube.com/watch?v=2OdI5KBKglg",
+    "durationSec": 4524,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-hsRscsh1PTM",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 23,
+    "title": "Offensive Computer Security 2014 - Lecture 25 (Revisiting old topics)",
+    "url": "https://www.youtube.com/watch?v=hsRscsh1PTM",
+    "durationSec": 2191,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-KmMFuekpyhQ",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 24,
+    "title": "Offensive Computer Security 2014 - Lecture 26 Social Engineering",
+    "url": "https://www.youtube.com/watch?v=KmMFuekpyhQ",
+    "durationSec": 2255,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-1xFxJuT0SQM",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 25,
+    "title": "Offensive Computer Security 2014 - Lecture 20 Return Oriented Programming (Hands on)",
+    "url": "https://www.youtube.com/watch?v=1xFxJuT0SQM",
+    "durationSec": 6136,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-SpmIIiMSLnQ",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 26,
+    "title": "Lecture 19: Web Exploitation 103",
+    "url": "https://www.youtube.com/watch?v=SpmIIiMSLnQ",
+    "durationSec": 3931,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-7YcIm1x4LGg",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 27,
+    "title": "Lecture 18: Web Exploitation 102",
+    "url": "https://www.youtube.com/watch?v=7YcIm1x4LGg",
+    "durationSec": 10087,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-BMuLfAoRC3A",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 28,
+    "title": "Lecture 26: Tying it All Together",
+    "url": "https://www.youtube.com/watch?v=BMuLfAoRC3A",
+    "durationSec": 3667,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-DMLai4nw50o",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 29,
+    "title": "Lecture 15: Networking 101",
+    "url": "https://www.youtube.com/watch?v=DMLai4nw50o",
+    "durationSec": 5100,
+    "topicTags": [
+      "network",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "network",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-q1d9-HSPl08",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 30,
+    "title": "OCS 2.0 Lecture 17 - Web Exploitation 101",
+    "url": "https://www.youtube.com/watch?v=q1d9-HSPl08",
+    "durationSec": 4606,
+    "topicTags": [
+      "web",
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-gHOKBR5ydio",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 31,
+    "title": "OCS 2.0 Lecture 14 - Exploitation 103",
+    "url": "https://www.youtube.com/watch?v=gHOKBR5ydio",
+    "durationSec": 5985,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-jltie_iUhH4",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 32,
+    "title": "Lecture 25: Digital Forensics Incident Response (DFIR) + Volatility",
+    "url": "https://www.youtube.com/watch?v=jltie_iUhH4",
+    "durationSec": 4883,
+    "topicTags": [
+      "malware",
+      "dfir",
+      "foundations",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "dfir",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq-CXRh3tPD9jo",
+    "courseId": "PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",
+    "index": 33,
+    "title": "Lecture 23: Exploit Development 107",
+    "url": "https://www.youtube.com/watch?v=CXRh3tPD9jo",
+    "durationSec": 2723,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "dfir",
+      "florida",
+      "state",
+      "university",
+      "offensive"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-oXeO61l_RS4",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 1,
+    "title": "مقدمة عن تحديات التقاط العلم 2 (HTB)",
+    "url": "https://www.youtube.com/watch?v=oXeO61l_RS4",
+    "durationSec": 1201,
+    "topicTags": [
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "htb"
+    ],
+    "trackIds": [
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-n95uw3vsjFQ",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 2,
+    "title": "مقدمة عن تحديات التقاط العلم 3 (Digital Forensics)",
+    "url": "https://www.youtube.com/watch?v=n95uw3vsjFQ",
+    "durationSec": 1755,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "digital",
+      "forensics"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-rHA69GPSgec",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 3,
+    "title": "مقدمة عن تحديات التقاط العلم 4 (steganography)",
+    "url": "https://www.youtube.com/watch?v=rHA69GPSgec",
+    "durationSec": 907,
+    "topicTags": [
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "steganography"
+    ],
+    "trackIds": [
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-SMIbTjXUvGc",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 4,
+    "title": "مقدمة عن تحديات التقاط العلم 5 (Memory forensics)",
+    "url": "https://www.youtube.com/watch?v=SMIbTjXUvGc",
+    "durationSec": 644,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "memory",
+      "forensics"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-cCM56FZ6EaA",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 5,
+    "title": "مقدمة عن تحديات التقاط العلم 6 (Packet analysis and Misc.)",
+    "url": "https://www.youtube.com/watch?v=cCM56FZ6EaA",
+    "durationSec": 838,
+    "topicTags": [
+      "network",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "packet",
+      "analysis"
+    ],
+    "trackIds": [
+      "network",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-HXqql0p6J14",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 6,
+    "title": "مقدمة عن تحديات التقاط العلم 8 (Web CTFs part 2)",
+    "url": "https://www.youtube.com/watch?v=HXqql0p6J14",
+    "durationSec": 1990,
+    "topicTags": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "ctfs"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-v7OtnBHbXnA",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 7,
+    "title": "مقدمة عن تحديات التقاط العلم 7 (Web CTFs part 1)",
+    "url": "https://www.youtube.com/watch?v=v7OtnBHbXnA",
+    "durationSec": 1804,
+    "topicTags": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "ctfs"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-9iNKpzHs0gI",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 8,
+    "title": "مقدمة عن تحديات التقاط العلم 9 (Web CTFs part 3)",
+    "url": "https://www.youtube.com/watch?v=9iNKpzHs0gI",
+    "durationSec": 1815,
+    "topicTags": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "ctfs"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-NMsY298Qd2U",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 9,
+    "title": "مقدمة عن تحديات التقاط العلم 10(Cryptography CTFs part 1)",
+    "url": "https://www.youtube.com/watch?v=NMsY298Qd2U",
+    "durationSec": 1846,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "cryptography",
+      "ctfs"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-Dr7DGOrwoSk",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 10,
+    "title": "مقدمة عن تحديات التقاط العلم 11(Cryptography CTFs part 2)",
+    "url": "https://www.youtube.com/watch?v=Dr7DGOrwoSk",
+    "durationSec": 1945,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "cryptography",
+      "ctfs"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks-X4Osal7_Wj0",
+    "courseId": "PL_wiobkctTm0vvi4pkwzjMgNvz-MYRxks",
+    "index": 11,
+    "title": "مقدمة عن تحديات التقاط العلم 12(Cryptography CTFs part 3)",
+    "url": "https://www.youtube.com/watch?v=X4Osal7_Wj0",
+    "durationSec": 1389,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud",
+      "intrduction",
+      "cryptography",
+      "ctfs"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-5veGnho2F2E",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 1,
+    "title": "Introduction to CTFs - Arabic #0",
+    "url": "https://www.youtube.com/watch?v=5veGnho2F2E",
+    "durationSec": 579,
+    "topicTags": [
+      "ctf",
+      "foundations",
+      "osint",
+      "introduction",
+      "ctfs"
+    ],
+    "trackIds": [
+      "ctf",
+      "foundations",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-Kia0OuFBE-4",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 2,
+    "title": "CTF Challenges (Forensics 101) - Arabic #1",
+    "url": "https://www.youtube.com/watch?v=Kia0OuFBE-4",
+    "durationSec": 331,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "osint",
+      "challenges",
+      "forensics"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-2w4EuHBl_Dc",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 3,
+    "title": "CTF Challenges (Talking LS ) - Arabic #2",
+    "url": "https://www.youtube.com/watch?v=2w4EuHBl_Dc",
+    "durationSec": 319,
+    "topicTags": [
+      "ctf",
+      "osint",
+      "challenges",
+      "talking"
+    ],
+    "trackIds": [
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-BlItqdwoOwQ",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 4,
+    "title": "CTF Two Challenges ( Exif & WOW...So Meta ) - Arabic #3",
+    "url": "https://www.youtube.com/watch?v=BlItqdwoOwQ",
+    "durationSec": 504,
+    "topicTags": [
+      "ctf",
+      "osint",
+      "two",
+      "challenges"
+    ],
+    "trackIds": [
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-eWdJlqUfI3s",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 5,
+    "title": "CTF Challenges (POST Practice) - Arabic #4",
+    "url": "https://www.youtube.com/watch?v=eWdJlqUfI3s",
+    "durationSec": 337,
+    "topicTags": [
+      "ctf",
+      "osint",
+      "challenges",
+      "post"
+    ],
+    "trackIds": [
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-XnEySjHDgs8",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 6,
+    "title": "CTF Challenges (Wireshark For CTF) - Arabic #5",
+    "url": "https://www.youtube.com/watch?v=XnEySjHDgs8",
+    "durationSec": 572,
+    "topicTags": [
+      "network",
+      "ctf",
+      "osint",
+      "challenges",
+      "wireshark"
+    ],
+    "trackIds": [
+      "network",
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-z7Rdac61aRs",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 7,
+    "title": "CTF Challenges ( Wireshark Challenges ) - Arabic #6",
+    "url": "https://www.youtube.com/watch?v=z7Rdac61aRs",
+    "durationSec": 451,
+    "topicTags": [
+      "network",
+      "ctf",
+      "osint",
+      "challenges",
+      "wireshark"
+    ],
+    "trackIds": [
+      "network",
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv-sknhpxHs-nQ",
+    "courseId": "PLtJkL6CnLVXM-YZcyKrCWylperkismVHv",
+    "index": 8,
+    "title": "CTF Challenges ( Forensics Hex Signature Format ) - Arabic #7",
+    "url": "https://www.youtube.com/watch?v=sknhpxHs-nQ",
+    "durationSec": 447,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "osint",
+      "challenges",
+      "forensics"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "osint"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-n8Gx4dYJFG4",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 1,
+    "title": "1. Introduction",
+    "url": "https://www.youtube.com/watch?v=n8Gx4dYJFG4",
+    "durationSec": 3371,
+    "topicTags": [
+      "web",
+      "foundations",
+      "mobile",
+      "application",
+      "security",
+      "introduction"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-e3oU9CaX1GE",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 2,
+    "title": "2. Broken Authentication & Access Control",
+    "url": "https://www.youtube.com/watch?v=e3oU9CaX1GE",
+    "durationSec": 2644,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "broken"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-zSTNyuDeIZw",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 3,
+    "title": "3. Insecure direct object references (IDOR) (Labs)",
+    "url": "https://www.youtube.com/watch?v=zSTNyuDeIZw",
+    "durationSec": 1444,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-eiHjgb1jWXQ",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 4,
+    "title": "4. Cross-Site Request Forgery (CSRF) (Explain)",
+    "url": "https://www.youtube.com/watch?v=eiHjgb1jWXQ",
+    "durationSec": 1335,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "cross"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-NZMAqk6sZHE",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 5,
+    "title": "5. Cross-Site Request Forgery (CSRF) (Labs)",
+    "url": "https://www.youtube.com/watch?v=NZMAqk6sZHE",
+    "durationSec": 1475,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "cross"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-afASRDvimwg",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 6,
+    "title": "6. Two Factor Authentication Bypass",
+    "url": "https://www.youtube.com/watch?v=afASRDvimwg",
+    "durationSec": 1442,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "two"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-jYuAP-veF4Y",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 7,
+    "title": "7. SQL injection (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=jYuAP-veF4Y",
+    "durationSec": 3570,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "sql"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-67OhK-ByVLI",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 8,
+    "title": "8. SQL injection scripting",
+    "url": "https://www.youtube.com/watch?v=67OhK-ByVLI",
+    "durationSec": 2122,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "sql"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-Qd7UuQyTLYw",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 9,
+    "title": "9. Cross site scripting (XSS)",
+    "url": "https://www.youtube.com/watch?v=Qd7UuQyTLYw",
+    "durationSec": 1612,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "cross"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-3G08COkUuYw",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 10,
+    "title": "10. Cross site scripting (XSS) Labs",
+    "url": "https://www.youtube.com/watch?v=3G08COkUuYw",
+    "durationSec": 5829,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "10."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-Th0QlXoDPhw",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 11,
+    "title": "11. Server Side Template Injection (SSTI) (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=Th0QlXoDPhw",
+    "durationSec": 1069,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "11."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-RJ6Oa4HWV08",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 12,
+    "title": "12. Open redirect (Explain)",
+    "url": "https://www.youtube.com/watch?v=RJ6Oa4HWV08",
+    "durationSec": 714,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "12."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-vGpVziAW0q4",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 13,
+    "title": "13. Open redirect (Labs)",
+    "url": "https://www.youtube.com/watch?v=vGpVziAW0q4",
+    "durationSec": 711,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "13."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-vHJvKoBOEJo",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 14,
+    "title": "14. XML external entity (XXE) (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=vHJvKoBOEJo",
+    "durationSec": 1910,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "14."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-1PLdUpHbcXE",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 15,
+    "title": "15. OAuth Misconfiguration (Explain and Labs)",
+    "url": "https://www.youtube.com/watch?v=1PLdUpHbcXE",
+    "durationSec": 1384,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "15."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-WEm8YW2zCu0",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 16,
+    "title": "16. Cross-origin resource sharing (CORS) (Explain)",
+    "url": "https://www.youtube.com/watch?v=WEm8YW2zCu0",
+    "durationSec": 989,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "16."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-9cmKGtMShms",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 17,
+    "title": "17. Cross-origin resource sharing (CORS) (Labs)",
+    "url": "https://www.youtube.com/watch?v=9cmKGtMShms",
+    "durationSec": 1189,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "17."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-pA0KzQptPD4",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 18,
+    "title": "18. Clickjacking",
+    "url": "https://www.youtube.com/watch?v=pA0KzQptPD4",
+    "durationSec": 850,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "18."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-VYGo-X3W9wc",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 19,
+    "title": "19. CORS & Clickjacking (Labs)",
+    "url": "https://www.youtube.com/watch?v=VYGo-X3W9wc",
+    "durationSec": 1493,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "19."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-T0miPx_icoE",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 20,
+    "title": "20. JSON with Padding (JSONP) (Explain)",
+    "url": "https://www.youtube.com/watch?v=T0miPx_icoE",
+    "durationSec": 488,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "20."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-ggbzbuFApBo",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 21,
+    "title": "21. JSON with Padding (JSONP) (Labs)",
+    "url": "https://www.youtube.com/watch?v=ggbzbuFApBo",
+    "durationSec": 1248,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "21."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-LtoUqEpYUN4",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 22,
+    "title": "23. LFI & Path Traversal",
+    "url": "https://www.youtube.com/watch?v=LtoUqEpYUN4",
+    "durationSec": 2248,
+    "topicTags": [
+      "web",
+      "crypto",
+      "mobile",
+      "application",
+      "security",
+      "23."
+    ],
+    "trackIds": [
+      "web",
+      "crypto",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-ZUSD3ESt4uA",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 23,
+    "title": "24. LFI & Path Traversal (More Labs)",
+    "url": "https://www.youtube.com/watch?v=ZUSD3ESt4uA",
+    "durationSec": 803,
+    "topicTags": [
+      "web",
+      "crypto",
+      "mobile",
+      "application",
+      "security",
+      "24."
+    ],
+    "trackIds": [
+      "web",
+      "crypto",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-7SK4WrqtsNs",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 24,
+    "title": "25. Host header attacks (Explain)",
+    "url": "https://www.youtube.com/watch?v=7SK4WrqtsNs",
+    "durationSec": 291,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "25."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-IMq5DwSNhiw",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 25,
+    "title": "26. Host header attacks (Labs)",
+    "url": "https://www.youtube.com/watch?v=IMq5DwSNhiw",
+    "durationSec": 1084,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "26."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-R4OKxZ67oko",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 26,
+    "title": "27. Logic Bugs (Labs)",
+    "url": "https://www.youtube.com/watch?v=R4OKxZ67oko",
+    "durationSec": 2424,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "27."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-5scBxIjDwd0",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 27,
+    "title": "28. Unrestricted file upload (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=5scBxIjDwd0",
+    "durationSec": 2025,
+    "topicTags": [
+      "web",
+      "api",
+      "mobile",
+      "application",
+      "security",
+      "28."
+    ],
+    "trackIds": [
+      "web",
+      "api",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-KzOTMcT3scg",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 28,
+    "title": "29. Insecure Deserialization (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=KzOTMcT3scg",
+    "durationSec": 1374,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "29."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-H2A6iNGerKE",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 29,
+    "title": "30. Insecure Deserialization (Labs)",
+    "url": "https://www.youtube.com/watch?v=H2A6iNGerKE",
+    "durationSec": 1348,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "30."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-g7RKLpnxLM8",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 30,
+    "title": "31. Server-side request forgery (SSRF) (Explain & Labs)",
+    "url": "https://www.youtube.com/watch?v=g7RKLpnxLM8",
+    "durationSec": 2397,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "31."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-2oxotsPCcWg",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 31,
+    "title": "32. APIs & JWT",
+    "url": "https://www.youtube.com/watch?v=2oxotsPCcWg",
+    "durationSec": 3139,
+    "topicTags": [
+      "web",
+      "api",
+      "mobile",
+      "application",
+      "security",
+      "32."
+    ],
+    "trackIds": [
+      "web",
+      "api",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-iv3Sd12P0xA",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 32,
+    "title": "33. Reconnaissance",
+    "url": "https://www.youtube.com/watch?v=iv3Sd12P0xA",
+    "durationSec": 8019,
+    "topicTags": [
+      "web",
+      "osint",
+      "mobile",
+      "application",
+      "security",
+      "33."
+    ],
+    "trackIds": [
+      "web",
+      "osint",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-GylMyOvUb_c",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 33,
+    "title": "34. Regex & Acquisitions",
+    "url": "https://www.youtube.com/watch?v=GylMyOvUb_c",
+    "durationSec": 1750,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "34."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-VQ0ZIIrBUqg",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 34,
+    "title": "35. Information Leakage",
+    "url": "https://www.youtube.com/watch?v=VQ0ZIIrBUqg",
+    "durationSec": 1516,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "35."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-CjjpBJvsWM8",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 35,
+    "title": "36. Mitigations",
+    "url": "https://www.youtube.com/watch?v=CjjpBJvsWM8",
+    "durationSec": 2755,
+    "topicTags": [
+      "web",
+      "mobile",
+      "application",
+      "security",
+      "36."
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3-N6dEXqHPzlI",
+    "courseId": "PLsB1gqjeUAh_99a9LbVbxg-nBV79o0kW3",
+    "index": 36,
+    "title": "37. Reporting",
+    "url": "https://www.youtube.com/watch?v=N6dEXqHPzlI",
+    "durationSec": 2771,
+    "topicTags": [
+      "web",
+      "social",
+      "mobile",
+      "application",
+      "security",
+      "37."
+    ],
+    "trackIds": [
+      "web",
+      "social",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-eO6cLnOty10",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 1,
+    "title": "#1  CTF course - Learn cyber security in Arabic -- Introduction",
+    "url": "https://www.youtube.com/watch?v=eO6cLnOty10",
+    "durationSec": 114,
+    "topicTags": [
+      "ctf",
+      "foundations",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "foundations",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-tQ0CMTT3wa0",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 2,
+    "title": "#2  CTF course - Learn cyber security in Arabic -- Forensics 101 CTFLearn",
+    "url": "https://www.youtube.com/watch?v=tQ0CMTT3wa0",
+    "durationSec": 299,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-Gf83TRatH2Y",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 3,
+    "title": "#3 CTF course - Learn cyber Security in Arabic  -- Taking ls challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=Gf83TRatH2Y",
+    "durationSec": 204,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-9pDPZ2fDdFA",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 4,
+    "title": "#4 CTF course - Learn cyber Security in Arabic  --  07601 challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=9pDPZ2fDdFA",
+    "durationSec": 441,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-muIEj7g5DXg",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 5,
+    "title": "#5 CTF course - Learn cyber Security in Arabic  --  POST practice challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=muIEj7g5DXg",
+    "durationSec": 198,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-4fP6KMkpX0o",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 6,
+    "title": "#6 CTF course - Learn cyber Security in Arabic  --  Android Reverse engineering challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=4fP6KMkpX0o",
+    "durationSec": 400,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "mobile",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "mobile",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA--b0n_jpbkks",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 7,
+    "title": "#7 CTF course - Learn cyber Security in Arabic  -- TUX forensics challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=-b0n_jpbkks",
+    "durationSec": 275,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-qxUp49WefWo",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 8,
+    "title": "#8 CTF course - Learn cyber Security in Arabic  -- Lazy Game Binary challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=qxUp49WefWo",
+    "durationSec": 293,
+    "topicTags": [
+      "ctf",
+      "pwn",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "pwn",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-xyb6CqopHOE",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 9,
+    "title": "#9 CTF course - Learn cyber Security in Arabic  -- Where can My robot go challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=xyb6CqopHOE",
+    "durationSec": 101,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-QUJLPrZhETg",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 10,
+    "title": "#10 CTF course - Learn cyber Security in Arabic  -- WOW so META forensics challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=QUJLPrZhETg",
+    "durationSec": 166,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-PoHVOwIMK1s",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 11,
+    "title": "#11 CTF course - Learn cyber Security in Arabic  -- binwalk forensics challenge CTFlearn",
+    "url": "https://www.youtube.com/watch?v=PoHVOwIMK1s",
+    "durationSec": 332,
+    "topicTags": [
+      "dfir",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "dfir",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-naqI6PqozyY",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 12,
+    "title": "Learn reverse engineering and binary exploitation in Arabic (CTF بالعربي)",
+    "url": "https://www.youtube.com/watch?v=naqI6PqozyY",
+    "durationSec": 1065,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "pwn",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "pwn",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-SJCwqrPUuHE",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 13,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (Easy access challenge)",
+    "url": "https://www.youtube.com/watch?v=SJCwqrPUuHE",
+    "durationSec": 199,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-hMg20i4qE5c",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 14,
+    "title": "SQL injection Basics course in Arabic - CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=hMg20i4qE5c",
+    "durationSec": 224,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-vu8Q-N8R-go",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 15,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (This is Sparta challenge)",
+    "url": "https://www.youtube.com/watch?v=vu8Q-N8R-go",
+    "durationSec": 231,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-4iX6YwyoUzQ",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 16,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (hide data challenge)",
+    "url": "https://www.youtube.com/watch?v=4iX6YwyoUzQ",
+    "durationSec": 159,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-S2ZfUtWJ4-w",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 17,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (crack the hash challenge)",
+    "url": "https://www.youtube.com/watch?v=S2ZfUtWJ4-w",
+    "durationSec": 277,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-e7st-f611fI",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 18,
+    "title": "#1 Understand RSA encryption in Arabic for CTF players --  CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=e7st-f611fI",
+    "durationSec": 685,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-e8si14OoDAY",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 19,
+    "title": "#2 decrypting RSA using python in Arabic -- RACTF 2020 -- Really simple algorithm",
+    "url": "https://www.youtube.com/watch?v=e8si14OoDAY",
+    "durationSec": 327,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "foundations",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-wWM-GDCfAAA",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 20,
+    "title": "#3 decrypting RSA without knowing the factors in Arabic -- CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=wWM-GDCfAAA",
+    "durationSec": 174,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-WJFcJorPyvM",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 21,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (Cheers web challenge) شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=WJFcJorPyvM",
+    "durationSec": 158,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-VDrIFgsW2s8",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 22,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (Dark project web challenge)",
+    "url": "https://www.youtube.com/watch?v=VDrIFgsW2s8",
+    "durationSec": 245,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-SeCCgwvZv68",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 23,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (Postbase crypto challenge)",
+    "url": "https://www.youtube.com/watch?v=SeCCgwvZv68",
+    "durationSec": 517,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-sJbYjl9mRYs",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 24,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (RSA101 crypto challenge)",
+    "url": "https://www.youtube.com/watch?v=sJbYjl9mRYs",
+    "durationSec": 398,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-5yCnjuDPnng",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 25,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (cool name effect web challenge)",
+    "url": "https://www.youtube.com/watch?v=5yCnjuDPnng",
+    "durationSec": 181,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-R5e0wgI1epo",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 26,
+    "title": "CyberTalents challenges explained -- Learn CTF in Arabic (encrypted database web challenge) شرح",
+    "url": "https://www.youtube.com/watch?v=R5e0wgI1epo",
+    "durationSec": 243,
+    "topicTags": [
+      "web",
+      "ctf",
+      "foundations",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "foundations",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-GJwZp_ORFdE",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 27,
+    "title": "#0 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x00  CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=GJwZp_ORFdE",
+    "durationSec": 356,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-BCQaiaro_og",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 28,
+    "title": "#1 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x01 CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=BCQaiaro_og",
+    "durationSec": 146,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-uf3XOaK5uZE",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 29,
+    "title": "#2 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x02 CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=uf3XOaK5uZE",
+    "durationSec": 210,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-S5SizZN2KQU",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 30,
+    "title": "#3 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x03  CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=S5SizZN2KQU",
+    "durationSec": 525,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-WKHJ30x5pPo",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 31,
+    "title": "#4 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x04 CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=WKHJ30x5pPo",
+    "durationSec": 394,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-DY0giEYcFcA",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 32,
+    "title": "#5 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x05  CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=DY0giEYcFcA",
+    "durationSec": 414,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-Wm41qITeTCE",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 33,
+    "title": "#1 exploiting basic cross-site scripting vulnerability in Arabic -- CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=Wm41qITeTCE",
+    "durationSec": 132,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-MjUKo2tLx_8",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 34,
+    "title": "#2 using JavaScript attributes to exploit XSS vulnerability in Arabic -- CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=MjUKo2tLx_8",
+    "durationSec": 240,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-hCIz6XYGDYM",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 35,
+    "title": "#3 learn how source code flaws lead to XSS vulnerability in Arabic --CTF شرح بالعربي",
+    "url": "https://www.youtube.com/watch?v=hCIz6XYGDYM",
+    "durationSec": 552,
+    "topicTags": [
+      "web",
+      "ctf",
+      "cloud",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "cloud",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-1evTnQGa44c",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 36,
+    "title": "#1 warm up -- cross-site scripting XSS exploitation (alf.nu alert 1 to win)",
+    "url": "https://www.youtube.com/watch?v=1evTnQGa44c",
+    "durationSec": 191,
+    "topicTags": [
+      "web",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "web",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-VniSd_dVwPA",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 37,
+    "title": "#6 Learn Reverse engineering in Arabic By solving Crackmes -- Crackme 0x06  CTF بالعربي",
+    "url": "https://www.youtube.com/watch?v=VniSd_dVwPA",
+    "durationSec": 1473,
+    "topicTags": [
+      "malware",
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "malware",
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-bDfZ-LA0ZkA",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 38,
+    "title": "#0 CTF Roadmap for beginners in Arabic - Watch till the end - CTF بالعربي للمبتدئين",
+    "url": "https://www.youtube.com/watch?v=bDfZ-LA0ZkA",
+    "durationSec": 1242,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA-y1hodnvObHo",
+    "courseId": "PLdxfDCLPISTTSCRZyUXvW6shfNyt0wbKA",
+    "index": 39,
+    "title": "practicing with base64 and morse code - PicoCTF 2019 - Cryptography",
+    "url": "https://www.youtube.com/watch?v=y1hodnvObHo",
+    "durationSec": 271,
+    "topicTags": [
+      "ctf",
+      "crypto",
+      "learn",
+      "and",
+      "cyber"
+    ],
+    "trackIds": [
+      "ctf",
+      "crypto"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-hS_lR4AmvD8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 1,
+    "title": "LoRa for Hackers: Testing Long-Range Remote Control in the Real World",
+    "url": "https://www.youtube.com/watch?v=hS_lR4AmvD8",
+    "durationSec": 535,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "lora"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-IcJvtMXrY80",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 2,
+    "title": "Hacking the Skies: Creating Ghost Drone Swarms with Spoofed IDs for $20",
+    "url": "https://www.youtube.com/watch?v=IcJvtMXrY80",
+    "durationSec": 357,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacking"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-znJY-nhZAo0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 3,
+    "title": "Setting Up an Ethical Hacking Kit with a Raspberry Pi 5",
+    "url": "https://www.youtube.com/watch?v=znJY-nhZAo0",
+    "durationSec": 719,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "setting"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-C63PPEnFQnc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 4,
+    "title": "How Hackers Use Xerosploit for Advanced MiTM Attacks",
+    "url": "https://www.youtube.com/watch?v=C63PPEnFQnc",
+    "durationSec": 772,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-LOqVIe9cnW8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 5,
+    "title": "Use Facial Detection & Recognition on an ESP32 Wi-Fi Camera [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=LOqVIe9cnW8",
+    "durationSec": 891,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tx09GFGgVwA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 6,
+    "title": "Create a Wi-Fi Spy Camera with an ESP32-CAM [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=tx09GFGgVwA",
+    "durationSec": 759,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-H0kRS5zR3-w",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 7,
+    "title": "Use the Deauther Watch Wi-Fi Hacking Wearable [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=H0kRS5zR3-w",
+    "durationSec": 623,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-BDsRy9EzBVg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 8,
+    "title": "Fingerprint Web Apps & Servers for Better Recon [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=BDsRy9EzBVg",
+    "durationSec": 819,
+    "topicTags": [
+      "web",
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "fingerprint"
+    ],
+    "trackIds": [
+      "web",
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_PGJ980upPQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 9,
+    "title": "Get Started with Kali Linux as a Bootable Live USB [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=_PGJ980upPQ",
+    "durationSec": 796,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "get"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-1Fs3wFA0C1k",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 10,
+    "title": "Clear the Logs & History on Linux Systems to Delete All Traces You Were There [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=1Fs3wFA0C1k",
+    "durationSec": 578,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "clear"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-IK0M5ISGevo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 11,
+    "title": "Practice Wi-Fi Hacking Legally with ESP8266 CTF Games [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=IK0M5ISGevo",
+    "durationSec": 929,
+    "topicTags": [
+      "ctf",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "practice"
+    ],
+    "trackIds": [
+      "ctf",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-M7MqgRpeQt0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 12,
+    "title": "Use a Directional Antenna with ESP8266-Based Board [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=M7MqgRpeQt0",
+    "durationSec": 729,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_OyJ62fP648",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 13,
+    "title": "How Hackers Can Find Hidden Wi-Fi Networks & Their Names",
+    "url": "https://www.youtube.com/watch?v=_OyJ62fP648",
+    "durationSec": 232,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-YT35DykScnE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 14,
+    "title": "Generate Crackable Handshakes with the ESP8266 [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=YT35DykScnE",
+    "durationSec": 660,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "generate"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Vt5S12U3F0k",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 15,
+    "title": "Automate Remote SSH Control of Computers with Expect Scripts [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Vt5S12U3F0k",
+    "durationSec": 615,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "automate"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-x4Ap-ypWdFo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 16,
+    "title": "Create Your Own Mouse Jiggler with a Digispark & Arduino [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=x4Ap-ypWdFo",
+    "durationSec": 513,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-mzI59CIS1eE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 17,
+    "title": "Using RedRabbit's Best Pentesting & Post-Exploitation Tools on Windows [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=mzI59CIS1eE",
+    "durationSec": 775,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "using"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-UqzdbOcoF7Q",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 18,
+    "title": "Hacker's Guide to Buying an ESP32 Camera Module [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=UqzdbOcoF7Q",
+    "durationSec": 431,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacker"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-srk63urpHNA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 19,
+    "title": "One Way Hackers Can Perform Keystroke Injection Over Wi-Fi from a Smartphone",
+    "url": "https://www.youtube.com/watch?v=srk63urpHNA",
+    "durationSec": 178,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "one"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-khJ1HbL7208",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 20,
+    "title": "Hacking Remotely: Getting an Internet Connection in the Middle of Nowhere [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=khJ1HbL7208",
+    "durationSec": 1093,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacking"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-dStYJgUpeDw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 21,
+    "title": "Build a Software-Based Wi-Fi Jammer with Airgeddon [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=dStYJgUpeDw",
+    "durationSec": 312,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "build"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ELOTp79MPXA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 22,
+    "title": "Use Upip to Load MicroPython Libraries Over Wi-Fi to a Microcontroller [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ELOTp79MPXA",
+    "durationSec": 534,
+    "topicTags": [
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-c4HOWojf2Jo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 23,
+    "title": "Lock Down Your Ubuntu System to Protect It from Being Hacked [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=c4HOWojf2Jo",
+    "durationSec": 601,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "lock"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-1HDC6fKsKYE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 24,
+    "title": "Scan Websites for Potential Vulnerabilities Using Vega in Kali Linux [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=1HDC6fKsKYE",
+    "durationSec": 804,
+    "topicTags": [
+      "web",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "scan"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Z2zmvA-ieQc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 25,
+    "title": "200th Episode! : Scraping Cryptocurrency Addresses with SpiderFoot CLI [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Z2zmvA-ieQc",
+    "durationSec": 713,
+    "topicTags": [
+      "api",
+      "crypto",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "200th"
+    ],
+    "trackIds": [
+      "api",
+      "crypto",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-9rxJ1j2seug",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 26,
+    "title": "How Hackers Can Send Payloads to Computers Over Wi-Fi with the WiFi Duck",
+    "url": "https://www.youtube.com/watch?v=9rxJ1j2seug",
+    "durationSec": 200,
+    "topicTags": [
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-b6LoNZXkwSA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 27,
+    "title": "Create a Dead Man's Switch in Python to Encrypt a File When You Don't Check In [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=b6LoNZXkwSA",
+    "durationSec": 1071,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-2kv1ey9m9F0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 28,
+    "title": "How Hackers Can Steal Information from Computers Using Banner Grabbing",
+    "url": "https://www.youtube.com/watch?v=2kv1ey9m9F0",
+    "durationSec": 713,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-vOEO_6xfsdo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 29,
+    "title": "Upgrade a Dumb Reverse Shell into a Fully Functional Terminal [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=vOEO_6xfsdo",
+    "durationSec": 650,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "upgrade"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-CCtBhTpx97c",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 30,
+    "title": "Use ExtAnalysis for Browser Extension Analysis [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=CCtBhTpx97c",
+    "durationSec": 684,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-2oeCg8bj-4U",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 31,
+    "title": "How a Hacker Could Attack Web Apps with Burp Suite & SQL Injection",
+    "url": "https://www.youtube.com/watch?v=2oeCg8bj-4U",
+    "durationSec": 609,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT--fbeL4MOfFE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 32,
+    "title": "Exploit Sudo & Become a Superuser with SUDO_KILLER [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=-fbeL4MOfFE",
+    "durationSec": 548,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "exploit"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-fElpxglCfew",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 33,
+    "title": "Configure Port Forwarding to Create Internet-Connected Services [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=fElpxglCfew",
+    "durationSec": 700,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "configure"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-XaVsdopP7Tw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 34,
+    "title": "Perform Browser OSINT with the Mitaka Extension [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=XaVsdopP7Tw",
+    "durationSec": 500,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-BgwecUwuMvk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 35,
+    "title": "How Hackers Hack Wi-Fi Automatically Using Besside-ng",
+    "url": "https://www.youtube.com/watch?v=BgwecUwuMvk",
+    "durationSec": 542,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-U93B9QvuZP8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 36,
+    "title": "Exploit WebDAV on a Server & Get a Reverse Shell [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=U93B9QvuZP8",
+    "durationSec": 541,
+    "topicTags": [
+      "web",
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "exploit"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-8a1yTN2kFNw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 37,
+    "title": "Conduct a Penetration Test Like a Pro in 6 Phases  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=8a1yTN2kFNw",
+    "durationSec": 817,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "conduct"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-3c65Xo_f-O0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 38,
+    "title": "Install & Configure a Secure Open BSD Virtual Machine [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=3c65Xo_f-O0",
+    "durationSec": 565,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "install"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Cm63_p82vSE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 39,
+    "title": "How Hackers Use Zydra to Crack Password-Protected Files",
+    "url": "https://www.youtube.com/watch?v=Cm63_p82vSE",
+    "durationSec": 621,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-v79WBn2VKcA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 40,
+    "title": "Perform Wireless Surveillance of Bluetooth & Wi-Fi with Sparrow-wifi [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=v79WBn2VKcA",
+    "durationSec": 647,
+    "topicTags": [
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-FKVsz_2IWJs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 41,
+    "title": "How Hackers Could Brute-Force SSH Credentials to Gain Access to Servers",
+    "url": "https://www.youtube.com/watch?v=FKVsz_2IWJs",
+    "durationSec": 1035,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-67f9iptWqt0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 42,
+    "title": "Host a Deep Web IRC Server for More Anonymous Chatting Online [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=67f9iptWqt0",
+    "durationSec": 583,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "host"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-keK99avGLvQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 43,
+    "title": "Automate Recon with Your Own Bash Script [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=keK99avGLvQ",
+    "durationSec": 426,
+    "topicTags": [
+      "osint",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "automate"
+    ],
+    "trackIds": [
+      "osint",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-h-vSYo-b5ms",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 44,
+    "title": "Intercept LAN Traffic with a Packet Squirrel [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=h-vSYo-b5ms",
+    "durationSec": 716,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "intercept"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-1-ykWq6BEsQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 45,
+    "title": "Create Brute-Force Wordlists from Leaked Password Databases [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=1-ykWq6BEsQ",
+    "durationSec": 499,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-yhC5Kh5Z_4o",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 46,
+    "title": "Crack SSH Private Key Passwords with John the Ripper [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=yhC5Kh5Z_4o",
+    "durationSec": 771,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "crack"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-uULIfqaPQKI",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 47,
+    "title": "Control Electronics from a Web Browser Using MicroPython & Jupyter Notebook [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=uULIfqaPQKI",
+    "durationSec": 504,
+    "topicTags": [
+      "web",
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "control"
+    ],
+    "trackIds": [
+      "web",
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-xtTrbZn3VSw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 48,
+    "title": "Perform Aircraft OSINT Using Your Smartphone or Computer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=xtTrbZn3VSw",
+    "durationSec": 899,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Xq2m2IDyUnw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 49,
+    "title": "Enumerate Networks & Services with GoScan [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Xq2m2IDyUnw",
+    "durationSec": 592,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "enumerate"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-GVMjk9pj2Cw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 50,
+    "title": "Host Your Own Tor Hidden Service with an Onion Address [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=GVMjk9pj2Cw",
+    "durationSec": 461,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "host"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-aOkg1K6C73U",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 51,
+    "title": "Python 2 vs. Python 3: How These Versions Differ for Hackers & Cybersecurity [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=aOkg1K6C73U",
+    "durationSec": 452,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "python"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-rGyRC_IYR6M",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 52,
+    "title": "Use Images to Smuggle Data Past Firewalls on MacOS [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=rGyRC_IYR6M",
+    "durationSec": 632,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-GfbErjQ3vMQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 53,
+    "title": "The Hacker's Guide to 3D Printing [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=GfbErjQ3vMQ",
+    "durationSec": 1718,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "the"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-rIlkXVlUBCA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 54,
+    "title": "Identify Antivirus Software Installed on a Target's Windows PC [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=rIlkXVlUBCA",
+    "durationSec": 644,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "identify"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-fgf6ym3nRjg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 55,
+    "title": "Use One-Lin3r to Quickly Generate Reverse Shells, Run Commands & More [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=fgf6ym3nRjg",
+    "durationSec": 476,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-10Y89xaVkqw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 56,
+    "title": "Program ESP8266 & ESP32 Boards Over Wi-Fi with MicroPython WebREPL [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=10Y89xaVkqw",
+    "durationSec": 471,
+    "topicTags": [
+      "web",
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "program"
+    ],
+    "trackIds": [
+      "web",
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-WfcrRnr2UlM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 57,
+    "title": "Lock Down Your DNS with a Pi-Hole for Safer Web Browsing at Home [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=WfcrRnr2UlM",
+    "durationSec": 1372,
+    "topicTags": [
+      "web",
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "lock"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-4CAokDlG_74",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 58,
+    "title": "Enable Offline Chat Over Wi-Fi with an ESP32 Microcontroller [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=4CAokDlG_74",
+    "durationSec": 856,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "enable"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-clWJ78N1new",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 59,
+    "title": "Build an Off-the-Grid Wi-Fi System for Voice Communications [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=clWJ78N1new",
+    "durationSec": 847,
+    "topicTags": [
+      "social",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "build"
+    ],
+    "trackIds": [
+      "social",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-PE1A1j_xKUE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 60,
+    "title": "Find Exploits & Get Root with Linux Exploit Suggester [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=PE1A1j_xKUE",
+    "durationSec": 411,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "find"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-vBG5Pqnxkk0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 61,
+    "title": "Use Zero-Width Characters to Hide Messages & Reveal Leaks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=vBG5Pqnxkk0",
+    "durationSec": 826,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Ls0SH9MZMCs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 62,
+    "title": "Use Skiptracer to Gather License Plate OSINT Data [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Ls0SH9MZMCs",
+    "durationSec": 490,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-xNhQMwC0BLo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 63,
+    "title": "Generate Obfuscated Payloads Using Graffiti [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=xNhQMwC0BLo",
+    "durationSec": 499,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "generate"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-xFEuqdGnhCc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 64,
+    "title": "Hack Like It's 1987 with the Telehack Game [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=xFEuqdGnhCc",
+    "durationSec": 1451,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hack"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-OIa3BkYiQ7U",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 65,
+    "title": "Create Rogue APs with MicroPython on an ESP8266 Board [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=OIa3BkYiQ7U",
+    "durationSec": 754,
+    "topicTags": [
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-EL96fXFNLNA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 66,
+    "title": "Take Control of Web Browsers with BeEF [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=EL96fXFNLNA",
+    "durationSec": 732,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "take"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-TtzKrTKkTgs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 67,
+    "title": "Discover Hidden HTTP Parameters with Arjun [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=TtzKrTKkTgs",
+    "durationSec": 376,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "discover"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-g6WFAjBtsyI",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 68,
+    "title": "Create Custom Password Libraries with Wordlister [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=g6WFAjBtsyI",
+    "durationSec": 359,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-mq5F8FyXXhI",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 69,
+    "title": "Execute Hidden Python Commands [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=mq5F8FyXXhI",
+    "durationSec": 602,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "execute"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-X-ml7bLYWpk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 70,
+    "title": "Spoof Wi-Fi Hotspot GPS Locations with SkyLift [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=X-ml7bLYWpk",
+    "durationSec": 431,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "spoof"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-1pAis7c2JVY",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 71,
+    "title": "Track Wi-Fi Devices with a Directional Antenna & Wireshark [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=1pAis7c2JVY",
+    "durationSec": 745,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Ur7U39gmCgs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 72,
+    "title": "How Hackers Can Attack 5 GHz Wi-Fi Networks with a Wi-Fi Adapter",
+    "url": "https://www.youtube.com/watch?v=Ur7U39gmCgs",
+    "durationSec": 215,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Iidqk-pWK0g",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 73,
+    "title": "Clean & Map Wigle Wardriving Data in Jupyter Notebook [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Iidqk-pWK0g",
+    "durationSec": 1001,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "clean"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-C3UttshkkQw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 74,
+    "title": "Pick a Wi-Fi Antenna for WiFi Hacking [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=C3UttshkkQw",
+    "durationSec": 915,
+    "topicTags": [
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "pick"
+    ],
+    "trackIds": [
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-BmUNKG45jlU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 75,
+    "title": "Bypass VPNs to Track a Mac with Arduino [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=BmUNKG45jlU",
+    "durationSec": 939,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "bypass"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_AYdH9OKfzg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 76,
+    "title": "How a Hacker Could Create a Trojan PDF for Macs Using AppleScript, Part 2",
+    "url": "https://www.youtube.com/watch?v=_AYdH9OKfzg",
+    "durationSec": 203,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-aIW-BssqS3s",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 77,
+    "title": "How a Hacker Could Create a Trojan PDF for Macs Using AppleScript, Part 1",
+    "url": "https://www.youtube.com/watch?v=aIW-BssqS3s",
+    "durationSec": 269,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-hBXIJvdslX0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 78,
+    "title": "How Hackers Can Steal a Mac's Preferred Network List Using Arduino",
+    "url": "https://www.youtube.com/watch?v=hBXIJvdslX0",
+    "durationSec": 245,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-FG0jQESUdyo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 79,
+    "title": "Spy on SSH Sessions with SSHPry2.0 [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=FG0jQESUdyo",
+    "durationSec": 517,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "spy"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-R7aVDO7-ldk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 80,
+    "title": "How Hackers Create Phishing Pages for Social Media Accounts & More",
+    "url": "https://www.youtube.com/watch?v=R7aVDO7-ldk",
+    "durationSec": 209,
+    "topicTags": [
+      "dfir",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "dfir",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-y8GFQ2j5h-8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 81,
+    "title": "How Hackers Can Steal Credentials Stored in Browsers Using a USB Rubber Ducky",
+    "url": "https://www.youtube.com/watch?v=y8GFQ2j5h-8",
+    "durationSec": 171,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-oW9Bxy0OSrU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 82,
+    "title": "One Way Hackers Social Engineer Wi-Fi Passwords",
+    "url": "https://www.youtube.com/watch?v=oW9Bxy0OSrU",
+    "durationSec": 300,
+    "topicTags": [
+      "dfir",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "one"
+    ],
+    "trackIds": [
+      "dfir",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_h-gWbGyzd4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 83,
+    "title": "How Hackers Can Take Control Over MacOS Computers",
+    "url": "https://www.youtube.com/watch?v=_h-gWbGyzd4",
+    "durationSec": 220,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-gbFIlV8Sems",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 84,
+    "title": "How Hackers Discover & Attack Raspberry Pis on a Network",
+    "url": "https://www.youtube.com/watch?v=gbFIlV8Sems",
+    "durationSec": 205,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-AnASvDkz7ss",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 85,
+    "title": "How Hackers Scan & Attack Wi-Fi Networks with Low-Cost Microcontrollers",
+    "url": "https://www.youtube.com/watch?v=AnASvDkz7ss",
+    "durationSec": 272,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-zuU_Ub9AZ2s",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 86,
+    "title": "How Hackers Get Wi-Fi Passwords with Wifiphisher's Social Engineering Attack",
+    "url": "https://www.youtube.com/watch?v=zuU_Ub9AZ2s",
+    "durationSec": 215,
+    "topicTags": [
+      "dfir",
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "dfir",
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ZFq9lTiWUo4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 87,
+    "title": "How Hackers Can Take Control of Chromecasts on the Same Network",
+    "url": "https://www.youtube.com/watch?v=ZFq9lTiWUo4",
+    "durationSec": 284,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-PlP6i3qkaJk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 88,
+    "title": "How Hackers Can Brute-Force Website Logins",
+    "url": "https://www.youtube.com/watch?v=PlP6i3qkaJk",
+    "durationSec": 211,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Pag0FJfsyu0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 89,
+    "title": "Track USB Events with USBRip to Find Suspicious Activity on Your Computer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Pag0FJfsyu0",
+    "durationSec": 805,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-93ABfKsHd5I",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 90,
+    "title": "Analyze Wi-Fi Data with Jupyter Notebook [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=93ABfKsHd5I",
+    "durationSec": 1076,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "analyze"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_m7zyU0x-GE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 91,
+    "title": "How Hackers Arp-Spoof to Intercept Passwords Over Wi-Fi",
+    "url": "https://www.youtube.com/watch?v=_m7zyU0x-GE",
+    "durationSec": 264,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-YYGH3BIbaN0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 92,
+    "title": "How Hackers Can Take Over Sonos Speakers with Python",
+    "url": "https://www.youtube.com/watch?v=YYGH3BIbaN0",
+    "durationSec": 284,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-1yaHe7zWg1k",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 93,
+    "title": "How Hackers Crack WPA2 Networks Using the PMKID Hashcat Attack",
+    "url": "https://www.youtube.com/watch?v=1yaHe7zWg1k",
+    "durationSec": 312,
+    "topicTags": [
+      "network",
+      "crypto",
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "crypto",
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-iFnc9l3NKyo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 94,
+    "title": "Create a Wi-Fi Backdoor Using Arduino [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=iFnc9l3NKyo",
+    "durationSec": 767,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-4bHLmHu_jCk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 95,
+    "title": "How Hackers Can Hunt for Weak Passwords on Wi-Fi Networks",
+    "url": "https://www.youtube.com/watch?v=4bHLmHu_jCk",
+    "durationSec": 235,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-JmQk4Yp9bww",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 96,
+    "title": "Snoop on Bluetooth Devices Using Kali Linux [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=JmQk4Yp9bww",
+    "durationSec": 750,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "snoop"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Y_zjwIJTkBA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 97,
+    "title": "How Hackers Can Take Sudo Passwords from Linux & MacOS Computers",
+    "url": "https://www.youtube.com/watch?v=Y_zjwIJTkBA",
+    "durationSec": 286,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-TRfzgXXpU0A",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 98,
+    "title": "How Hackers Brute-Force Passwords for Network Services",
+    "url": "https://www.youtube.com/watch?v=TRfzgXXpU0A",
+    "durationSec": 223,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-7SNagx-Cp2E",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 99,
+    "title": "How Hackers Perform Online Password Cracking with Dictionary Attacks",
+    "url": "https://www.youtube.com/watch?v=7SNagx-Cp2E",
+    "durationSec": 220,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-T3Mg221FmdU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 100,
+    "title": "How Hackers Can Jam Your Wi-Fi Networks",
+    "url": "https://www.youtube.com/watch?v=T3Mg221FmdU",
+    "durationSec": 259,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-KZ8IRoLIZbc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 101,
+    "title": "How Hackers Can Bypass MacOS Security by Spoofing Trusted Apps",
+    "url": "https://www.youtube.com/watch?v=KZ8IRoLIZbc",
+    "durationSec": 210,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-odffCT0aW58",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 102,
+    "title": "Program MicroPython NeoPixel Holiday Lights with an ESP8266 Microcontroller [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=odffCT0aW58",
+    "durationSec": 1060,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "program"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-j0hgKkwmSlw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 103,
+    "title": "Intro to Programming with MicroPython for ESP8266 Boards [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=j0hgKkwmSlw",
+    "durationSec": 910,
+    "topicTags": [
+      "pwn",
+      "foundations",
+      "cyber",
+      "weapons",
+      "lab",
+      "intro"
+    ],
+    "trackIds": [
+      "pwn",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-DOTT6m54eRk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 104,
+    "title": "How Hackers Can Crack Your Wi-Fi Passwords Using Pyrit",
+    "url": "https://www.youtube.com/watch?v=DOTT6m54eRk",
+    "durationSec": 267,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-pS9Aoyh7Wz8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 105,
+    "title": "How Hackers Can Phish Using Social Media Sites",
+    "url": "https://www.youtube.com/watch?v=pS9Aoyh7Wz8",
+    "durationSec": 241,
+    "topicTags": [
+      "dfir",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "dfir",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-HyxQqDq3qs4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 106,
+    "title": "How Hackers Can Grab Your Passwords Over Wi-Fi with Evil Twin Attacks",
+    "url": "https://www.youtube.com/watch?v=HyxQqDq3qs4",
+    "durationSec": 658,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-aC7Pjjr6NcM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 107,
+    "title": "Fingerprint a Hashed Password with Hash-Identifier [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=aC7Pjjr6NcM",
+    "durationSec": 772,
+    "topicTags": [
+      "crypto",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "fingerprint"
+    ],
+    "trackIds": [
+      "crypto",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Hl0IpoS503A",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 108,
+    "title": "View Smartphone Traffic with Wireshark on the Same Network [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Hl0IpoS503A",
+    "durationSec": 740,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "view"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-MtU0X0ZpR5k",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 109,
+    "title": "Intercept Packets with Sniffglue Without Opening Yourself Up to Zero-Days [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=MtU0X0ZpR5k",
+    "durationSec": 807,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "intercept"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-7I8sjeNHWjQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 110,
+    "title": "Script Your Own MacOS Ducky Script Payloads for a Digispark Board [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=7I8sjeNHWjQ",
+    "durationSec": 499,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "script"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-hdXDMIvQuTs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 111,
+    "title": "Run Graphical X Applications Over SSH [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=hdXDMIvQuTs",
+    "durationSec": 691,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "run"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-A3cB9BDE6XM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 112,
+    "title": "Use USB Rubber Ducky Scripts & Payloads on an Inexpensive Digispark Board [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=A3cB9BDE6XM",
+    "durationSec": 511,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-5cBiXqz-WY4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 113,
+    "title": "Fingerprint Web Application Firewalls with Nmap & Wafw00f [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=5cBiXqz-WY4",
+    "durationSec": 549,
+    "topicTags": [
+      "web",
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "fingerprint"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-PQo9PEdVuIw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 114,
+    "title": "Protect Your Ubuntu System with AppArmor & Firejail [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=PQo9PEdVuIw",
+    "durationSec": 756,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "protect"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-2IosbILbMWQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 115,
+    "title": "Defend Your Ubuntu System Against Network Attacks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=2IosbILbMWQ",
+    "durationSec": 1316,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "defend"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tJJDZV1XSzo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 116,
+    "title": "Lock Down & Protect Ubuntu Linux Against Physical Threats [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=tJJDZV1XSzo",
+    "durationSec": 1188,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "lock"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-zWWR3r9slNU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 117,
+    "title": "Run OSINT Investigations on Businesses & CEOs [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=zWWR3r9slNU",
+    "durationSec": 832,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "run"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-u_gOnwWEXiA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 118,
+    "title": "Find Vulnerable Services & Hidden Info Using Google Dorks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=u_gOnwWEXiA",
+    "durationSec": 817,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "find"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-M0eEwqUpKDc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 119,
+    "title": "Haunt a Computer Using SSH [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=M0eEwqUpKDc",
+    "durationSec": 1150,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "haunt"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-z8_qz938wFU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 120,
+    "title": "Google Search Like a Hacker [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=z8_qz938wFU",
+    "durationSec": 699,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "google"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-F9lwzMPGIgo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 121,
+    "title": "Conduct Reconnaissance with Cross-Platform Python Tools [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=F9lwzMPGIgo",
+    "durationSec": 1015,
+    "topicTags": [
+      "osint",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "conduct"
+    ],
+    "trackIds": [
+      "osint",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-6Epwd3hzBIc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 122,
+    "title": "Protect Your New MacBook, iMac, or Mac from Spying & Ransomware [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=6Epwd3hzBIc",
+    "durationSec": 566,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "protect"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-YKYH7d5vuCU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 123,
+    "title": "Check Your MacBook, iMac, or Mac for Malware & Keyloggers [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=YKYH7d5vuCU",
+    "durationSec": 695,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "check"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-frS5zRBRdfk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 124,
+    "title": "Access Multiple Wi-Fi Adapters Over a Network with Airserv-ng [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=frS5zRBRdfk",
+    "durationSec": 650,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "access"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Tjc-Xs-1fq8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 125,
+    "title": "Hacking QR Codes with QRGen to Attack Scanning Devices [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Tjc-Xs-1fq8",
+    "durationSec": 607,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacking"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-oDkg1zz6xlw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 126,
+    "title": "Search for Vulnerable Devices Around the World with Shodan [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=oDkg1zz6xlw",
+    "durationSec": 1083,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "search"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Jquf9BDm4iU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 127,
+    "title": "Load Kali Linux on a Raspberry Pi 4 Model B for a Mini Hacking Computer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Jquf9BDm4iU",
+    "durationSec": 589,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "load"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-cZNsO0aLklA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 128,
+    "title": "Set Up an Arch Linux Distro with Manjaro & BlackArch  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=cZNsO0aLklA",
+    "durationSec": 944,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "set"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-wo_orZvrqh8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 129,
+    "title": "Intercept Passwords Stored on MacOS in Keychain, LastPass, 1Password & KeePassX  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=wo_orZvrqh8",
+    "durationSec": 833,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "intercept"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-HrqYGTK8-bo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 130,
+    "title": "Hunt Down Social Media Accounts by Usernames Using Sherlock  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=HrqYGTK8-bo",
+    "durationSec": 704,
+    "topicTags": [
+      "dfir",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hunt"
+    ],
+    "trackIds": [
+      "dfir",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-k-EF9Zwe-Hs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 131,
+    "title": "Safely Launch Fireworks Over Wi-Fi [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=k-EF9Zwe-Hs",
+    "durationSec": 1231,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "safely"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-F3tJUNHbwnA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 132,
+    "title": "Top 10 Browser Extensions for Hackers & OSINT Researchers  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=F3tJUNHbwnA",
+    "durationSec": 1128,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "top"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-DdHK0TOJp98",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 133,
+    "title": "Defend Your MacOS Computer from Malware & Evil Maid Attacks  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=DdHK0TOJp98",
+    "durationSec": 778,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "defend"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-m0E8PlTIx-c",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 134,
+    "title": "Crack Password-Protected Microsoft Office Files [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=m0E8PlTIx-c",
+    "durationSec": 550,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "crack"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tFdKJcsBJOw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 135,
+    "title": "Obtain Valuable Data from Images During Recon Using EXIF Extractors [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=tFdKJcsBJOw",
+    "durationSec": 840,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "obtain"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-l1W4CAbeEfg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 136,
+    "title": "Perform Situational Awareness Attacks on MacOS, Part 2  [Tutorial] - 100th Episode!",
+    "url": "https://www.youtube.com/watch?v=l1W4CAbeEfg",
+    "durationSec": 576,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ZX3hfW6CJ2M",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 137,
+    "title": "Perform Situational Awareness Attacks on MacOS, Part 1  [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ZX3hfW6CJ2M",
+    "durationSec": 514,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-owEVhvbZMkk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 138,
+    "title": "Discover & Attack Network Devices with Sparta [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=owEVhvbZMkk",
+    "durationSec": 769,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "discover"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-47I3QTKCXqM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 139,
+    "title": "Hide Payloads for MacOS Inside Photo Metadata [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=47I3QTKCXqM",
+    "durationSec": 829,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hide"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-WW6myutKBYk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 140,
+    "title": "Find Information from a Phone Number Using OSINT Tools [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=WW6myutKBYk",
+    "durationSec": 1019,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "find"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-yD8qrP8sCDs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 141,
+    "title": "Create Packets from Scratch with Scapy [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=yD8qrP8sCDs",
+    "durationSec": 829,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-NHeqI0HNlxE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 142,
+    "title": "Take Control of Network Traffic with Evil Limiter [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=NHeqI0HNlxE",
+    "durationSec": 641,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "take"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-YDpjGTojByw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 143,
+    "title": "Identify & Target Bluetooth Devices with Bettercap [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=YDpjGTojByw",
+    "durationSec": 635,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "identify"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-XlFO5Iat178",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 144,
+    "title": "A Hacker's Guide to Programming Microcontrollers [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=XlFO5Iat178",
+    "durationSec": 1073,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacker"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-A7c_GOduMbA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 145,
+    "title": "Get Started with Parrot Security OS on Your Computer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=A7c_GOduMbA",
+    "durationSec": 850,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "get"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-pJDJwD8GCIg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 146,
+    "title": "Use Photon Scanner to Scrape Web OSINT Data [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=pJDJwD8GCIg",
+    "durationSec": 1048,
+    "topicTags": [
+      "web",
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "web",
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-jzLJjbZVQ9s",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 147,
+    "title": "Mine Twitter for Targeted Information Using Twint [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=jzLJjbZVQ9s",
+    "durationSec": 804,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "mine"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-lru-UWQ06I0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 148,
+    "title": "Catch Catfish on the Internet with Grabify Tracking Links [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=lru-UWQ06I0",
+    "durationSec": 641,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "catch"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-154kQIkO86o",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 149,
+    "title": "Discover Web Vulnerabilities with Uniscan's Terminal or GUI-Based Tool [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=154kQIkO86o",
+    "durationSec": 599,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "discover"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-5a_GFWeovYI",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 150,
+    "title": "Probe Sites for Vulnerabilities with TIDoS, the Offensive Web App Pen-Testing Framework [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=5a_GFWeovYI",
+    "durationSec": 1113,
+    "topicTags": [
+      "web",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "probe"
+    ],
+    "trackIds": [
+      "web",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-4xaWoZE8eik",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 151,
+    "title": "Discover & Scan for Devices on a Network with ARP [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=4xaWoZE8eik",
+    "durationSec": 620,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "discover"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-53SNcPeQih8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 152,
+    "title": "Introduction to IPv4 Addresses & How to Use Them to Navigate a Network [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=53SNcPeQih8",
+    "durationSec": 723,
+    "topicTags": [
+      "network",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "introduction"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-nPQVp_dDrjM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 153,
+    "title": "Intercept Security Camera Images Using Hak5's Plunder Bug [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=nPQVp_dDrjM",
+    "durationSec": 533,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "intercept"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-noCaFsvgRX0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 154,
+    "title": "Spy on Network Relationships with Airgraph-ng [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=noCaFsvgRX0",
+    "durationSec": 663,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "spy"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-FNiBNdM7srE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 155,
+    "title": "Track a Target Using Canary Token Tracking Links [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=FNiBNdM7srE",
+    "durationSec": 962,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-K78YOmbuT48",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 156,
+    "title": "Scan for Vulnerabilities on Any Website Using Nikto [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=K78YOmbuT48",
+    "durationSec": 956,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "scan"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-BQBcrPTTIUs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 157,
+    "title": "Inconspicuously Sniff Wi-Fi Data Packets Using an ESP8266 D1 Mini [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=BQBcrPTTIUs",
+    "durationSec": 1030,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "inconspicuously"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-qpnpI_mF3Aw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 158,
+    "title": "Automate Wi-Fi Hacking with Wifite2 in Kali Linux [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=qpnpI_mF3Aw",
+    "durationSec": 622,
+    "topicTags": [
+      "wireless",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "automate"
+    ],
+    "trackIds": [
+      "wireless",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-TCj645oL0wo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 159,
+    "title": "Scan Websites for Vulnerabilities using Kali Linux on Any Android Device [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=TCj645oL0wo",
+    "durationSec": 784,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "scan"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-6bIuwQcfgFk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 160,
+    "title": "Weaponize Your Mac with Homebrew & Sshtrix for SSH Cracking [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=6bIuwQcfgFk",
+    "durationSec": 570,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "weaponize"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ylKOYohHyvQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 161,
+    "title": "Create a Wi-Fi Controlled Relay Using aRest & NodeMCU [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ylKOYohHyvQ",
+    "durationSec": 809,
+    "topicTags": [
+      "api",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "api",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Wb91wpCUx8Q",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 162,
+    "title": "Create Your Own Nmap Scripts Using Lua [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Wb91wpCUx8Q",
+    "durationSec": 608,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-zFo8okxBKDc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 163,
+    "title": "Run the Kali Linux Hacking OS on an Unrooted Android Phone [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=zFo8okxBKDc",
+    "durationSec": 757,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "run"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-va1wUSPGgSU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 164,
+    "title": "Intercept Images from a Security Camera Using Wireshark [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=va1wUSPGgSU",
+    "durationSec": 1007,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "intercept"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-3U1pJ-eJrAU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 165,
+    "title": "Find Network Vulnerabilities with Nmap Scripts [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=3U1pJ-eJrAU",
+    "durationSec": 473,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "find"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-nHVptUyHcyE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 166,
+    "title": "SSH into Remote Devices on Chrome with the Secure Shell Extension [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=nHVptUyHcyE",
+    "durationSec": 528,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "ssh"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-GlokXVaoM34",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 167,
+    "title": "Clone, Compile & Branch Your Code with Git [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=GlokXVaoM34",
+    "durationSec": 803,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "clone"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-UIwcTU10F5k",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 168,
+    "title": "Use & Exit Vim (The Text Editor Every Hacker Should Be Familiar With) [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=UIwcTU10F5k",
+    "durationSec": 888,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ltEFbi_I2KY",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 169,
+    "title": "Use Nmap for Tactical Network Reconnaissance [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ltEFbi_I2KY",
+    "durationSec": 1056,
+    "topicTags": [
+      "network",
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "network",
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-JK-RC0OjcZs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 170,
+    "title": "Encrypt your Private Text, Photo & Archive Files with EncryptPad [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=JK-RC0OjcZs",
+    "durationSec": 680,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "encrypt"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-KT8RI6_CDtc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 171,
+    "title": "Scan for Devices Vulnerable to the Libssh Exploit [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=KT8RI6_CDtc",
+    "durationSec": 397,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "scan"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-U3eldMLq2cc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 172,
+    "title": "Enable Monitor Mode & Packet Injection on a Raspberry Pi Zero W Using Nexmon",
+    "url": "https://www.youtube.com/watch?v=U3eldMLq2cc",
+    "durationSec": 847,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "enable"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-z8G_vBBHtfA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 173,
+    "title": "Locate Breached Account Data with H8mail [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=z8G_vBBHtfA",
+    "durationSec": 837,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "locate"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-JSMw4AHjRAE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 174,
+    "title": "Test if Your Wireless Network Adapter Supports Monitor Mode & Packet Injection [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=JSMw4AHjRAE",
+    "durationSec": 739,
+    "topicTags": [
+      "network",
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "test"
+    ],
+    "trackIds": [
+      "network",
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-VF4In6rIPGc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 175,
+    "title": "Use Netcat to Spawn Reverse Shells & Connect to Other Computers [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=VF4In6rIPGc",
+    "durationSec": 678,
+    "topicTags": [
+      "malware",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "malware",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-qgroUbiuNTU",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 176,
+    "title": "Create Undetectable Payloads for macOS Computers with Tokyoneon's Armor [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=qgroUbiuNTU",
+    "durationSec": 688,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-da1CLA82jw8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 177,
+    "title": "Use an RTL-SDR Software-Defined Radio Receiver with an Android Smartphone [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=da1CLA82jw8",
+    "durationSec": 679,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ne8SPEoDe8o",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 178,
+    "title": "Generate Phishing Domains Easily with Dnstwist [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ne8SPEoDe8o",
+    "durationSec": 897,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "generate"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-8VL0K0rFgxw",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 179,
+    "title": "The Top 10 Things to Do After Installing Kali Linux on Your Computer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=8VL0K0rFgxw",
+    "durationSec": 1276,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "the"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-30Eww40s9D0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 180,
+    "title": "Detect Your Friend's Devices with a NodeMCU MAC Address Sniffer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=30Eww40s9D0",
+    "durationSec": 837,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "detect"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Q395Xcixzac",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 181,
+    "title": "Detect Deauthentication & Disassociation Attacks with a NodeMCU [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Q395Xcixzac",
+    "durationSec": 1307,
+    "topicTags": [
+      "dfir",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "detect"
+    ],
+    "trackIds": [
+      "dfir",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-3sYP19Ts48w",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 182,
+    "title": "Share Files & Chat Privately Offline with a Raspberry Pi PirateBox [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=3sYP19Ts48w",
+    "durationSec": 786,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "share"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tIM-kdmKhnE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 183,
+    "title": "Build a Pumpkin Pi — A Rogue AP & MitM Framework That Fits in Your Pocket [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=tIM-kdmKhnE",
+    "durationSec": 734,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "build"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-kY7RmZnMB8I",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 184,
+    "title": "Boot Parrot Security, Kali & Other Operating Systems on a Raspberry Pi with BerryBoot [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=kY7RmZnMB8I",
+    "durationSec": 690,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "boot"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-o95Or-Z_Ybk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 185,
+    "title": "Track & Connect to Smartphones with a Beacon Swarm [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=o95Or-Z_Ybk",
+    "durationSec": 1522,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-4yhhW2ekgN8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 186,
+    "title": "Hijack FM Radio Stations with a Raspberry Pi [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=4yhhW2ekgN8",
+    "durationSec": 694,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hijack"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-fKOX4InkaGc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 187,
+    "title": "Set Up a Vulnerable Target Computer with DV-Pi (Damn Vulnerable Pi) [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=fKOX4InkaGc",
+    "durationSec": 412,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "set"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-jIiaE9H6aXs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 188,
+    "title": "Scan Wireless Networks Using Fing on Your Smartphone (& Connect to a Raspberry Pi) [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=jIiaE9H6aXs",
+    "durationSec": 745,
+    "topicTags": [
+      "network",
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "scan"
+    ],
+    "trackIds": [
+      "network",
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-j4giW6glvZ4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 189,
+    "title": "Use CT-Exposer to Discover Internal Subdomains [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=j4giW6glvZ4",
+    "durationSec": 497,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-wBl7HM6a4Wo",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 190,
+    "title": "Explore & Map Nearby Wireless Networks with WiGLE [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=wBl7HM6a4Wo",
+    "durationSec": 794,
+    "topicTags": [
+      "network",
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "explore"
+    ],
+    "trackIds": [
+      "network",
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-KRKz-irsZdA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 191,
+    "title": "Conduct OSINT Recon on Domains with Racoon Scanner [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=KRKz-irsZdA",
+    "durationSec": 689,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "conduct"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-TQJ4vVLm5wM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 192,
+    "title": "Conduct OSINT Investigations Online with Buscador OS [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=TQJ4vVLm5wM",
+    "durationSec": 664,
+    "topicTags": [
+      "osint",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "conduct"
+    ],
+    "trackIds": [
+      "osint",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-9UZh-4Er7BQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 193,
+    "title": "Conceal Secret Messages or Data Through Steganography with Steghide [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=9UZh-4Er7BQ",
+    "durationSec": 569,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "conceal"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-_L9UYbxj3lk",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 194,
+    "title": "Automate Wi-Fi Hacking on a Raspberry Pi with a USB Rubber Ducky [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=_L9UYbxj3lk",
+    "durationSec": 857,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "automate"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-iCKj0La4Grg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 195,
+    "title": "Use Noisy.py to Cloak Your Internet Activity from Network Surveillance [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=iCKj0La4Grg",
+    "durationSec": 482,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-mSZA69dyAPs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 196,
+    "title": "Program a NodeMCU to Detect Wi-Fi Jamming [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=mSZA69dyAPs",
+    "durationSec": 1049,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "program"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-l5SXMdxFLy4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 197,
+    "title": "Set Up Aliasing in Your Mac's Bash Profile for Easier Wi-Fi Packet Captures [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=l5SXMdxFLy4",
+    "durationSec": 494,
+    "topicTags": [
+      "network",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "set"
+    ],
+    "trackIds": [
+      "network",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-HYwsJJuAYqc",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 198,
+    "title": "Detect Amateur Wi-Fi Attacks from Aireplay-ng & MDK3 with Wireshark [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=HYwsJJuAYqc",
+    "durationSec": 606,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "detect"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-Z8RHMUSYTiA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 199,
+    "title": "Track Devices via Probe Frames with Probequest [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=Z8RHMUSYTiA",
+    "durationSec": 669,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-wQV8QZLRO3U",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 200,
+    "title": "Monitor Live Twitter Discussions with Maltego for Disinformation Attacks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=wQV8QZLRO3U",
+    "durationSec": 528,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "monitor"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-PUQ1bMtft-o",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 201,
+    "title": "Hack Wi-Fi & Networks with the Lazy Script Framework [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=PUQ1bMtft-o",
+    "durationSec": 803,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hack"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-pcErNYk7vCs",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 202,
+    "title": "Use Beginner Python to Build an SHA1 Hash Brute-Forcer [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=pcErNYk7vCs",
+    "durationSec": 947,
+    "topicTags": [
+      "crypto",
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "crypto",
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-WTTreu43g5w",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 203,
+    "title": "Defend Against 5 Common Wi-Fi Hacks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=WTTreu43g5w",
+    "durationSec": 747,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "defend"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-kXm8f9fhaxQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 204,
+    "title": "Disable a Wi-Fi Security Camera with Aireplay-ng [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=kXm8f9fhaxQ",
+    "durationSec": 503,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "disable"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-u0YrWfze9es",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 205,
+    "title": "Exploit a Router Using RouterSploit [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=u0YrWfze9es",
+    "durationSec": 632,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "exploit"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-hPIhItC-Vr8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 206,
+    "title": "Perform Network Fingerprinting with Maltego [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=hPIhItC-Vr8",
+    "durationSec": 1177,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "perform"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-KQVG1OujkLM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 207,
+    "title": "Steal Signal Conversations from a MacBook with a USB Rubber Ducky [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=KQVG1OujkLM",
+    "durationSec": 788,
+    "topicTags": [
+      "crypto",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "steal"
+    ],
+    "trackIds": [
+      "crypto",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-VExg83LzZ1Q",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 208,
+    "title": "Find Employee Accounts with Password Breaches Using Maltego [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=VExg83LzZ1Q",
+    "durationSec": 901,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "find"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-T8Xsi0Dne8o",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 209,
+    "title": "Install Kali Linux on Windows 10 from the Microsoft Store (Windows Subsystem for Linux) [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=T8Xsi0Dne8o",
+    "durationSec": 614,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "install"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-fKOorVJzQas",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 210,
+    "title": "Search the Web Privately with Your Own Locally Hosted Searx Instance [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=fKOorVJzQas",
+    "durationSec": 405,
+    "topicTags": [
+      "web",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "search"
+    ],
+    "trackIds": [
+      "web",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-5ExWmpFnAnE",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 211,
+    "title": "Set Up an Ethical Hacking Kali Linux Kit on the Raspberry Pi 3 B+ [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=5ExWmpFnAnE",
+    "durationSec": 1426,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "set"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-01-Dcz1hFw8",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 212,
+    "title": "Create Custom Wordlists with the Mentalist for Brute-Forcing [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=01-Dcz1hFw8",
+    "durationSec": 908,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "create"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-rJXQYmG5uNY",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 213,
+    "title": "Hunt Down & Crack WEP Wi-Fi Networks [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=rJXQYmG5uNY",
+    "durationSec": 530,
+    "topicTags": [
+      "network",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hunt"
+    ],
+    "trackIds": [
+      "network",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-SY0WMHTCCOM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 214,
+    "title": "Hack WPA & WPA2 Wi-Fi Passwords with a Pixie-Dust Attack using Airgeddon [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=SY0WMHTCCOM",
+    "durationSec": 783,
+    "topicTags": [
+      "wireless",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hack"
+    ],
+    "trackIds": [
+      "wireless",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-taAD2z8spP0",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 215,
+    "title": "Hack Hotel, Airplane & Coffee Shop Hotspots for Free Wi-Fi with MAC Spoofing [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=taAD2z8spP0",
+    "durationSec": 619,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hack"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-J6Fm1Da5a4w",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 216,
+    "title": "How to Use MITMf to Man-in-the-Middle Passwords Over Wi-Fi on Kali Linux [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=J6Fm1Da5a4w",
+    "durationSec": 378,
+    "topicTags": [
+      "foundations",
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "how"
+    ],
+    "trackIds": [
+      "foundations",
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-S85DU66xHiM",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 217,
+    "title": "Use 2FA Keys to Access Your Advanced Protected Google Account on Any Device [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=S85DU66xHiM",
+    "durationSec": 857,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-b7bpXlRHgqY",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 218,
+    "title": "Track Down a Tinder Profile with Location Spoofing on Google Chrome [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=b7bpXlRHgqY",
+    "durationSec": 559,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "track"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tJORRxdgu1E",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 219,
+    "title": "Shut Down Phishing with U2F Security Keys & Google's Advanced Protection Program [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=tJORRxdgu1E",
+    "durationSec": 286,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "shut"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-3v_bwtHIToQ",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 220,
+    "title": "Use Kismet to Find & Monitor Nearby Wi-Fi Devices [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=3v_bwtHIToQ",
+    "durationSec": 436,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "use"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ejTPWPGP0GA",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 221,
+    "title": "Hacking Wi-Fi in Seconds with Airgeddon & Parrot Security OS [Tutorial]",
+    "url": "https://www.youtube.com/watch?v=ejTPWPGP0GA",
+    "durationSec": 934,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "hacking"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-hE_Kjav323U",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 222,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=hE_Kjav323U",
+    "durationSec": null,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "private"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-ZBsh9cC3FH4",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 223,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=ZBsh9cC3FH4",
+    "durationSec": null,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "private"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT-tM3dEAtNQzg",
+    "courseId": "PL4zzNO1AFRUl8HhXpDFH8u-lIiqaBKuGT",
+    "index": 224,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=tM3dEAtNQzg",
+    "durationSec": null,
+    "topicTags": [
+      "pwn",
+      "cyber",
+      "weapons",
+      "lab",
+      "private"
+    ],
+    "trackIds": [
+      "pwn"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-ux2eXNgDaw8",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 1,
+    "title": "CISSP-Course introduction  (مقدمه عن الدوره )",
+    "url": "https://www.youtube.com/watch?v=ux2eXNgDaw8",
+    "durationSec": 871,
+    "topicTags": [
+      "foundations",
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "foundations",
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-3CRr9BekYfo",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 2,
+    "title": "Cissp-Exam blue print",
+    "url": "https://www.youtube.com/watch?v=3CRr9BekYfo",
+    "durationSec": 2061,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-QU3pYAnwT6c",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 3,
+    "title": "CISSP-Domain 1 - 1 Security and Risk management- Security Concepts and Purpose ..",
+    "url": "https://www.youtube.com/watch?v=QU3pYAnwT6c",
+    "durationSec": 2093,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-FKyYtVlIZoo",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 4,
+    "title": "CISSP-Domain 1-2 Information Security Governance and Frameworks",
+    "url": "https://www.youtube.com/watch?v=FKyYtVlIZoo",
+    "durationSec": 4617,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-yuTjBePyhEQ",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 5,
+    "title": "CISSP Domain 1-3 Information Security roles, documents and Personal security",
+    "url": "https://www.youtube.com/watch?v=yuTjBePyhEQ",
+    "durationSec": 4807,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-6G3Ir66l6-k",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 6,
+    "title": "CISSP Domain 1-4 Risk Management",
+    "url": "https://www.youtube.com/watch?v=6G3Ir66l6-k",
+    "durationSec": 3523,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-PuHJEgnnrEw",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 7,
+    "title": "CISSP - Domain 1-5 Business Continuity and Code of Ethics",
+    "url": "https://www.youtube.com/watch?v=PuHJEgnnrEw",
+    "durationSec": 3028,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-gjBHWHqt07c",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 8,
+    "title": "CISSP- Domain 1-6 Threat Modeling",
+    "url": "https://www.youtube.com/watch?v=gjBHWHqt07c",
+    "durationSec": 2539,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-NtlwFRdhZIw",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 9,
+    "title": "CISSP -Domain2-Asset Security",
+    "url": "https://www.youtube.com/watch?v=NtlwFRdhZIw",
+    "durationSec": 4696,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4-ibeBGOEidqA",
+    "courseId": "PLwPnN230DSEAqIPD673UWoO770s5wYzz4",
+    "index": 10,
+    "title": "CISSP-Domain 3 -1  Security Engineering Development Architecture and Frameworks",
+    "url": "https://www.youtube.com/watch?v=ibeBGOEidqA",
+    "durationSec": 4173,
+    "topicTags": [
+      "wireless",
+      "cissp",
+      "exam",
+      "preparation",
+      "ahmed"
+    ],
+    "trackIds": [
+      "wireless"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-jd6cd1TR2q0",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 1,
+    "title": "1-introduction-cybrary web hacking course  مترجم",
+    "url": "https://www.youtube.com/watch?v=jd6cd1TR2q0",
+    "durationSec": 163,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-yArHhL6rWFU",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 2,
+    "title": "2-Tools-cybrary web hacking course مترجم",
+    "url": "https://www.youtube.com/watch?v=yArHhL6rWFU",
+    "durationSec": 495,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-4c63MBvqnRA",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 3,
+    "title": "3-Packets - cybrary web hacking course مترجم",
+    "url": "https://www.youtube.com/watch?v=4c63MBvqnRA",
+    "durationSec": 633,
+    "topicTags": [
+      "web",
+      "network",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "network",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-MsZyxTnBmT0",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 4,
+    "title": "4-HTTP Basics  cybrary - web hacking - course مترجم",
+    "url": "https://www.youtube.com/watch?v=MsZyxTnBmT0",
+    "durationSec": 635,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-gbwc09XTMnE",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 5,
+    "title": "5-why sites get hacked(1)-cybrary - web hacking - course مترجم",
+    "url": "https://www.youtube.com/watch?v=gbwc09XTMnE",
+    "durationSec": 495,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-H9MIsTRurBc",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 6,
+    "title": "6-why sites get hacked (2) cybrary - web hacking - course مترجم",
+    "url": "https://www.youtube.com/watch?v=H9MIsTRurBc",
+    "durationSec": 747,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-Imtg8dFrIP4",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 7,
+    "title": "7-why sites get hacked (3) cybrary - web hacking - course مترجم",
+    "url": "https://www.youtube.com/watch?v=Imtg8dFrIP4",
+    "durationSec": 479,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-NxsPp22fh6k",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 8,
+    "title": "8-why sites get hacked (4) cybrary | web hacking  course مترجم",
+    "url": "https://www.youtube.com/watch?v=NxsPp22fh6k",
+    "durationSec": 358,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo-P2ctCwPIkB4",
+    "courseId": "PLgZN2PInJuiQhOwmaNhG6OH_DaGudMJuo",
+    "index": 9,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=P2ctCwPIkB4",
+    "durationSec": null,
+    "topicTags": [
+      "web",
+      "foundations",
+      "cybrary",
+      "application",
+      "pen"
+    ],
+    "trackIds": [
+      "web",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-hj8b2zAZeOM",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 1,
+    "title": "session 1 - intro to pen testing",
+    "url": "https://www.youtube.com/watch?v=hj8b2zAZeOM",
+    "durationSec": 7552,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "intro",
+      "pen"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-3WdYnty5n7o",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 2,
+    "title": "session 2  - Scanning",
+    "url": "https://www.youtube.com/watch?v=3WdYnty5n7o",
+    "durationSec": 4916,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "scanning"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-m8JfuZtM2E4",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 3,
+    "title": "session 3 - vulnerability scanning",
+    "url": "https://www.youtube.com/watch?v=m8JfuZtM2E4",
+    "durationSec": 6506,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "vulnerability",
+      "scanning"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-XaX15p1YI1c",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 4,
+    "title": "session 4 - Exploitation",
+    "url": "https://www.youtube.com/watch?v=XaX15p1YI1c",
+    "durationSec": 6738,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "exploitation"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-okBXbPkz_lc",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 5,
+    "title": "session 5 - priv escalation for Linux",
+    "url": "https://www.youtube.com/watch?v=okBXbPkz_lc",
+    "durationSec": 8172,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "priv",
+      "escalation"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-QFaQZxNKdFI",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 6,
+    "title": "session 6 - windows priv escalation",
+    "url": "https://www.youtube.com/watch?v=QFaQZxNKdFI",
+    "durationSec": 6249,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "windows",
+      "priv"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-wiyzB3U1uzI",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 7,
+    "title": "session 7 - password attacks & AV evasion",
+    "url": "https://www.youtube.com/watch?v=wiyzB3U1uzI",
+    "durationSec": 6072,
+    "topicTags": [
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "password",
+      "attacks"
+    ],
+    "trackIds": [
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X-zScbkq9xLfA",
+    "courseId": "PL7QLnOrqAmwaZKK7fi4QgfLjOoQAVvH2X",
+    "index": 8,
+    "title": "session 8 - buffer overflow",
+    "url": "https://www.youtube.com/watch?v=zScbkq9xLfA",
+    "durationSec": 5863,
+    "topicTags": [
+      "pwn",
+      "foundations",
+      "web",
+      "penetration",
+      "testing",
+      "buffer",
+      "overflow"
+    ],
+    "trackIds": [
+      "pwn",
+      "foundations",
+      "web"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-BI15fbH2MfQ",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 1,
+    "title": "BugCast Ep:01  | زياد عبدالعظيم | Security Researching & Learning Tips",
+    "url": "https://www.youtube.com/watch?v=BI15fbH2MfQ",
+    "durationSec": 6210,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "security"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-kDLRK-zT_1Y",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 2,
+    "title": "BugCast Ep:02 | محمود حامد | Bug Bounty Guide",
+    "url": "https://www.youtube.com/watch?v=kDLRK-zT_1Y",
+    "durationSec": 5799,
+    "topicTags": [
+      "web",
+      "api",
+      "bugcast",
+      "podcast",
+      "bug"
+    ],
+    "trackIds": [
+      "web",
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-PyFHUZV9RrM",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 3,
+    "title": "BugCast Ep:03 | معاذ عادل | Hack without learning programming",
+    "url": "https://www.youtube.com/watch?v=PyFHUZV9RrM",
+    "durationSec": 3197,
+    "topicTags": [
+      "foundations",
+      "api",
+      "bugcast",
+      "podcast",
+      "hack"
+    ],
+    "trackIds": [
+      "foundations",
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-uuxACNbB6Zk",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 4,
+    "title": "BugCast Ep:04 | صهيب ناصري | Advice for Bug Bounty @h4x0r_dz",
+    "url": "https://www.youtube.com/watch?v=uuxACNbB6Zk",
+    "durationSec": 4136,
+    "topicTags": [
+      "web",
+      "api",
+      "bugcast",
+      "podcast",
+      "advice"
+    ],
+    "trackIds": [
+      "web",
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-b9IozcVPyfk",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 5,
+    "title": "BugCast Ep:05 | ياسر علي | From 0 to working at Facebook (Meta)",
+    "url": "https://www.youtube.com/watch?v=b9IozcVPyfk",
+    "durationSec": 7869,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "from"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-kvrXmTkrhgI",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 6,
+    "title": "BugCast Ep:06 | فادي عثمان | Hacker Mindset",
+    "url": "https://www.youtube.com/watch?v=kvrXmTkrhgI",
+    "durationSec": 8196,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "hacker"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-mQPvz3QtCMc",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 7,
+    "title": "BugCast Ep:07 | محمد نصر | Shifting to Blue Team",
+    "url": "https://www.youtube.com/watch?v=mQPvz3QtCMc",
+    "durationSec": 5548,
+    "topicTags": [
+      "dfir",
+      "api",
+      "bugcast",
+      "podcast",
+      "shifting"
+    ],
+    "trackIds": [
+      "dfir",
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-eYRLl8a8VZo",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 8,
+    "title": "BugCast Ep:08 | السيد الرفاعي | Purple Team",
+    "url": "https://www.youtube.com/watch?v=eYRLl8a8VZo",
+    "durationSec": 4132,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "purple"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-RCsVZfue6TY",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 9,
+    "title": "BugCast Ep:09 | حازم هشام | Day Life of Red Teamer",
+    "url": "https://www.youtube.com/watch?v=RCsVZfue6TY",
+    "durationSec": 5743,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "day"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-qWy25Czi-vM",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 10,
+    "title": "BugCast Ep:10 | محمد فتحي | Find your First Job",
+    "url": "https://www.youtube.com/watch?v=qWy25Czi-vM",
+    "durationSec": 4138,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "find"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt--y-uDoaj5RM",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 11,
+    "title": "BugCast Ep:11 | محمد سادات | Working as a Group CISO",
+    "url": "https://www.youtube.com/watch?v=-y-uDoaj5RM",
+    "durationSec": 4289,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "working"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-SXtVi7KtStA",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 12,
+    "title": "BugCast Ep:12 | سيد عبدالحفيظ | How to Hack mobile apps",
+    "url": "https://www.youtube.com/watch?v=SXtVi7KtStA",
+    "durationSec": 4623,
+    "topicTags": [
+      "mobile",
+      "api",
+      "bugcast",
+      "podcast",
+      "how"
+    ],
+    "trackIds": [
+      "mobile",
+      "api"
+    ]
+  },
+  {
+    "id": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt-t1-TM7P3xrg",
+    "courseId": "PLT3xpfeVr-PNhn6P3D5Gpet4NclXZstWt",
+    "index": 13,
+    "title": "BugCast Ep:13 | أحمد علاء الدين | Working in Application Security",
+    "url": "https://www.youtube.com/watch?v=t1-TM7P3xrg",
+    "durationSec": 3950,
+    "topicTags": [
+      "api",
+      "bugcast",
+      "podcast",
+      "working"
+    ],
+    "trackIds": [
+      "api"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-TYlts384PkE",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 1,
+    "title": "Intro To Hardware Security",
+    "url": "https://www.youtube.com/watch?v=TYlts384PkE",
+    "durationSec": 10240,
+    "topicTags": [
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "intro"
+    ],
+    "trackIds": [
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-_kQ4qGI6Z6A",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 2,
+    "title": "Hack AD Like A Team Lead",
+    "url": "https://www.youtube.com/watch?v=_kQ4qGI6Z6A",
+    "durationSec": 4847,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "hack"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-ATn9lcQvE60",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 3,
+    "title": "Breaking the Signal  Pentesting Wireless realms 20250316 220540 Meeting Recording",
+    "url": "https://www.youtube.com/watch?v=ATn9lcQvE60",
+    "durationSec": 7226,
+    "topicTags": [
+      "wireless",
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "breaking"
+    ],
+    "trackIds": [
+      "wireless",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-L_YinWJz2Xo",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 4,
+    "title": "Your Path to Android Penetration Testing",
+    "url": "https://www.youtube.com/watch?v=L_YinWJz2Xo",
+    "durationSec": 11493,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "your"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-s74bOAogyTE",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 5,
+    "title": "Threat detection engineering",
+    "url": "https://www.youtube.com/watch?v=s74bOAogyTE",
+    "durationSec": 8736,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "threat"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-qIgoNeA9nOw",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 6,
+    "title": "Investigating the Hyperliquid Whale: A Real-Life OSINT Case Study",
+    "url": "https://www.youtube.com/watch?v=qIgoNeA9nOw",
+    "durationSec": 4912,
+    "topicTags": [
+      "osint",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "investigating"
+    ],
+    "trackIds": [
+      "osint",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-81-5uEJhL-k",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 7,
+    "title": "Intro to AI hacking",
+    "url": "https://www.youtube.com/watch?v=81-5uEJhL-k",
+    "durationSec": 5147,
+    "topicTags": [
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "intro"
+    ],
+    "trackIds": [
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-2G2Bns5mbYY",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 8,
+    "title": "Secure by Design: Strengthening Applications from the Ground Up",
+    "url": "https://www.youtube.com/watch?v=2G2Bns5mbYY",
+    "durationSec": 5565,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "secure"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-bxCH2Ws0maY",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 9,
+    "title": "Phishing Analysis Techniques",
+    "url": "https://www.youtube.com/watch?v=bxCH2Ws0maY",
+    "durationSec": 8377,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "phishing"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-PMvqftBkIAI",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 10,
+    "title": "From CV to job offer  Essential Tips & Tricks",
+    "url": "https://www.youtube.com/watch?v=PMvqftBkIAI",
+    "durationSec": 8706,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "from"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-LhNXcda5ay0",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 11,
+    "title": "Introduction To Infostealer",
+    "url": "https://www.youtube.com/watch?v=LhNXcda5ay0",
+    "durationSec": 2631,
+    "topicTags": [
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "introduction"
+    ],
+    "trackIds": [
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-sqwXhCBM7MQ",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 12,
+    "title": "from infection To Detection  Intro To Malware Analysis",
+    "url": "https://www.youtube.com/watch?v=sqwXhCBM7MQ",
+    "durationSec": 9486,
+    "topicTags": [
+      "malware",
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "from"
+    ],
+    "trackIds": [
+      "malware",
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-IY30Hno4pdo",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 13,
+    "title": "Ethical Hacking Radio Stations",
+    "url": "https://www.youtube.com/watch?v=IY30Hno4pdo",
+    "durationSec": 6418,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "ethical"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-0YYlY583ZRU",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 14,
+    "title": "Bug Bounty Hunting",
+    "url": "https://www.youtube.com/watch?v=0YYlY583ZRU",
+    "durationSec": 5588,
+    "topicTags": [
+      "web",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "bug"
+    ],
+    "trackIds": [
+      "web",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-9zvRr2CM20k",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 15,
+    "title": "Blue team Behind the scene",
+    "url": "https://www.youtube.com/watch?v=9zvRr2CM20k",
+    "durationSec": 5568,
+    "topicTags": [
+      "dfir",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "blue"
+    ],
+    "trackIds": [
+      "dfir",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-ojJizjY-xbg",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 16,
+    "title": "BAC and PE Secrets in Bug Hunting and its Automation",
+    "url": "https://www.youtube.com/watch?v=ojJizjY-xbg",
+    "durationSec": 12060,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "bac"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-EzOVKNr1Q3s",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 17,
+    "title": "Let's Break the Rules",
+    "url": "https://www.youtube.com/watch?v=EzOVKNr1Q3s",
+    "durationSec": 11273,
+    "topicTags": [
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "let"
+    ],
+    "trackIds": [
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf-Uo6vry4qr1k",
+    "courseId": "PLtjqS4z_vA-xY2ekTPu2hk7kC4OwCZgWf",
+    "index": 18,
+    "title": "Back To Basics , Common Pitfalls during Security testing",
+    "url": "https://www.youtube.com/watch?v=Uo6vry4qr1k",
+    "durationSec": 6028,
+    "topicTags": [
+      "foundations",
+      "cloud",
+      "ramadan",
+      "nights",
+      "2025",
+      "back"
+    ],
+    "trackIds": [
+      "foundations",
+      "cloud"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-FjiCbidb8v8",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 1,
+    "title": "1- الفرق بين Authentication و Authorization | ثغرات Access Control",
+    "url": "https://www.youtube.com/watch?v=FjiCbidb8v8",
+    "durationSec": 516,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "authentication",
+      "authorization"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-AaV67gn4FmU",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 2,
+    "title": "Why I cannot get bounties in bugbounty field?",
+    "url": "https://www.youtube.com/watch?v=AaV67gn4FmU",
+    "durationSec": 616,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "why",
+      "cannot"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-tclPuS57pU8",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 3,
+    "title": "Attacks In Arabic - Race Condition (Time-Sensitive Bugs)",
+    "url": "https://www.youtube.com/watch?v=tclPuS57pU8",
+    "durationSec": 1725,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "attacks",
+      "race"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-x98-sPJ_s1g",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 4,
+    "title": "BugBounty Easy Money with Honey | RC, PE, FC, PD",
+    "url": "https://www.youtube.com/watch?v=x98-sPJ_s1g",
+    "durationSec": 971,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "bugbounty",
+      "easy"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-g-WP_VpHQfo",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 5,
+    "title": "Privilege Escalation + IDOR  2 Bugs 1 HIT POC's (Arabic)",
+    "url": "https://www.youtube.com/watch?v=g-WP_VpHQfo",
+    "durationSec": 719,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "privilege",
+      "escalation"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-uJjVaOXEL1Y",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 6,
+    "title": "Privilege escalation finding in external program explain (Arabic)",
+    "url": "https://www.youtube.com/watch?v=uJjVaOXEL1Y",
+    "durationSec": 779,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "privilege",
+      "escalation"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-rq7DvjN1Gco",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 7,
+    "title": "ما هو الـ API و ما فائدته في البرمجة؟ و كيف يعمل؟",
+    "url": "https://www.youtube.com/watch?v=rq7DvjN1Gco",
+    "durationSec": 327,
+    "topicTags": [
+      "api",
+      "mobile",
+      "fav",
+      "bug"
+    ],
+    "trackIds": [
+      "api",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-DIyJCPf-G_0",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 8,
+    "title": "شرح ثغرات business logic error | مصادر للتطور الجزء السابع",
+    "url": "https://www.youtube.com/watch?v=DIyJCPf-G_0",
+    "durationSec": 614,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "business",
+      "logic"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-vi_7rPYhPPg",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 9,
+    "title": "AI Will Automate The IDORs (ChatGPT) !!",
+    "url": "https://www.youtube.com/watch?v=vi_7rPYhPPg",
+    "durationSec": 816,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "will",
+      "automate"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-9cPHqIeAT84",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 10,
+    "title": "Step-by-Step Guide To Get IDOR in Live Bug Bounty Programs | 2024 Tips",
+    "url": "https://www.youtube.com/watch?v=9cPHqIeAT84",
+    "durationSec": 731,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "step"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-iQYVFBF0qGo",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 11,
+    "title": "Step By Step Guide To Get 2 'Privilege Escalation' In Live BugBounty Program",
+    "url": "https://www.youtube.com/watch?v=iQYVFBF0qGo",
+    "durationSec": 586,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "step"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-_zkxePwnf9A",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 12,
+    "title": "[Bug Bounty] $3,000 Instagram delete highlight cover IDOR",
+    "url": "https://www.youtube.com/watch?v=_zkxePwnf9A",
+    "durationSec": 138,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "bounty"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-aP7W7zNTM2I",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 13,
+    "title": "How To Use Jira Software For Beginners | Jira Project Management Software (2026)",
+    "url": "https://www.youtube.com/watch?v=aP7W7zNTM2I",
+    "durationSec": 521,
+    "topicTags": [
+      "foundations",
+      "mobile",
+      "fav",
+      "bug",
+      "how",
+      "use"
+    ],
+    "trackIds": [
+      "foundations",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-yufqeJLP1rI",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 14,
+    "title": "Auth0 in 100 Seconds // And beyond with a Next.js Authentication Tutorial",
+    "url": "https://www.youtube.com/watch?v=yufqeJLP1rI",
+    "durationSec": 504,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "auth0",
+      "100"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-WxhwxEV1WQc",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 15,
+    "title": "IDOR  \"Send via Email\" - Magisto (PoC)",
+    "url": "https://www.youtube.com/watch?v=WxhwxEV1WQc",
+    "durationSec": 80,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "idor",
+      "send"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-v-ObyM8qx0Y",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 16,
+    "title": "Response Manipulation - Open Any Locked Profile (PoC)",
+    "url": "https://www.youtube.com/watch?v=v-ObyM8qx0Y",
+    "durationSec": 137,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "response",
+      "manipulation"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-hmlkUYJ9MFw",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 17,
+    "title": "How I made 1k in a day with IDORs! (10 Tips!)",
+    "url": "https://www.youtube.com/watch?v=hmlkUYJ9MFw",
+    "durationSec": 1389,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "how",
+      "made"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-FKYykwxa68w",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 18,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=FKYykwxa68w",
+    "durationSec": null,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "private",
+      "video"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-MiSL5JzW6ms",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 19,
+    "title": "IDOR with EXIF Vulnerability | Bug Bounty POC",
+    "url": "https://www.youtube.com/watch?v=MiSL5JzW6ms",
+    "durationSec": 136,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "idor",
+      "with"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-wx5TwS0Dres",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 20,
+    "title": "IDOR - how to predict an identifier? Bug bounty case study",
+    "url": "https://www.youtube.com/watch?v=wx5TwS0Dres",
+    "durationSec": 1435,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "idor",
+      "how"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-XuunRT1DDZs",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 21,
+    "title": "I QUIT RECON... and made $10,000 in bounties!",
+    "url": "https://www.youtube.com/watch?v=XuunRT1DDZs",
+    "durationSec": 681,
+    "topicTags": [
+      "osint",
+      "mobile",
+      "fav",
+      "bug",
+      "quit",
+      "recon..."
+    ],
+    "trackIds": [
+      "osint",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-K65e5QRQ1tc",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 22,
+    "title": "Automating Permission Checks Using OpenAPI Security Scanner?",
+    "url": "https://www.youtube.com/watch?v=K65e5QRQ1tc",
+    "durationSec": 269,
+    "topicTags": [
+      "api",
+      "mobile",
+      "fav",
+      "bug",
+      "automating",
+      "permission"
+    ],
+    "trackIds": [
+      "api",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-3IqrBm0KrPw",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 23,
+    "title": "BUG BOUNTY POC | Broken Access Control",
+    "url": "https://www.youtube.com/watch?v=3IqrBm0KrPw",
+    "durationSec": 62,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "bounty"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-4h42AFrpyK0",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 24,
+    "title": "Ask Yourself These Four Questions When Bug Bounty Hunting for IDORs",
+    "url": "https://www.youtube.com/watch?v=4h42AFrpyK0",
+    "durationSec": 348,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "ask",
+      "yourself"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-im1Qa9n-1KA",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 25,
+    "title": "BugBounty Hunting Podcast (EPS.1) - Muhammed K. Sayed | @mux0x",
+    "url": "https://www.youtube.com/watch?v=im1Qa9n-1KA",
+    "durationSec": 4656,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "bugbounty",
+      "hunting"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-yV7O-QRyOao",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 26,
+    "title": "Client Side Protecting Bypass [Business Logic Bug] PoC - Jwplayer.com",
+    "url": "https://www.youtube.com/watch?v=yV7O-QRyOao",
+    "durationSec": 122,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "client",
+      "side"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-bavdbzJHW5Q",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 27,
+    "title": "EASY $1000 PRICE MANIPULATION BUG | BUSINESS LOGIC VULNERABILITY BUG POC",
+    "url": "https://www.youtube.com/watch?v=bavdbzJHW5Q",
+    "durationSec": 168,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "easy",
+      "1000"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-Vb4md5w6JJ8",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 28,
+    "title": "36- شرح ثغرات ال CSRF مع مثال علي ثغرة خطيرة في موقع تويتر",
+    "url": "https://www.youtube.com/watch?v=Vb4md5w6JJ8",
+    "durationSec": 1784,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "csrf"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-Ael3hqxe2-s",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 29,
+    "title": "[Private video]",
+    "url": "https://www.youtube.com/watch?v=Ael3hqxe2-s",
+    "durationSec": null,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "private",
+      "video"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-M0YjAN-EIy4",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 30,
+    "title": "Attacks in Arabic: Response Manipulation | What's it, Why it happens, where could it be?",
+    "url": "https://www.youtube.com/watch?v=M0YjAN-EIy4",
+    "durationSec": 686,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "attacks",
+      "response"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-YXWaDIZyLfg",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 31,
+    "title": "Response manipulation leads to purchase free items (Arabic)",
+    "url": "https://www.youtube.com/watch?v=YXWaDIZyLfg",
+    "durationSec": 445,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "response",
+      "manipulation"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-ANlHnemhl3g",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 32,
+    "title": "No Rate limit | Bug bounty POC | #bugbountypoc",
+    "url": "https://www.youtube.com/watch?v=ANlHnemhl3g",
+    "durationSec": 160,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "rate",
+      "limit"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-EB9sqPvlLlE",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 33,
+    "title": "[Deleted video]",
+    "url": "https://www.youtube.com/watch?v=EB9sqPvlLlE",
+    "durationSec": null,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "deleted",
+      "video"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-gH-X-Fx8SnM",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 34,
+    "title": "Unique Password Reset Flaw: PoC | Bug Bounty",
+    "url": "https://www.youtube.com/watch?v=gH-X-Fx8SnM",
+    "durationSec": 124,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "unique",
+      "password"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-Id5j9XBWURk",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 35,
+    "title": "OTP Bypass Vulnerability Via Brute-Forcing : PoC | Bug Bounty",
+    "url": "https://www.youtube.com/watch?v=Id5j9XBWURk",
+    "durationSec": 231,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "otp",
+      "bypass"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-y3HMsDJ1Esg",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 36,
+    "title": "Business logic error/Excessive trust in client Side Request: PoC | Bug Bounty",
+    "url": "https://www.youtube.com/watch?v=y3HMsDJ1Esg",
+    "durationSec": 132,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "business",
+      "logic"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-1228cGGa4E4",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 37,
+    "title": "Weird Logic Scenario I faced",
+    "url": "https://www.youtube.com/watch?v=1228cGGa4E4",
+    "durationSec": 449,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "weird",
+      "logic"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-IzpCHKy3HAU",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 38,
+    "title": "SSRFIDOR | What am i talking about?",
+    "url": "https://www.youtube.com/watch?v=IzpCHKy3HAU",
+    "durationSec": 487,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "ssrfidor",
+      "what"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-g_bLZnjYTYI",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 39,
+    "title": "Portswigger Labs - Solving New API Testing Path Labs (Part 2)",
+    "url": "https://www.youtube.com/watch?v=g_bLZnjYTYI",
+    "durationSec": 575,
+    "topicTags": [
+      "api",
+      "foundations",
+      "mobile",
+      "fav",
+      "bug",
+      "portswigger",
+      "labs"
+    ],
+    "trackIds": [
+      "api",
+      "foundations",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-dJqFZDh5eRs",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 40,
+    "title": "IDOR (Insecure Direct Object Reference) Vulnerability Bug Bounty Program",
+    "url": "https://www.youtube.com/watch?v=dJqFZDh5eRs",
+    "durationSec": 480,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "idor",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-7eVwAzXCrgA",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 41,
+    "title": "Discovering Logic Bugs and Access Control in Real-World Targets",
+    "url": "https://www.youtube.com/watch?v=7eVwAzXCrgA",
+    "durationSec": 2117,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "discovering",
+      "logic"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-kdCawzxWdDY",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 42,
+    "title": "The key to succeed in bug bounty - @NahamSec",
+    "url": "https://www.youtube.com/watch?v=kdCawzxWdDY",
+    "durationSec": 4222,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "the",
+      "key"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-dMZAWtLHiqU",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 43,
+    "title": "My Two years of experience in bug hunting",
+    "url": "https://www.youtube.com/watch?v=dMZAWtLHiqU",
+    "durationSec": 1856,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "two",
+      "years"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-BmEn8DWDo38",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 44,
+    "title": "Race Conditions Bug POC",
+    "url": "https://www.youtube.com/watch?v=BmEn8DWDo38",
+    "durationSec": 148,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "race",
+      "conditions"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-oLv3C7O-8_o",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 45,
+    "title": "Race condition vulnerability poc | bug bounty |",
+    "url": "https://www.youtube.com/watch?v=oLv3C7O-8_o",
+    "durationSec": 60,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "race",
+      "condition"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-wCLbLfN3ZS4",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 46,
+    "title": "Session For CATReloaded : Power of Understanding Website Logic",
+    "url": "https://www.youtube.com/watch?v=wCLbLfN3ZS4",
+    "durationSec": 7637,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "for",
+      "catreloaded"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-lkl22mnw8eY",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 47,
+    "title": "Zero-Click Electricity Consumer Account Takeover on www.apdcl.org | POC #3",
+    "url": "https://www.youtube.com/watch?v=lkl22mnw8eY",
+    "durationSec": 98,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "zero",
+      "click"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-4wd5iL-x3z4",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 48,
+    "title": "Bug Bounty Poc | Privilege Escalation from Users to Admin $$",
+    "url": "https://www.youtube.com/watch?v=4wd5iL-x3z4",
+    "durationSec": 88,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "bounty"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-dUDTDglKAPw",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 49,
+    "title": "Race Condition Vulnerability  | Bug Bounty PoC",
+    "url": "https://www.youtube.com/watch?v=dUDTDglKAPw",
+    "durationSec": 81,
+    "topicTags": [
+      "web",
+      "mobile",
+      "fav",
+      "bug",
+      "race",
+      "condition"
+    ],
+    "trackIds": [
+      "web",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-GE7BuEWEtSU",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 50,
+    "title": "[Deleted video]",
+    "url": "https://www.youtube.com/watch?v=GE7BuEWEtSU",
+    "durationSec": null,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "deleted",
+      "video"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-IaUl6g82C1Q",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 51,
+    "title": "Logic Bugs Are The Best",
+    "url": "https://www.youtube.com/watch?v=IaUl6g82C1Q",
+    "durationSec": 991,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "logic",
+      "bugs"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-00rZJFMrLlE",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 52,
+    "title": "Hacking GraphQL | Easy $$ By Breaking Logic Workflow",
+    "url": "https://www.youtube.com/watch?v=00rZJFMrLlE",
+    "durationSec": 442,
+    "topicTags": [
+      "api",
+      "mobile",
+      "fav",
+      "bug",
+      "hacking",
+      "graphql"
+    ],
+    "trackIds": [
+      "api",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-lcfwvb1-GLM",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 53,
+    "title": "PWN WordPress admin panel (Arabic)",
+    "url": "https://www.youtube.com/watch?v=lcfwvb1-GLM",
+    "durationSec": 479,
+    "topicTags": [
+      "pwn",
+      "mobile",
+      "fav",
+      "bug",
+      "wordpress"
+    ],
+    "trackIds": [
+      "pwn",
+      "mobile"
+    ]
+  },
+  {
+    "id": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx-iplhAO9KtsQ",
+    "courseId": "PLlPyr6ELnn9WjTqNklFOTABogKz_6yqbx",
+    "index": 54,
+    "title": "[Deleted video]",
+    "url": "https://www.youtube.com/watch?v=iplhAO9KtsQ",
+    "durationSec": null,
+    "topicTags": [
+      "mobile",
+      "fav",
+      "bug",
+      "deleted",
+      "video"
+    ],
+    "trackIds": [
+      "mobile"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-vz7amNXvlhY",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 1,
+    "title": "Introduction to #Mobile #Penetration Testing",
+    "url": "https://www.youtube.com/watch?v=vz7amNXvlhY",
+    "durationSec": 1192,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "introduction"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-vozCSB3JNQ8",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 2,
+    "title": "Brief Introduction on #Android Architecture and Android compilation.",
+    "url": "https://www.youtube.com/watch?v=vozCSB3JNQ8",
+    "durationSec": 693,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "brief"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-ILzXzbqsxmg",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 3,
+    "title": "#Dynamic analysis Lab setup for Mobile. #Burpsuite #genymotion",
+    "url": "https://www.youtube.com/watch?v=ILzXzbqsxmg",
+    "durationSec": 1304,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "#dynamic"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-H7rZ9ai297I",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 4,
+    "title": "#Mobile #Pentesting Lab Part-2, #jadx #adb #apktool",
+    "url": "https://www.youtube.com/watch?v=H7rZ9ai297I",
+    "durationSec": 992,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "#mobile"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-GWfv6133G_8",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 5,
+    "title": "Installing #Mobsf Mobile-Security Framework, #SAST #DAST",
+    "url": "https://www.youtube.com/watch?v=GWfv6133G_8",
+    "durationSec": 1021,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "installing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-a255VGZn8dk",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 6,
+    "title": "Static analysis of mobile application #Jadx #SecretKeys",
+    "url": "https://www.youtube.com/watch?v=a255VGZn8dk",
+    "durationSec": 1632,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "static"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-fbXfLdtmYfE",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 7,
+    "title": "Dynamic analysis of #android #Application | #androidpentesting",
+    "url": "https://www.youtube.com/watch?v=fbXfLdtmYfE",
+    "durationSec": 1533,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "dynamic"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-ZMblrlAlFXA",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 8,
+    "title": "Improper Platform usage - 1 | #androidpentesting #owasp top 1 Mobile,",
+    "url": "https://www.youtube.com/watch?v=ZMblrlAlFXA",
+    "durationSec": 1161,
+    "topicTags": [
+      "web",
+      "mobile",
+      "pwn",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "improper"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "pwn",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-I8j9YIQjMWc",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 9,
+    "title": "Insecure data Storage |  #androidpentesting #owasp top 2 Mobile,",
+    "url": "https://www.youtube.com/watch?v=I8j9YIQjMWc",
+    "durationSec": 1312,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-eqkvroYnmyo",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 10,
+    "title": "Insecure communication - 3 |  #androidpentesting #owasp top 3 Mobile,",
+    "url": "https://www.youtube.com/watch?v=eqkvroYnmyo",
+    "durationSec": 890,
+    "topicTags": [
+      "web",
+      "mobile",
+      "social",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "social",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-4HhHs-JUmF8",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 11,
+    "title": "Insecure authentication  |  #androidpentesting #owasp top 4 Mobile,",
+    "url": "https://www.youtube.com/watch?v=4HhHs-JUmF8",
+    "durationSec": 609,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-vwrFoMoB9nE",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 12,
+    "title": "Multiple ways to #bypass #Android #SSL #PINNING | #frida #objection #apkmitm - BONUS TUTORIAL",
+    "url": "https://www.youtube.com/watch?v=vwrFoMoB9nE",
+    "durationSec": 842,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "android",
+      "pentesting",
+      "series",
+      "multiple"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-drKnPGdz35Y",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 13,
+    "title": "Insufficient cryptography |  #androidpentesting #owasp top 5 Mobile,",
+    "url": "https://www.youtube.com/watch?v=drKnPGdz35Y",
+    "durationSec": 326,
+    "topicTags": [
+      "web",
+      "mobile",
+      "crypto",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "insufficient"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "crypto",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-wceNGmfv0zk",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 14,
+    "title": "Insecure authorization |  #androidpentesting #owasp top 6 Mobile,",
+    "url": "https://www.youtube.com/watch?v=wceNGmfv0zk",
+    "durationSec": 929,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "insecure"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-G5Kq98VWwKY",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 15,
+    "title": "Poor code quality |  #androidpentesting #owasp top  Mobile,",
+    "url": "https://www.youtube.com/watch?v=G5Kq98VWwKY",
+    "durationSec": 605,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "poor"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-4L0OxDe4Bpg",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 16,
+    "title": "Code tampering |  #androidpentesting #owasp top 8 Mobile,",
+    "url": "https://www.youtube.com/watch?v=4L0OxDe4Bpg",
+    "durationSec": 350,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "code"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-LvNSQ5GxR5g",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 17,
+    "title": "Reverse engineering  |  #androidpentesting #owasp top 9 Mobile,",
+    "url": "https://www.youtube.com/watch?v=LvNSQ5GxR5g",
+    "durationSec": 353,
+    "topicTags": [
+      "web",
+      "malware",
+      "mobile",
+      "foundations",
+      "android",
+      "pentesting",
+      "series",
+      "reverse"
+    ],
+    "trackIds": [
+      "web",
+      "malware",
+      "mobile",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-AdssITGKFTo",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 18,
+    "title": "Extraneous Functionality |  #androidpentesting #owasp top 10 Mobile,",
+    "url": "https://www.youtube.com/watch?v=AdssITGKFTo",
+    "durationSec": 326,
+    "topicTags": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "extraneous"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14-Sy09edb57hg",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 19,
+    "title": "Installing Xposed Framework | Rootcloak | Inspeckage | SSLunpin | Xposed modules",
+    "url": "https://www.youtube.com/watch?v=Sy09edb57hg",
+    "durationSec": 340,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "installing"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14--rrQu7ziZdU",
+    "courseId": "PL1f72Oxv5SylOECx9M34pLZlNa7YkJJ14",
+    "index": 20,
+    "title": "Automate the Drozer to find the vulnerabilities in android components | Android scanner | drozer",
+    "url": "https://www.youtube.com/watch?v=-rrQu7ziZdU",
+    "durationSec": 396,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "malware",
+      "android",
+      "pentesting",
+      "series",
+      "automate"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "malware"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-io2lCB5Tc6A",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 1,
+    "title": "1 Full Free Android Application Security Course",
+    "url": "https://www.youtube.com/watch?v=io2lCB5Tc6A",
+    "durationSec": 63,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-7s-PLmYs3VI",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 2,
+    "title": "1.1 Android Application Security   Introduction",
+    "url": "https://www.youtube.com/watch?v=7s-PLmYs3VI",
+    "durationSec": 284,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-MPMWsEir-2o",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 3,
+    "title": "2.1 Android Architecture   Introduction 1",
+    "url": "https://www.youtube.com/watch?v=MPMWsEir-2o",
+    "durationSec": 142,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-V5U6qTLId1o",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 4,
+    "title": "2.2 Android Architecture Linux Kernel",
+    "url": "https://www.youtube.com/watch?v=V5U6qTLId1o",
+    "durationSec": 239,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-JP3NnypAS6Y",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 5,
+    "title": "2.3 Android Architecture  HAL",
+    "url": "https://www.youtube.com/watch?v=JP3NnypAS6Y",
+    "durationSec": 128,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-zSReeluIhuI",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 6,
+    "title": "2.4 Android Architecture - Libraries + Runtime",
+    "url": "https://www.youtube.com/watch?v=zSReeluIhuI",
+    "durationSec": 239,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-DWAMOMgBOOk",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 7,
+    "title": "2.5 Android Architecture   Java API s & Apps",
+    "url": "https://www.youtube.com/watch?v=DWAMOMgBOOk",
+    "durationSec": 159,
+    "topicTags": [
+      "api",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "api",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-wCB66c28MLs",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 8,
+    "title": "2.6 Android Security",
+    "url": "https://www.youtube.com/watch?v=wCB66c28MLs",
+    "durationSec": 427,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-AM0adAla9hA",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 9,
+    "title": "2.7 Android Application Structure",
+    "url": "https://www.youtube.com/watch?v=AM0adAla9hA",
+    "durationSec": 689,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-yOAZo40J_S0",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 10,
+    "title": "2.8 Android Application Structure IPC",
+    "url": "https://www.youtube.com/watch?v=yOAZo40J_S0",
+    "durationSec": 172,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-6yR1Y1IwCeg",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 11,
+    "title": "2.9 Android Application Publishing",
+    "url": "https://www.youtube.com/watch?v=6yR1Y1IwCeg",
+    "durationSec": 205,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-ogmTCK-2Dhs",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 12,
+    "title": "3.1 Android Pen testing Basics  Host software setup",
+    "url": "https://www.youtube.com/watch?v=ogmTCK-2Dhs",
+    "durationSec": 172,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-4yijmR52IKI",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 13,
+    "title": "3.2 Android Pen testing Basics ADB",
+    "url": "https://www.youtube.com/watch?v=4yijmR52IKI",
+    "durationSec": 216,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-Pv7CGm-_EhM",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 14,
+    "title": "3.3 Android Pen testing basics   local device setup",
+    "url": "https://www.youtube.com/watch?v=Pv7CGm-_EhM",
+    "durationSec": 247,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-uQ8SVWO0zEI",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 15,
+    "title": "3.4 Android Pentesting basics - MHL device setup",
+    "url": "https://www.youtube.com/watch?v=uQ8SVWO0zEI",
+    "durationSec": 147,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-1lNywTF3Xm0",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 16,
+    "title": "3.5 Intercepting Network traffic   Introduction redited",
+    "url": "https://www.youtube.com/watch?v=1lNywTF3Xm0",
+    "durationSec": 419,
+    "topicTags": [
+      "network",
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "network",
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-r0NqCzAx-_o",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 17,
+    "title": "3.6 Android Pen testing Basics - Intercepting mobile network traffic",
+    "url": "https://www.youtube.com/watch?v=r0NqCzAx-_o",
+    "durationSec": 336,
+    "topicTags": [
+      "network",
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "network",
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-Rg9LKHOnj6c",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 18,
+    "title": "3.7 Android Pen testing Basics   Frida introduction enhanced",
+    "url": "https://www.youtube.com/watch?v=Rg9LKHOnj6c",
+    "durationSec": 276,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-0800Ez1yRDk",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 19,
+    "title": "3.8 Frida Usage and Interceptor Example",
+    "url": "https://www.youtube.com/watch?v=0800Ez1yRDk",
+    "durationSec": 471,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-Z4jV4y1Y_1k",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 20,
+    "title": "3.9 Dynamic instrumentation with Frida CodeShare demo",
+    "url": "https://www.youtube.com/watch?v=Z4jV4y1Y_1k",
+    "durationSec": 319,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-ux9keprxDzY",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 21,
+    "title": "3.10 Android Pentesting Basics using MobSF",
+    "url": "https://www.youtube.com/watch?v=ux9keprxDzY",
+    "durationSec": 514,
+    "topicTags": [
+      "mobile",
+      "foundations",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "foundations",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-ojJ_eQNgEAM",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 22,
+    "title": "4.1 Reversing Android Apps into and pulling the APK",
+    "url": "https://www.youtube.com/watch?v=ojJ_eQNgEAM",
+    "durationSec": 206,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-hlDvegk4keY",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 23,
+    "title": "4.2 Android Reverse Engineering using Apktool",
+    "url": "https://www.youtube.com/watch?v=hlDvegk4keY",
+    "durationSec": 264,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-t0pA6rD7MGA",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 24,
+    "title": "4.3 Android Reverse Engineering using JADX",
+    "url": "https://www.youtube.com/watch?v=t0pA6rD7MGA",
+    "durationSec": 157,
+    "topicTags": [
+      "malware",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "malware",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-ezx6nwQFxck",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 25,
+    "title": "5.1 Android Application Attack Surface",
+    "url": "https://www.youtube.com/watch?v=ezx6nwQFxck",
+    "durationSec": 556,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-8gUGUmSTHUg",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 26,
+    "title": "5.2 Exploiting Android Exported Activities",
+    "url": "https://www.youtube.com/watch?v=8gUGUmSTHUg",
+    "durationSec": 449,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-HCPF39T_faM",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 27,
+    "title": "5.3 Exploiting Android Exported Services",
+    "url": "https://www.youtube.com/watch?v=HCPF39T_faM",
+    "durationSec": 231,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-yU8MpaWdsSY",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 28,
+    "title": "5.4 Exploiting Android Exported Broadcast Receivers",
+    "url": "https://www.youtube.com/watch?v=yU8MpaWdsSY",
+    "durationSec": 338,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-bFpKf5KixaE",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 29,
+    "title": "5.5 Exploiting Android Deep Links",
+    "url": "https://www.youtube.com/watch?v=bFpKf5KixaE",
+    "durationSec": 351,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-c_-qNSk6-Z4",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 30,
+    "title": "5.6 Exploit Android Data Storage",
+    "url": "https://www.youtube.com/watch?v=c_-qNSk6-Z4",
+    "durationSec": 452,
+    "topicTags": [
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr-mIWN5Qr6enA",
+    "courseId": "PLwOCu7hSL9MqBeEZUgV5-6n3z4Xw-yaMr",
+    "index": 31,
+    "title": "5.7 Exploiting Android SQL Injections",
+    "url": "https://www.youtube.com/watch?v=mIWN5Qr6enA",
+    "durationSec": 335,
+    "topicTags": [
+      "web",
+      "mobile",
+      "dfir",
+      "free",
+      "android",
+      "application",
+      "security"
+    ],
+    "trackIds": [
+      "web",
+      "mobile",
+      "dfir"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-UnUHasLkjFk",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 1,
+    "title": "Testing workshops  session 1",
+    "url": "https://www.youtube.com/watch?v=UnUHasLkjFk",
+    "durationSec": 7154,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-A5ewKMpWaeY",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 2,
+    "title": "Testing Workshops session2",
+    "url": "https://www.youtube.com/watch?v=A5ewKMpWaeY",
+    "durationSec": 1848,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-4dKkFpQ88oI",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 3,
+    "title": "Testing Workshops session 3 Requirements Review",
+    "url": "https://www.youtube.com/watch?v=4dKkFpQ88oI",
+    "durationSec": 8121,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-wT5hapqx804",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 4,
+    "title": "Testing Workshops Session 4 Design TCs",
+    "url": "https://www.youtube.com/watch?v=wT5hapqx804",
+    "durationSec": 11189,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-Cg8ltySNOSE",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 5,
+    "title": "Testin workshops session 5 Q&A",
+    "url": "https://www.youtube.com/watch?v=Cg8ltySNOSE",
+    "durationSec": 8020,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "testin"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-BImtN66bRWA",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 6,
+    "title": "Testing Workshops session 6 Agile",
+    "url": "https://www.youtube.com/watch?v=BImtN66bRWA",
+    "durationSec": 8644,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-PmTG1ncz3ew",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 7,
+    "title": "Testing Workshops session 7 DB",
+    "url": "https://www.youtube.com/watch?v=PmTG1ncz3ew",
+    "durationSec": 7261,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-BB6zg0m6_aY",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 8,
+    "title": "Testing Workshops Session 8 APIs [part#1]",
+    "url": "https://www.youtube.com/watch?v=BB6zg0m6_aY",
+    "durationSec": 7999,
+    "topicTags": [
+      "api",
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "api",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-b6NqjRo78mU",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 9,
+    "title": "testing workshops session 9 APIs part2",
+    "url": "https://www.youtube.com/watch?v=b6NqjRo78mU",
+    "durationSec": 8447,
+    "topicTags": [
+      "api",
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "api",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-CHMhHKwOuvE",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 10,
+    "title": "workshops session10 Bug Reporting",
+    "url": "https://www.youtube.com/watch?v=CHMhHKwOuvE",
+    "durationSec": 6276,
+    "topicTags": [
+      "social",
+      "foundations",
+      "testing",
+      "workshops",
+      "session10"
+    ],
+    "trackIds": [
+      "social",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-0sqmgPW6hFc",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 11,
+    "title": "Testing Workshops Session 11 Azure&Questions",
+    "url": "https://www.youtube.com/watch?v=0sqmgPW6hFc",
+    "durationSec": 9383,
+    "topicTags": [
+      "cloud",
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "cloud",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-wEQlQZ6Dmz8",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 12,
+    "title": "testing workshops 12 Java session1",
+    "url": "https://www.youtube.com/watch?v=wEQlQZ6Dmz8",
+    "durationSec": 8856,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-O30IV83BFzY",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 13,
+    "title": "testing workshops _13_Java session 2",
+    "url": "https://www.youtube.com/watch?v=O30IV83BFzY",
+    "durationSec": 9564,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-xH36tjS0ZQ0",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 14,
+    "title": "Java Session 3 Testing Workshops",
+    "url": "https://www.youtube.com/watch?v=xH36tjS0ZQ0",
+    "durationSec": 9594,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "java"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-jY11LBKHGeM",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 15,
+    "title": "Java Session 4 (OOP & Maven)",
+    "url": "https://www.youtube.com/watch?v=jY11LBKHGeM",
+    "durationSec": 11254,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "java",
+      "oop"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-BHW1x5e7zFg",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 16,
+    "title": "Testing Workshops Session 5 TestNG",
+    "url": "https://www.youtube.com/watch?v=BHW1x5e7zFg",
+    "durationSec": 11015,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-BqUyve-rC8s",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 17,
+    "title": "Testing workshops selenium part1",
+    "url": "https://www.youtube.com/watch?v=BqUyve-rC8s",
+    "durationSec": 11373,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-vT1SZf0DlHw",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 18,
+    "title": "testing workshop selenium part2",
+    "url": "https://www.youtube.com/watch?v=vT1SZf0DlHw",
+    "durationSec": 10086,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "workshop"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-MGZXn_JG8cs",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 19,
+    "title": "testing workshops Design Patterns",
+    "url": "https://www.youtube.com/watch?v=MGZXn_JG8cs",
+    "durationSec": 10277,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-fTcjvsjiKBs",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 20,
+    "title": "Reset Assured First Session",
+    "url": "https://www.youtube.com/watch?v=fTcjvsjiKBs",
+    "durationSec": 8761,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "reset",
+      "assured"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-plLMXvAkTPA",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 21,
+    "title": "workshops rest assured 2",
+    "url": "https://www.youtube.com/watch?v=plLMXvAkTPA",
+    "durationSec": 7712,
+    "topicTags": [
+      "api",
+      "foundations",
+      "testing",
+      "workshops",
+      "rest"
+    ],
+    "trackIds": [
+      "api",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-1u6pQ1GMyx0",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 22,
+    "title": "WorkShops RestAssured 3",
+    "url": "https://www.youtube.com/watch?v=1u6pQ1GMyx0",
+    "durationSec": 6599,
+    "topicTags": [
+      "api",
+      "foundations",
+      "testing",
+      "workshops",
+      "restassured"
+    ],
+    "trackIds": [
+      "api",
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-e-O8SUwiDTw",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 23,
+    "title": "GIT Session 1 Testing Workshops",
+    "url": "https://www.youtube.com/watch?v=e-O8SUwiDTw",
+    "durationSec": 9354,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "git"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ--KmhmEwM81U",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 24,
+    "title": "Testing Workshops GIT Session 2",
+    "url": "https://www.youtube.com/watch?v=-KmhmEwM81U",
+    "durationSec": 6899,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-MHomSnaUE1Q",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 25,
+    "title": "WorkShops performance",
+    "url": "https://www.youtube.com/watch?v=MHomSnaUE1Q",
+    "durationSec": 7680,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "performance"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-XnVAO0jppGs",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 26,
+    "title": "workshops SHAFT",
+    "url": "https://www.youtube.com/watch?v=XnVAO0jppGs",
+    "durationSec": 10746,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "shaft"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-0olJQfqtM7E",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 27,
+    "title": "Workshops_ Appium",
+    "url": "https://www.youtube.com/watch?v=0olJQfqtM7E",
+    "durationSec": 10713,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "appium"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-Kif9w4Btyv4",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 28,
+    "title": "workshops Soft Skills",
+    "url": "https://www.youtube.com/watch?v=Kif9w4Btyv4",
+    "durationSec": 6839,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops",
+      "soft"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-9G-xj36OdCo",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 29,
+    "title": "workshops AI",
+    "url": "https://www.youtube.com/watch?v=9G-xj36OdCo",
+    "durationSec": 6585,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-eoC0f7kp2ro",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 30,
+    "title": "workshops CI CD",
+    "url": "https://www.youtube.com/watch?v=eoC0f7kp2ro",
+    "durationSec": 7564,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  },
+  {
+    "id": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ-RHBRwn1T57o",
+    "courseId": "PL594OqWI4Um4qn5S5YyUQwEOimJ9sXbfZ",
+    "index": 31,
+    "title": "سيشن الختام",
+    "url": "https://www.youtube.com/watch?v=RHBRwn1T57o",
+    "durationSec": 8861,
+    "topicTags": [
+      "foundations",
+      "testing",
+      "workshops"
+    ],
+    "trackIds": [
+      "foundations"
+    ]
+  }
+];
+
+const COURSE_BY_ID=Object.fromEntries(COURSES.map(c=>[c.id,c]));
+const COURSE_LESSONS=COURSES.reduce((acc,c)=>({...acc,[c.id]:LESSONS.filter(l=>l.courseId===c.id)}),{});
+const RESOURCE_INDEX=TRACK_ORDER.flatMap(tid=>{
+  const track=TRACKS[tid];
+  if(!track)return[];
+  return track.phases.flatMap(ph=>ph.resources.map(r=>({...r,tid,phase:ph.name,trackName:track.name,trackIcon:track.icon,trackColor:track.color})));
+});
 
 // ─────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────
-const today=()=>new Date().toISOString().split("T")[0];
-const findPhase=(wk)=>PHASES.find(p=>wk>=p.startWeek&&wk<=p.endWeek)||PHASES[0];
-const findWeek=(wk)=>{for(const ph of PHASES){const f=ph.weeks.find(w=>w.wk===wk);if(f)return{...f,phase:ph};}return null;};
-const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[]};
+const STORAGE_KEY="cyberpath_v3";
+const DAILY_SESSION_COUNT=3;
+const SESSION_TARGET_MIN=90;
+const DEFAULT_LESSON_MIN=30;
+const STUDY_DAYS=[0,1,2,3,4,6];
+const AR_DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[],trainingStartDate:null,doneLessons:{},doneDailySessions:{},lessonNotes:{}};
 
-// خطة يومية: توزيع المواضيع على أيام الأسبوع (السبت→الخميس = 6 أيام، الجمعة راحة)
-const STUDY_DAYS=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
-const DAY_PLAN=(wk)=>{
-  const w=findWeek(wk);if(!w)return[];
-  const allItems=[
-    ...w.missions.map((m,i)=>({type:"mission",text:m,idx:i,xp:5,icon:"🎯",wk})),
-    ...w.topics.map((t,i)=>({type:"topic",text:t,idx:i,xp:10,icon:"📚",wk}))
-  ];
-  // توزيع متساوٍ على 6 أيام
-  return STUDY_DAYS.map((day,di)=>{
-    const perDay=Math.ceil(allItems.length/6);
-    const items=allItems.slice(di*perDay,(di+1)*perDay);
-    const hrs=items.length>0?Math.max(1,Math.round(items.length*0.5)):0;
-    return{day,items,hrs};
-  }).filter(d=>d.items.length>0);
+const pad2=n=>String(n).padStart(2,"0");
+const parseDate=(value)=>{
+  if(value instanceof Date)return new Date(value.getFullYear(),value.getMonth(),value.getDate());
+  const [y,m,d]=String(value||dateKey(new Date())).split("-").map(Number);
+  return new Date(y,m-1,d);
 };
-// حساب يوم الأسبوع العربي الحالي
-const getTodayDayAr=()=>{const d=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];return d[new Date().getDay()];};
-// مراجعة Spaced Repetition: الأسابيع المكتملة قبل 7,14,30 يوم
-const SR_INTERVALS=[7,14,30];
-const getReviewWeeks=(s)=>{
-  const done=[];
-  PHASES.forEach(ph=>ph.weeks.forEach(w=>{
-    const topics=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
-    if(topics===w.topics.length&&w.wk<s.currentWeek)done.push(w.wk);
-  }));
-  return done.slice(-6);
+const dateKey=(dateLike)=>{
+  const d=dateLike instanceof Date?dateLike:parseDate(dateLike);
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+};
+const today=()=>dateKey(new Date());
+const addDays=(dateLike,days)=>{
+  const d=parseDate(dateLike);
+  d.setDate(d.getDate()+days);
+  return d;
+};
+const isStudyDay=dateLike=>STUDY_DAYS.includes(parseDate(dateLike).getDay());
+const isFriday=dateLike=>parseDate(dateLike).getDay()===5;
+const dayLabel=dateLike=>AR_DAYS[parseDate(dateLike).getDay()];
+const fmtDate=dateLike=>parseDate(dateLike).toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+const pct=(done,total)=>total?Math.round(done/total*100):0;
+const trackLabel=tid=>TRACKS[tid]?`${TRACKS[tid].icon} ${TRACKS[tid].name}`:tid;
+const textNorm=v=>String(v||"").toLowerCase().replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+
+const getTrainingDay=(startDate,targetDate=today())=>{
+  const start=parseDate(startDate||today());
+  const target=parseDate(targetDate||today());
+  const forward=start<=target;
+  let cursor=forward?start:target;
+  const end=forward?target:start;
+  let count=0;
+  while(cursor<=end){
+    if(isStudyDay(cursor))count++;
+    cursor=addDays(cursor,1);
+  }
+  return forward?count:-count;
 };
 
-function Ring({pct,size=48,stroke=4,color="#00ff88"}){
-  const r=(size-stroke*2)/2,c=2*Math.PI*r,o=c-(pct/100)*c;
+const lessonMinutes=lesson=>Math.ceil((lesson.durationSec||DEFAULT_LESSON_MIN*60)/60);
+const formatDuration=sec=>{
+  const minutes=Math.round((sec||DEFAULT_LESSON_MIN*60)/60);
+  if(minutes<60)return `${minutes}m`;
+  const h=Math.floor(minutes/60),m=minutes%60;
+  return m?`${h}h ${m}m`:`${h}h`;
+};
+
+const buildDailyTodo=dayNumber=>{
+  const sessions=Array.from({length:DAILY_SESSION_COUNT},(_,i)=>({id:`s${i+1}`,title:`الجلسة ${i+1}`,targetMin:SESSION_TARGET_MIN,lessons:[],usedMin:0}));
+  if(dayNumber<1)return{dayNumber,sessions,exhausted:false};
+  let currentDay=1,currentSession=0,usedMin=0;
+  for(const lesson of LESSONS){
+    const minutes=lessonMinutes(lesson);
+    if(usedMin>0&&usedMin+minutes>SESSION_TARGET_MIN){
+      currentSession++;
+      usedMin=0;
+      if(currentSession>=DAILY_SESSION_COUNT){
+        currentDay++;
+        currentSession=0;
+      }
+    }
+    if(currentDay===dayNumber){
+      sessions[currentSession].lessons.push({...lesson,durationMin:minutes});
+      sessions[currentSession].usedMin+=minutes;
+    }
+    usedMin+=minutes;
+    if(usedMin>=SESSION_TARGET_MIN){
+      currentSession++;
+      usedMin=0;
+      if(currentSession>=DAILY_SESSION_COUNT){
+        currentDay++;
+        currentSession=0;
+      }
+    }
+    if(currentDay>dayNumber)break;
+  }
+  return{dayNumber,sessions,exhausted:currentDay<dayNumber};
+};
+
+const sessionKey=(dateId,sessionId)=>`${dateId}-${sessionId}`;
+const syncDailySessions=(state,plan,dateId)=>{
+  const doneDailySessions={...(state.doneDailySessions||{})};
+  plan.sessions.forEach(session=>{
+    const key=sessionKey(dateId,session.id);
+    if(session.lessons.length&&session.lessons.every(lesson=>state.doneLessons?.[lesson.id]))doneDailySessions[key]=true;
+    else delete doneDailySessions[key];
+  });
+  return doneDailySessions;
+};
+
+const getLessonRelatedResources=lesson=>{
+  const tracks=new Set((lesson.trackIds?.length?lesson.trackIds:["general"]).filter(tid=>TRACKS[tid]));
+  const tags=(lesson.topicTags||[]).map(textNorm).filter(tag=>tag.length>=3);
+  const seen=new Set();
+  return RESOURCE_INDEX.filter(r=>{
+    const title=textNorm(`${r.title} ${r.phase} ${r.trackName}`);
+    return tracks.has(r.tid)||tags.some(tag=>title.includes(tag));
+  }).filter(r=>{
+    if(seen.has(r.url))return false;
+    seen.add(r.url);
+    return true;
+  });
+};
+
+const findPhase=wk=>PHASES.find(p=>wk>=p.startWeek&&wk<=p.endWeek)||PHASES[0];
+
+function Ring({pct:percent,size=48,stroke=4,color="#00ff88"}){
+  const r=(size-stroke*2)/2,c=2*Math.PI*r,o=c-(percent/100)*c;
   return(<svg width={size} height={size} style={{transform:"rotate(-90deg)"}}>
     <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--wb)" strokeWidth={stroke}/>
-    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
-      strokeDasharray={c} strokeDashoffset={o} strokeLinecap="round" style={{transition:"stroke-dashoffset 0.5s ease"}}/>
+    <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeDasharray={c} strokeDashoffset={o} strokeLinecap="round" style={{transition:"stroke-dashoffset 0.5s ease"}}/>
   </svg>);
 }
-function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,alignItems:"center"}}>
+
+function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,alignItems:"center",flexWrap:"wrap"}}>
   <span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:type==="video"?"rgba(239,68,68,0.15)":type==="lab"?"rgba(34,197,94,0.15)":type==="article"?"rgba(249,115,22,0.15)":type==="writeup"?"rgba(236,72,153,0.15)":type==="book"?"rgba(234,179,8,0.15)":"rgba(100,116,139,0.15)",color:type==="video"?"#f87171":type==="lab"?"#4ade80":type==="article"?"#fb923c":type==="writeup"?"#f472b6":type==="book"?"#facc15":"var(--t4)",border:`1px solid ${type==="video"?"rgba(239,68,68,0.3)":type==="lab"?"rgba(34,197,94,0.3)":type==="article"?"rgba(249,115,22,0.3)":type==="writeup"?"rgba(236,72,153,0.3)":type==="book"?"rgba(234,179,8,0.3)":"rgba(100,116,139,0.3)"}`}}>
-    {type==="video"?"▶ Video":type==="lab"?"⚗ Lab":type==="article"?"📄 Article":type==="writeup"?"✍ Writeup":type==="book"?"📚 Book":"🔗"}
+    {type==="video"?"Video":type==="lab"?"Lab":type==="article"?"Article":type==="writeup"?"Writeup":type==="book"?"Book":"Link"}
   </span>
-  {lang&&<span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:lang==="ar"?"rgba(0,212,255,0.15)":"rgba(139,92,246,0.15)",color:lang==="ar"?"#00d4ff":"#a78bfa",border:`1px solid ${lang==="ar"?"rgba(0,212,255,0.3)":"rgba(139,92,246,0.3)"}`}}>{lang==="ar"?"🇸🇦 AR":"🌐 EN"}</span>}
+  {lang&&<span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontFamily:"'Fira Code',monospace",background:lang==="ar"?"rgba(0,212,255,0.15)":"rgba(139,92,246,0.15)",color:lang==="ar"?"#00d4ff":"#a78bfa",border:`1px solid ${lang==="ar"?"rgba(0,212,255,0.3)":"rgba(139,92,246,0.3)"}`}}>{lang==="ar"?"AR":"EN"}</span>}
 </span>);}
 
 // ─────────────────────────────────────────────
@@ -3083,1154 +21121,348 @@ function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,align
 // ─────────────────────────────────────────────
 export default function CyberPath(){
   const [s,setS]=useState(D0);
-  const [page,setPage]=useState("dashboard");
   const [toast,setToast]=useState(null);
   const [loading,setLoading]=useState(true);
   const [sideOpen,setSideOpen]=useState(true);
   const [isMobile,setIsMobile]=useState(()=>typeof window!=="undefined"&&window.innerWidth<768);
-  const [expPhase,setExpPhase]=useState(null);
-  const [expWeek,setExpWeek]=useState(null);
-  const [quiz,setQuiz]=useState({active:false,wkId:null,ans:{},submitted:false,score:0});
-  const [todos,setTodos]=useState(INIT_TODOS);
-  const [newTask,setNewTask]=useState("");
-  const [newPri,setNewPri]=useState("medium");
-  const [newTrack,setNewTrack]=useState("general");
-  const [todoFilter,setTodoFilter]=useState("all");
-  const [routineFilter,setRoutineFilter]=useState("all");
-  const [resType,setResType]=useState("all");
-  const [resLang,setResLang]=useState("all");
-  const [resTid,setResTid]=useState("all");
-  const [studyHoursInput,setStudyHoursInput]=useState("");
-  const [weekReportOpen,setWeekReportOpen]=useState(false);
-  const [certModal,setCertModal]=useState(null);
+  const [viewOffset,setViewOffset]=useState(0);
+  const [courseOpen,setCourseOpen]=useState(false);
+  const [roadmapOpen,setRoadmapOpen]=useState(false);
   const [theme,setTheme]=useState("dark");
 
-  useEffect(()=>{(async()=>{try{const r=await window.storage.get("cyberpath_v3");if(r?.value){const p=JSON.parse(r.value);setS({...D0,...p});if(p.todos)setTodos(p.todos);}}catch(e){}setLoading(false);})();},[]);
+  const saveState=useCallback(ns=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(ns));}catch(e){}},[]);
+  const mergeState=raw=>{
+    const ns={...D0,...raw};
+    ns.trainingStartDate=raw?.trainingStartDate||today();
+    ns.doneLessons=raw?.doneLessons||{};
+    ns.doneDailySessions=raw?.doneDailySessions||{};
+    ns.lessonNotes=raw?.lessonNotes||{};
+    ns.badges=raw?.badges||[];
+    ns.certificates=raw?.certificates||[];
+    ns.totalDone=Object.values(ns.doneLessons).filter(Boolean).length||ns.totalDone||0;
+    return ns;
+  };
+  const upd=useCallback(patch=>{
+    setS(prev=>{
+      const next=typeof patch==="function"?patch(prev):{...prev,...patch};
+      saveState(next);
+      return next;
+    });
+  },[saveState]);
+  const showToast=m=>{setToast(m);setTimeout(()=>setToast(null),2600);};
+  const toggleTheme=()=>setTheme(p=>p==="dark"?"light":"dark");
+
+  useEffect(()=>{
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      const ns=mergeState(raw?JSON.parse(raw):{});
+      setS(ns);
+      saveState(ns);
+    }catch(e){
+      setS(mergeState({}));
+    }
+    setLoading(false);
+  },[saveState]);
   useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
 
-  const save=useCallback(async(ns,td)=>{try{await window.storage.set("cyberpath_v3",JSON.stringify({...ns,todos:td||todos}));}catch(e){};},[todos]);
-  const upd=useCallback((patch)=>{setS(prev=>{const ns={...prev,...(typeof patch==="function"?patch(prev):patch)};save(ns);return ns;});},[save]);
-  const showToast=(m)=>{setToast(m);setTimeout(()=>setToast(null),2800);};
-  const toggleTheme=()=>{setTheme(p=>p==="dark"?"light":"dark");};
-
-  const g2=isMobile?"1fr":"1fr 1fr";
+  const selectedDate=addDays(new Date(),viewOffset);
+  const selectedDateKey=dateKey(selectedDate);
+  const trainingDay=getTrainingDay(s.trainingStartDate||today(),selectedDateKey);
+  const restDay=isFriday(selectedDate);
+  const dailyPlan=restDay?{dayNumber:trainingDay,sessions:[],exhausted:false}:buildDailyTodo(trainingDay);
+  const doneLessonCount=Object.values(s.doneLessons||{}).filter(Boolean).length;
+  const totalLessonCount=LESSONS.length;
+  const overallPct=pct(doneLessonCount,totalLessonCount);
   const lv=getLevel(s.xp);
-  const nlv=LEVELS.find(l=>l.lv===lv.lv+1)||lv;
-  const lvPct=Math.min(100,Math.round((s.xp-lv.min)/((nlv.min||lv.min+1000)-lv.min)*100));
-  const curPh=findPhase(s.currentWeek);
-  const curWk=findWeek(s.currentWeek);
-  const totalT=PHASES.reduce((a,ph)=>a+ph.weeks.reduce((b,w)=>b+w.topics.length,0),0);
-  const donePct=totalT>0?Math.round(s.totalDone/totalT*100):0;
+  const nextLevel=LEVELS.find(l=>l.lv===lv.lv+1)||lv;
+  const levelPct=clamp(Math.round((s.xp-lv.min)/((nextLevel.min||lv.min+1000)-lv.min)*100),0,100);
+  const todayDone=dailyPlan.sessions.flatMap(session=>session.lessons).filter(lesson=>s.doneLessons?.[lesson.id]).length;
+  const todayTotal=dailyPlan.sessions.reduce((sum,session)=>sum+session.lessons.length,0);
+  const currentRoadmapWeek=clamp(Math.ceil(Math.max(1,trainingDay)/6),1,80);
+  const currentPhase=findPhase(currentRoadmapWeek);
+  const SB=sideOpen?260:72;
 
   useEffect(()=>{
     if(loading)return;
     const earned=BADGES.filter(b=>!s.badges.includes(b.id)&&b.check(s));
-    if(earned.length>0){
-      const nb=[...s.badges,...earned.map(b=>b.id)];
-      const bx=earned.reduce((a,b)=>a+b.xp,0);
-      upd(p=>({...p,badges:nb,xp:p.xp+bx}));
-      showToast(`🏅 ${earned.map(b=>b.ar).join(" + ")} +${bx} XP`);
+    if(earned.length){
+      upd(prev=>({...prev,badges:[...prev.badges,...earned.map(b=>b.id)],xp:prev.xp+earned.reduce((sum,b)=>sum+b.xp,0)}));
+      showToast(`شارة جديدة: ${earned.map(b=>b.ar).join(" + ")}`);
     }
-  },[s.totalDone,s.bestStreak,s.perfectQuiz,s.islamicDays,JSON.stringify(s.donePhases),loading]);
+  },[s.totalDone,s.bestStreak,s.perfectQuiz,s.islamicDays,JSON.stringify(s.donePhases),loading,upd]);
 
+  const toggleLesson=lesson=>{
+    const was=!!s.doneLessons?.[lesson.id];
+    upd(prev=>{
+      const doneLessons={...(prev.doneLessons||{})};
+      if(was)delete doneLessons[lesson.id];
+      else doneLessons[lesson.id]=today();
+      const next={...prev,doneLessons,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:Math.max(0,prev.xp+(was?-10:10))};
+      next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
+      return next;
+    });
+    showToast(was?"تم إرجاع الدرس لقائمة اليوم":"تم إنهاء الدرس +10 XP");
+  };
+
+  const completeSession=session=>{
+    const missing=session.lessons.filter(lesson=>!s.doneLessons?.[lesson.id]);
+    if(!missing.length){showToast("الجلسة مكتملة بالفعل");return;}
+    upd(prev=>{
+      const doneLessons={...(prev.doneLessons||{})};
+      missing.forEach(lesson=>{doneLessons[lesson.id]=today();});
+      const next={...prev,doneLessons,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:prev.xp+(missing.length*10)};
+      next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
+      return next;
+    });
+    showToast(`الجلسة اكتملت +${missing.length*10} XP`);
+  };
+
+  const saveLessonNote=(lessonId,value)=>upd(prev=>({...prev,lessonNotes:{...(prev.lessonNotes||{}),[lessonId]:value}}));
+  const goToday=()=>setViewOffset(0);
   const doCheckIn=()=>{
     const t=today();
-    if(s.lastCheckIn===t){showToast("✅ سبق تسجيل الحضور اليوم!");return;}
-    const y=new Date(Date.now()-86400000).toISOString().split("T")[0];
-    const ns=s.lastCheckIn===y?s.streak+1:1;
-    const nb=Math.max(ns,s.bestStreak);
-    upd({lastCheckIn:t,streak:ns,bestStreak:nb,xp:s.xp+15,islamicDays:s.islamicDays+1});
-    showToast(`🕌 حضور مسجّل! 🔥 سلسلة ${ns} يوم | +15 XP`);
+    if(s.lastCheckIn===t){showToast("سبق تسجيل الحضور اليوم");return;}
+    const y=dateKey(addDays(new Date(),-1));
+    const streak=s.lastCheckIn===y?s.streak+1:1;
+    upd(prev=>({...prev,lastCheckIn:t,streak,bestStreak:Math.max(streak,prev.bestStreak||0),xp:prev.xp+15,islamicDays:(prev.islamicDays||0)+1}));
+    showToast(`حضور اليومي مسجل: سلسلة ${streak} يوم`);
   };
 
-  // تسجيل ساعات الدراسة اليومية
-  const logStudyHours=(hrs)=>{
-    const h=parseFloat(hrs);
-    if(isNaN(h)||h<=0||h>16){showToast("❗ أدخل عدد ساعات صحيح (1-16)");return;}
-    const t=today();
-    const prev=s.studyLog[t]||0;
-    const nl={...s.studyLog,[t]:prev+h};
-    // حساب إجمالي ساعات الأسبوع الحالي
-    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
-    const weekHrs=weekDates.reduce((a,d)=>a+(nl[d]||0),0);
-    const xpBonus=Math.floor(h)*3;
-    upd({studyLog:nl,xp:s.xp+xpBonus});
-    setStudyHoursInput("");
-    showToast(`⏱️ ${h} ساعة مسجّلة! أسبوعياً: ${weekHrs.toFixed(1)}h | +${xpBonus} XP`);
-  };
-
-  // توليد التقرير الأسبوعي
-  const generateWeekReport=()=>{
-    const wk=s.currentWeek;const wData=curWk;if(!wData)return null;
-    const mDone=wData.missions.filter((_,i)=>s.doneMissions?.[`m-${wk}-${i}`]).length;
-    const tDone=wData.topics.filter((_,i)=>s.doneTopics?.[`${wk}-${i}`]).length;
-    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
-    const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
-    const quizScore=s.quizHistory[wData.quizId]?.score??null;
-    const ph=findPhase(wk);
-    return{wk,title:wData.title,phase:ph.nameAr,mDone,mTotal:wData.missions.length,tDone,tTotal:wData.topics.length,weekHrs:weekHrs.toFixed(1),quizScore,date:today(),xpGained:s.xp};
-  };
-  const saveWeekReport=()=>{
-    const r=generateWeekReport();if(!r)return;
-    upd({weeklyReports:{...s.weeklyReports,[`wk${r.wk}`]:r}});
-    setWeekReportOpen(true);
-    showToast("📋 تم حفظ تقرير الأسبوع!");
-  };
-
-  // شهادات إنهاء المراحل
-  const earnCertificate=(phId)=>{
-    if(s.certificates.includes(phId))return;
-    const ph=PHASES.find(p=>p.id===phId);if(!ph)return;
-    const nc=[...s.certificates,phId];
-    upd({certificates:nc,xp:s.xp+150});
-    setCertModal(ph);
-    showToast(`🎓 شهادة ${ph.nameAr} +150 XP`);
-  };
-
-  const markTopic=(wk,i)=>{
-    const k=`${wk}-${i}`;const was=!!s.doneTopics[k];
-    const nt={...s.doneTopics,[k]:!was};
-    const tot=Object.values(nt).filter(Boolean).length;
-    upd({doneTopics:nt,totalDone:tot,xp:Math.max(0,s.xp+(was?-10:10))});
-    if(!was)showToast("+10 XP ✅");
-  };
-  const markMission=(wk,i)=>{
-    const k=`m-${wk}-${i}`;const was=!!s.doneMissions[k];
-    upd({doneMissions:{...s.doneMissions,[k]:!was},xp:Math.max(0,s.xp+(was?-5:5))});
-    if(!was)showToast("🎯 مهمة مكتملة! +5 XP");
-  };
-
-  const advWeek=()=>{
-    if(s.currentWeek>=80){showToast("🎉 أكملت البرنامج الكامل! أنت Expert!");return;}
-    const q=curWk?.quizId;
-    if(q&&!s.quizHistory[q]){showToast("❗ أكمل اختبار هذه المرحلة أولاً!");return;}
-    const nw=s.currentWeek+1;
-    const old=findPhase(s.currentWeek);
-    const np=findPhase(nw);
-    const nd=[...s.donePhases];
-    if(np.id!==old.id&&!nd.includes(old.id))nd.push(old.id);
-    upd({currentWeek:nw,xp:s.xp+20,donePhases:nd});
-    showToast(`🚀 الأسبوع ${nw} — تقدم رائع! +20 XP`);
-  };
-
-  const startQuiz=(wkId)=>{if(!QUIZZES[wkId])return;setQuiz({active:true,wkId,ans:{},submitted:false,score:0});setPage("quiz");};
-  const submitQuiz=()=>{
-    const qs=QUIZZES[quiz.wkId].qs;
-    let sc=0;qs.forEach((q,i)=>{if(quiz.ans[i]===q.a)sc++;});
-    const pct=Math.round(sc/qs.length*100);
-    const bx=pct>=80?100:pct>=60?50:20;
-    upd({quizHistory:{...s.quizHistory,[quiz.wkId]:{score:pct,date:today()}},xp:s.xp+bx,perfectQuiz:pct===100?s.perfectQuiz+1:s.perfectQuiz});
-    setQuiz(q=>({...q,submitted:true,score:pct}));
-    showToast(`📝 ${pct}% | +${bx} XP`);
-  };
-
-  const getTrkPct=(tid)=>{
-    const t=TRACKS[tid];if(!t)return 0;
-    let tot=0,dn=0;
-    t.phases.forEach(ph=>ph.topics.forEach((_,i)=>{tot++;if(s.trackChecked?.[`${tid}-${ph.id}-${i}`])dn++;}));
-    return tot?Math.round(dn/tot*100):0;
-  };
-  const toggleTrkTopic=(tid,phId,i)=>upd(p=>({...p,trackChecked:{...p.trackChecked,[`${tid}-${phId}-${i}`]:!p.trackChecked?.[`${tid}-${phId}-${i}`]}}));
-
-  const addTodo=()=>{if(!newTask.trim())return;const nt=[...todos,{id:Date.now(),text:newTask,track:newTrack,priority:newPri,done:false,date:"اليوم"}];setTodos(nt);save(s,nt);setNewTask("");};
-  const togTodo=(id)=>{const nt=todos.map(t=>t.id===id?{...t,done:!t.done}:t);setTodos(nt);save(s,nt);};
-  const delTodo=(id)=>{const nt=todos.filter(t=>t.id!==id);setTodos(nt);save(s,nt);};
-
-  const doneTd=todos.filter(t=>t.done).length;
-  const filtTd=todos.filter(t=>{
-    if(todoFilter==="done")return t.done;if(todoFilter==="pending")return !t.done;
-    if(todoFilter==="high")return t.priority==="high"&&!t.done;return true;
-  });
-
-  const allRes=[];TRACK_ORDER.forEach(tid=>TRACKS[tid].phases.forEach(ph=>ph.resources.forEach(r=>allRes.push({...r,tid,ph:ph.name}))));
-  const filtRes=allRes.filter(r=>(resType==="all"||r.type===resType)&&(resLang==="all"||r.lang===resLang)&&(resTid==="all"||r.tid===resTid));
-  const SB=sideOpen?260:72;
-
-  if(loading)return(<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"var(--bg)",flexDirection:"column",gap:16}}>
-    <style>{FONTS+CSS}</style><div className="pulse" style={{fontSize:48}}>⚡</div>
-    <div style={{color:"#00ff88",fontFamily:"'Fira Code',monospace",fontSize:14}}>جاري التحميل...</div>
-  </div>);
-
-  const NAV_ITEMS=[
-    {id:"dashboard",icon:"🗺️",label:"الرحلة"},
-    {id:"quiz",icon:"📝",label:"اختبارات"},
-    {id:"achievements",icon:"🏅",label:"إنجازات"},
-    {id:"resources",icon:"📚",label:"موارد"},
-    {id:"todo",icon:"✅",label:"Todo"},
-    {id:"routine",icon:"🕐",label:"الروتين"},
-    {id:"stats",icon:"📈",label:"إحصائيات"},
-  ];
-
-  // ─── SIDEBAR ───
-  const Sidebar=()=>(<div className={isMobile?(sideOpen?"sidebar-mobile":"sidebar-mobile"):"sidebar-glow sidebar-desktop"} style={{width:isMobile?260:(sideOpen?260:72),minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:isMobile&&!sideOpen?"none":"flex",flexDirection:"column",padding:"20px 10px",gap:3,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
-    <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,padding:"0 4px"}}>
+  const Sidebar=()=>(<div className={isMobile?"sidebar-mobile":"sidebar-glow sidebar-desktop"} style={{width:isMobile?260:(sideOpen?260:72),minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:isMobile&&!sideOpen?"none":"flex",flexDirection:"column",padding:"20px 10px",gap:10,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
+    <div style={{display:"flex",alignItems:"center",gap:10,padding:"0 4px"}}>
       <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
-        <span style={{fontSize:16,color:"#050810",fontWeight:900}}>⚡</span>
+        <span style={{fontSize:16,color:"#050810",fontWeight:900}}>CP</span>
       </div>
-      {sideOpen&&<div><div style={{color:"#00ff88",fontWeight:700,fontSize:13,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath Academy</div><div style={{color:"var(--t2)",fontSize:10}}>24M | 80W | 5 Phases</div></div>}
-      <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"}>{theme==="dark"?"☀️":"🌙"}</button>
+      {sideOpen&&<div style={{minWidth:0}}><div style={{color:"#00ff88",fontWeight:700,fontSize:13,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath Academy</div><div style={{color:"var(--t2)",fontSize:10}}>Todo اليوم · YouTube Curriculum</div></div>}
+      <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"}>{theme==="dark"?"☀":"☾"}</button>
     </div>
-    {sideOpen&&<div style={{fontSize:10,color:"var(--t3)",padding:"4px 6px",fontFamily:"'Fira Code',monospace"}}>NAVIGATION</div>}
-    {[
-      {id:"dashboard",icon:"🗺️",label:"الرحلة الكاملة",sub:"Roadmap"},
-      {id:"quiz",icon:"📝",label:"الاختبارات"},
-      {id:"achievements",icon:"🏅",label:"الإنجازات"},
-      {id:"resources",icon:"📚",label:"Resources Hub"},
-      {id:"todo",icon:"✅",label:"Todo List"},
-      {id:"routine",icon:"🕐",label:"الروتين الإسلامي"},
-      {id:"stats",icon:"📈",label:"الإحصائيات"},
-    ].map(item=>(<div key={item.id} className={`nav ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)} title={item.label} style={{minHeight:44}}>
-      <span style={{fontSize:18,flexShrink:0}}>{item.icon}</span>
-      {sideOpen&&<span style={{fontFamily:"'Cairo',sans-serif",fontSize:13,display:"flex",flexDirection:"column",lineHeight:1.2}}>{item.label}{item.sub&&<span style={{fontSize:9,color:"var(--t3)",fontFamily:"'Fira Code',monospace",marginTop:1}}>{item.sub}</span>}</span>}
-    </div>))}
-    {sideOpen&&(<div style={{marginTop:"auto",padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-        <span style={{fontSize:18}}>{lv.icon}</span>
-        <div><div style={{color:lv.color,fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div><div style={{color:"var(--t2)",fontSize:10}}>{s.xp} XP</div></div>
+    {sideOpen&&(<>
+      <div style={{padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:8}}>
+          <div><div style={{color:lv.color,fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{lv.icon} {lv.ar}</div><div style={{color:"var(--t2)",fontSize:10}}>{s.xp} XP</div></div>
+          <Ring pct={levelPct} size={42} color={lv.color}/>
+        </div>
+        <div className="bar"><div className="bar-fill" style={{width:`${levelPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
       </div>
-      <div className="bar"><div className="bar-fill" style={{width:`${lvPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
-      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-        <span style={{color:"var(--t3)",fontSize:10}}>Wk {s.currentWeek}/80</span>
-        <span style={{color:"var(--t3)",fontSize:10}}>🔥{s.streak}</span>
+      <div style={{padding:12,background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8}}>
+        <div style={{color:"var(--t0)",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>تقدم المنهج</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          {[{label:"الدروس",val:`${doneLessonCount}/${totalLessonCount}`},{label:"اليوم",val:trainingDay>0?trainingDay:"راحة"},{label:"الكورسات",val:COURSES.length},{label:"القوائم",val:`${UNIQUE_PLAYLIST_COUNT}/${SOURCE_PLAYLIST_COUNT}`}].map((item,i)=><div key={i}>
+            <div style={{color:"#00ff88",fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{item.val}</div>
+            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{item.label}</div>
+          </div>)}
+        </div>
+        <div className="bar" style={{marginTop:10}}><div className="bar-fill" style={{width:`${overallPct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
       </div>
-    </div>)}
+      <button className="btn btn-o" onClick={doCheckIn} style={{fontSize:12,padding:"9px 12px"}}>تسجيل حضور اليومي</button>
+    </>)}
   </div>);
 
-  // ─── DASHBOARD ───
-  const Dashboard=()=>(<div className="slide">
-    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"20px 24px",marginBottom:16,position:"relative",overflow:"hidden"}}>
-      <div style={{position:"absolute",top:-20,right:-20,width:200,height:200,background:"radial-gradient(circle,rgba(0,255,136,0.08),transparent 70%)",pointerEvents:"none"}}/>
-      <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مرحباً في CyberPath Academy</div>
-      <h1 style={{color:"var(--t0)",fontSize:isMobile?17:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
-      <p style={{color:"var(--t4)",fontSize:isMobile?11:12,fontFamily:"'Cairo',sans-serif",marginBottom:12}}>برنامج 24 شهراً · 80 أسبوع · 5 مراحل · {donePct}% مكتمل</p>
-      <div className="bar" style={{height:8,marginBottom:6}}><div className="bar-fill" style={{width:`${donePct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
-        <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{s.totalDone}/{totalT} موضوع · Wk {s.currentWeek}/80</span>
-        <div style={{display:"flex",gap:6}}>
-          <button className="btn btn-g" style={{fontSize:11,padding:"6px 12px"}} onClick={doCheckIn}>🕌 حضور</button>
-          {curWk&&QUIZZES[curWk.quizId]&&!s.quizHistory[curWk.quizId]&&(<button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={()=>startQuiz(curWk.quizId)}>📝 اختبار الأسبوع</button>)}
-          {curWk&&s.quizHistory[curWk.quizId]&&(<button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={advWeek}>🚀 التالي</button>)}
-        </div>
-      </div>
-    </div>
-    <div className="stg" style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(auto-fill,minmax(110px,1fr))",gap:6,marginBottom:16}}>
-      {[
-        {label:"المستوى",val:lv.icon,sub:lv.ar,color:lv.color,icon:"🏆"},
-        {label:"XP",val:s.xp,sub:`+${nlv.lv>lv.lv?(nlv.min-s.xp):0} للتالي`,color:"#fbbf24",icon:"⭐"},
-        {label:"🔥 سلسلة",val:s.streak,sub:`الأفضل ${s.bestStreak}`,color:"#f97316",icon:"🔥"},
-        {label:"إنجازات",val:`${s.badges.length}/${BADGES.length}`,sub:"شارة",color:"#a78bfa",icon:"🏅"},
-        {label:"اختبارات",val:Object.keys(s.quizHistory).length,sub:`من ${Object.keys(QUIZZES).length}`,color:"#00d4ff",icon:"📝"},
-      ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click" style={{padding:10}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span style={{fontSize:14}}>{st.icon}</span>
-          <span style={{color:st.color,fontSize:15,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
-        </div>
-        <div style={{color:"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{st.label}</div>
-        <div style={{color:"var(--t2)",fontSize:10,marginTop:1,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
-      </div>))}
-    </div>
-
-    {/* ─ بطاقة الأسبوع الحالي: المواضيع + المهام + الاختبار + الموارد ─ */}
-    {curWk&&(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.25)",borderRadius:14,padding:isMobile?12:16,marginBottom:16}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
-        <div>
-          <div style={{color:curPh.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{curPh.icon} {curPh.nameAr} · Wk {s.currentWeek}</div>
-          <div style={{color:"var(--t0)",fontSize:isMobile?14:16,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{curWk.title}</div>
-        </div>
-        <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-          {(()=>{const t=curWk.topics.filter((_,i)=>s.doneTopics?.[`${s.currentWeek}-${i}`]).length;const m=curWk.missions.filter((_,i)=>s.doneMissions?.[`m-${s.currentWeek}-${i}`]).length;const pct=Math.round(((t+m)/(curWk.topics.length+curWk.missions.length))*100);return(
-            <span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>✓ {t}/{curWk.topics.length} topics · {m}/{curWk.missions.length} missions · {pct}%</span>
-          );})()}
-        </div>
-      </div>
-      <div className="stg" style={{display:"grid",gridTemplateColumns:g2,gap:8,marginBottom:curPh.relatedTracks?.length?10:0}}>
-        <div>
-          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مهام (+5 XP)</div>
-          {curWk.missions.map((m,mi)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${mi}`];return(<div key={mi} className="topic-row" onClick={()=>markMission(s.currentWeek,mi)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",lineHeight:1.3}}>{m}</span>
-          </div>);})}
-        </div>
-        <div>
-          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مواضيع (+10 XP)</div>
-          {curWk.topics.slice(0,8).map((t,ti)=>{const dn=!!s.doneTopics?.[`${s.currentWeek}-${ti}`];return(<div key={ti} className="topic-row" onClick={()=>markTopic(s.currentWeek,ti)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"var(--t2)":"var(--t5)",fontSize:11,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",lineHeight:1.3}}>{t}</span>
-          </div>);})}
-          {curWk.topics.length>8&&(<div style={{color:"var(--t1)",fontSize:10,textAlign:"center",fontFamily:"'Cairo',sans-serif",padding:"4px"}}>+{curWk.topics.length-8} موضوع آخر</div>)}
-        </div>
-      </div>
-      <div style={{display:"flex",gap:6,marginTop:10,flexWrap:"wrap",alignItems:"center"}}>
-        {QUIZZES[curWk.quizId]&&(!s.quizHistory[curWk.quizId]?<button className="btn btn-g" style={{fontSize:11,padding:"5px 12px"}} onClick={()=>startQuiz(curWk.quizId)}>📝 ابدأ الاختبار</button>
-          :<span style={{color:"#10b981",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>✓ اختبار {s.quizHistory[curWk.quizId].score}%</span>)}
-        {curPh.relatedTracks&&curPh.relatedTracks.filter(tid=>TRACKS[tid]).length>0&&(<>
-          <span style={{color:"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>// مسارات:</span>
-          {curPh.relatedTracks.filter(tid=>TRACKS[tid]).slice(0,3).map(tid=>(<button key={tid} onClick={()=>{setResTid(tid);setPage("resources");}}
-            style={{padding:"3px 8px",borderRadius:5,border:`1px solid ${TRACKS[tid].color}44`,background:`${TRACKS[tid].color}15`,color:TRACKS[tid].color,cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:10}}>
-            {TRACKS[tid].icon} {TRACKS[tid].name}
-          </button>))}
-        </>)}
-      </div>
-    </div>)}
-
-    {/* ─ اليوم: ساعات دراسة + خطة اليوم + مراجعة ─ */}
-    {(()=>{
-      const todayAr=getTodayDayAr();
-      const isFriday=todayAr==="الجمعة";
-      const dayPlan=DAY_PLAN(s.currentWeek);
-      const todayPlan=dayPlan.find(d=>d.day===todayAr)||null;
-      const todayHrs=s.studyLog?.[today()]||0;
-      const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
-      const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
-      const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
-      const reviewWks=getReviewWeeks(s);
-      return(<>
-      {/* ─ تسجيل ساعات الدراسة ─ */}
-      <div style={{background:"linear-gradient(135deg,rgba(167,139,250,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(167,139,250,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
-          <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>⏱️ ساعات الدراسة</div>
-          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"var(--bt)",color:todayHrs>0?"#a78bfa":"var(--t3)",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>اليوم {todayHrs}h</span>
-            <span style={{background:"rgba(249,115,22,0.1)",color:"#f97316",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>الأسبوع {weekHrs.toFixed(1)}h</span>
-            <span style={{background:"rgba(251,191,36,0.1)",color:"#fbbf24",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>الإجمالي {totalHrs.toFixed(0)}h</span>
+  const LessonRow=({lesson})=>{
+    const course=COURSE_BY_ID[lesson.courseId];
+    const done=!!s.doneLessons?.[lesson.id];
+    const resources=getLessonRelatedResources(lesson);
+    const note=s.lessonNotes?.[lesson.id]||"";
+    return(<div style={{background:done?"rgba(0,255,136,0.06)":"var(--bo)",border:`1px solid ${done?"rgba(0,255,136,0.28)":"var(--wo)"}`,borderRadius:9,padding:10}}>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:10,alignItems:"start"}}>
+        <button onClick={()=>toggleLesson(lesson)} className={`chk ${done?"on":""}`} style={{marginTop:2,border:"2px solid var(--sbd4)",background:done?"#00ff88":"transparent"}} aria-label={done?"إلغاء الدرس":"إنهاء الدرس"}>{done&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
+        <div style={{minWidth:0}}>
+          <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap",marginBottom:4}}>
+            <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{course?.title} · #{lesson.index}</span>
+            <span style={{color:"#a78bfa",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{formatDuration(lesson.durationSec)}</span>
+          </div>
+          <div style={{color:done?"var(--t2)":"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",lineHeight:1.6,textDecoration:done?"line-through":"none",overflowWrap:"anywhere"}}>{lesson.title}</div>
+          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:7}}>
+            {(lesson.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)",background:"var(--wm)",border:"1px solid var(--wo)",padding:"2px 7px",borderRadius:20,fontFamily:"'Cairo',sans-serif"}}>{trackLabel(tid)}</span>)}
+            {(lesson.topicTags||[]).slice(0,5).map(tag=><span key={tag} style={{fontSize:10,color:"var(--t1)",background:"var(--wm)",border:"1px solid var(--wo)",padding:"2px 7px",borderRadius:20}}>#{tag}</span>)}
           </div>
         </div>
-        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:10}}>
-          <input type="number" min="0.5" max="16" step="0.5" placeholder="مثال: 2.5" value={studyHoursInput} onChange={e=>setStudyHoursInput(e.target.value)}
-            style={{width:100,flex:"0 0 auto",fontSize:12,padding:"7px 10px"}} onKeyDown={e=>e.key==="Enter"&&logStudyHours(studyHoursInput)}/>
-          <span style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
-          <button className="btn btn-g" style={{fontSize:11,padding:"6px 14px"}} onClick={()=>logStudyHours(studyHoursInput)}>+ تسجيل</button>
-        </div>
-        <div style={{display:"flex",gap:4}}>
-          {weekDates.slice(0,7).reverse().map((d,i)=>{const h=s.studyLog?.[d]||0;const label=["ج","خ","أ","ث","إ","أح","س"][6-i]||"";const isToday=d===today();
-            return(<div key={d} style={{textAlign:"center",flex:1,minWidth:28}}>
-              <div style={{height:36,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"var(--wm)",borderRadius:4,border:`1px solid ${isToday?"rgba(0,255,136,0.5)":h>0?"rgba(167,139,250,0.3)":"var(--wo)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:2}}>
-                <span style={{color:h>0?"#a78bfa":"var(--t3)",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
+        <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"8px 12px",textAlign:"center",whiteSpace:"nowrap"}}>الفيديو</a>
+      </div>
+      <details style={{marginTop:9}}>
+        <summary style={{cursor:"pointer",color:"#00d4ff",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>كل المصادر المتعلقة ({resources.length}) + ملاحظات الدرس</summary>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:7,marginTop:9}}>
+          {resources.map((r,i)=><a key={`${r.url}-${i}`} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+            <div className="res-card" style={{marginBottom:0}}>
+              <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:5,overflowWrap:"anywhere"}}>{r.title}</div>
+              <div style={{display:"flex",justifyContent:"space-between",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+                <span style={{fontSize:10,color:r.trackColor,fontFamily:"'Cairo',sans-serif"}}>{r.trackIcon} {r.trackName}</span>
+                <Tag type={r.type} lang={r.lang}/>
               </div>
-              <div style={{color:isToday?"#00ff88":"var(--t2)",fontSize:8,marginTop:1,fontWeight:isToday?700:400}}>{label}</div>
-            </div>);
-          })}
+            </div>
+          </a>)}
+        </div>
+        <textarea value={note} onChange={e=>saveLessonNote(lesson.id,e.target.value)} placeholder="ملاحظاتك على هذا الدرس..." style={{width:"100%",minHeight:70,marginTop:9,resize:"vertical",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--bo)",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}/>
+      </details>
+    </div>);
+  };
+
+  const SessionCard=({session})=>{
+    const done=session.lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+    const total=session.lessons.length;
+    const sessionDone=total>0&&done===total;
+    const key=sessionKey(selectedDateKey,session.id);
+    return(<div className="card" style={{padding:12,borderColor:sessionDone?"rgba(0,255,136,0.32)":"var(--sbd)"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:10}}>
+        <div>
+          <div style={{color:"var(--t0)",fontSize:15,fontWeight:800,fontFamily:"'Cairo',sans-serif"}}>{session.title} · 90 دقيقة</div>
+          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{total} lessons · {session.usedMin}m scheduled · saved: {s.doneDailySessions?.[key]?"yes":"no"}</div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <Ring pct={pct(done,total)} size={42} color={sessionDone?"#00ff88":"#00d4ff"}/>
+          <button className="btn btn-o" disabled={!total} onClick={()=>completeSession(session)} style={{fontSize:11,padding:"7px 10px",opacity:total?1:.45}}>إنهاء الجلسة</button>
         </div>
       </div>
+      <div className="bar" style={{marginBottom:10}}><div className="bar-fill" style={{width:`${pct(done,total)}%`,background:sessionDone?"#00ff88":"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+      {total?(
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>{session.lessons.map(lesson=><LessonRow key={lesson.id} lesson={lesson}/>)}</div>
+      ):(
+        <div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif",padding:10,background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8}}>لا توجد دروس في هذه الجلس.</div>
+      )}
+    </div>);
+  };
 
-      {/* ─ خطة اليوم ─ */}
-      <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
-          <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
-          {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs}h مقترحة</span>}
-        </div>
-        {isFriday?(
-          <div style={{textAlign:"center",padding:"10px 0",color:"#fde047",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
-            🕌 يوم الجمعة — يوم الراحة والعبادة<br/>
-            <span style={{color:"var(--t3)",fontSize:11}}>سورة الكهف • صلاة الجمعة • الإكثار من الصلاة على النبي ﷺ</span>
-          </div>
-        ):todayPlan?(
-          <div style={{display:"flex",flexDirection:"column",gap:5}}>
-            {todayPlan.items.map((item,i)=>{
-              const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
-              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",background:dn?"rgba(0,255,136,0.04)":"var(--bo)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--w5)"}`,cursor:"pointer"}}
-                onClick={()=>item.type==="mission"?markMission(item.wk,item.idx):markTopic(item.wk,item.idx)}>
-                <div className={`chk ${dn?"on":""}`} style={{flexShrink:0}}>{dn&&<span style={{color:"var(--bg4)",fontSize:8,fontWeight:900}}>✓</span>}</div>
-                <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
-                <span style={{color:item.type==="mission"?"#00ff88":"#00d4ff",fontSize:10,flexShrink:0}}>+{item.xp} XP</span>
-              </div>);
-            })}
-          </div>
-        ):(
-          <div style={{color:"var(--t3)",textAlign:"center",padding:"10px 0",fontFamily:"'Cairo',sans-serif",fontSize:11}}>لا توجد مهام مخطط لها اليوم</div>
-        )}
+  const RestDay=()=>{
+    const reviewPlan=buildDailyTodo(Math.max(1,trainingDay));
+    const reviewLessons=reviewPlan.sessions.flatMap(session=>session.lessons).slice(0,6);
+    return(<div className="card" style={{padding:isMobile?14:18,borderColor:"rgba(250,204,21,0.28)",background:"rgba(250,204,21,0.05)",marginBottom:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+        <div><div style={{color:"#fde047",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>الجمعة راحة ومراجعة خفيفة</div><div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>لا توجد دروس جديدة اليوم. راجع ملاحظاتك، أعد مشاهدة الدروس الصعبة، وخفف الحمل.</div></div>
+        <button className="btn btn-o" onClick={goToday} style={{fontSize:12,padding:"8px 12px"}}>اليوم</button>
       </div>
-
-      {/* ─ مراجعة Spaced Repetition ─ */}
-      {reviewWks.length>0&&(<div style={{background:"rgba(251,191,36,0.05)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
-        <div style={{color:"#fbbf24",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>🔄 مراجعة مقترحة — Spaced Repetition</div>
-        <p style={{color:"var(--t3)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
-        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-          {reviewWks.map(wk=>{const w=findWeek(wk);const ph=findPhase(wk);return w?(
-            <div key={wk} style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:8,padding:"6px 10px",cursor:"pointer"}} onClick={()=>{setExpPhase(ph.id);setPage("program");}}>
-              <div style={{color:"#fbbf24",fontSize:11,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>Week {wk}</div>
-              <div style={{color:"var(--t4)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
-            </div>
-          ):null;})}
-        </div>
-      </div>)}
-      </>);
-    })()}
-
-    {/* ─ خريطة الـ Roadmap: كل المراحل مع أسابيعها ─ */}
-    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🗺️ خريطة الرحلة</h2>
-    <div className="stg" style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
-      {PHASES.map(ph=>{
-        const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
-        const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
-        const pct=pt>0?Math.round(pd/pt*100):0;
-        const isCur=ph.id===curPh.id;
-        const isComplete=pct===100;
-        return(<div key={ph.id} className="card" style={{padding:isMobile?10:14,borderColor:isCur?"rgba(0,255,136,0.4)":isComplete?ph.color+"44":"var(--wb)"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
-            <span style={{fontSize:20}}>{ph.icon}</span>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                <span style={{color:"var(--t0)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr}</span>
-                {isCur&&<span style={{fontSize:9,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"1px 5px",borderRadius:3}}>● نشط</span>}
-                {isComplete&&<span style={{fontSize:9,color:ph.color,background:`${ph.color}15`,padding:"1px 5px",borderRadius:3}}>✓ مكتمل</span>}
-              </div>
-              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{ph.monthLabel} · {ph.startWeek}-{ph.endWeek} · +{ph.phaseXP} XP</div>
-            </div>
-            <div style={{minWidth:60,textAlign:"left"}}>
-              <div className="bar" style={{height:5}}><div className="bar-fill" style={{width:`${pct}%`,background:ph.color}}/></div>
-              <div style={{color:ph.color,fontSize:10,fontFamily:"'Fira Code',monospace",textAlign:"right",marginTop:2}}>{pct}%</div>
-            </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:8,marginTop:12}}>
+        {reviewLessons.map(lesson=><a key={lesson.id} href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+          <div className="res-card" style={{marginBottom:0}}>
+            <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
+            <div style={{color:"var(--t2)",fontSize:10,marginTop:4}}>{COURSE_BY_ID[lesson.courseId]?.title}</div>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(28px,1fr))",gap:3,marginTop:6}}>
-            {ph.weeks.map(w=>{
-              const wd=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
-              const wPct=Math.round(wd/w.topics.length*100);
-              const isCurW=w.wk===s.currentWeek;
-              const isDoneW=wPct===100;
-              return(<div key={w.wk} onClick={()=>{setExpPhase(ph.id);setPage("program");}} title={`Wk ${w.wk} · ${w.title} · ${wPct}%`}
-                style={{aspectRatio:"1",borderRadius:4,background:isDoneW?`${ph.color}`:wPct>0?`${ph.color}55`:"var(--bo)",border:`1.5px solid ${isCurW?"#00ff88":isDoneW?ph.color:"var(--w5)"}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .15s"}}
-                onMouseEnter={e=>e.currentTarget.style.transform="scale(1.2)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-                {isCurW&&<span style={{color:"#00ff88",fontSize:8,fontWeight:900}}>●</span>}
-                {isDoneW&&!isCurW&&<span style={{color:"#04080f",fontSize:10,fontWeight:900}}>✓</span>}
-                {wPct>0&&wPct<100&&!isCurW&&<span style={{color:"#fff",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{wPct}</span>}
-              </div>);
-            })}
-          </div>
-          <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{ph.desc}</div>
-        </div>);
-      })}
-    </div>
-
-    {/* ─ أوقات الصلاة والروتين ─ */}
-    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🕌 الروتين اليومي</h2>
-    <div className="card" style={{padding:isMobile?10:14,marginBottom:16}}>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:6}}>
-        {ROUTINE.filter(r=>r.type==="prayer").map((r,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 8px",borderRadius:6,background:"rgba(250,204,21,0.06)",border:"1px solid rgba(250,204,21,0.1)"}}>
-          <span style={{fontSize:12}}>{r.icon}</span>
-          <span style={{color:"#fde047",fontSize:11,fontFamily:"'Cairo',sans-serif",flex:1}}>{r.label}</span>
-          <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{r.time}</span>
-        </div>))}
+        </a>)}
       </div>
-      <button className="btn btn-o" style={{fontSize:11,padding:"5px 12px",marginTop:8,width:"100%"}} onClick={()=>setPage("routine")}>📅 عرض الروتين الكامل ←</button>
-    </div>
-  </div>);
+    </div>);
+  };
 
-  // ─── PROGRAM ───
-  const Program=()=>(<div className="slide">
-    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🗺️ البرنامج الكامل</h1>
-    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:14}}>24 شهراً | 80 أسبوع | 5 مراحل</p>
-    {PHASES.map(ph=>{
-      const isO=expPhase===ph.id;
-      const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
-      const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
-      const pct=pt>0?Math.round(pd/pt*100):0;
-      return(<div key={ph.id} style={{border:`1px solid ${isO?ph.color+"44":"var(--wb)"}`,borderRadius:12,marginBottom:10,overflow:"hidden",background:isO?ph.bg:"var(--bo)"}}>
-        <div className="phase-hd" onClick={()=>setExpPhase(isO?null:ph.id)}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <span style={{fontSize:22}}>{ph.icon}</span>
-            <div>
-              <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr} — {ph.nameEn}</div>
-              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{ph.monthLabel} | Weeks {ph.startWeek}–{ph.endWeek} | +{ph.phaseXP} XP</div>
-            </div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:90}}>
-              <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:ph.color}}/></div>
-              <div style={{color:ph.color,fontSize:10,marginTop:2,fontFamily:"'Fira Code',monospace",textAlign:"right"}}>{pct}%</div>
-            </div>
-            <span style={{color:"var(--t1)",fontSize:14,transform:isO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
-          </div>
-        </div>
-        {isO&&(<div style={{padding:"0 16px 16px"}}>
-          <p style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:12,paddingTop:8}}>{ph.desc}</p>
-          {ph.weeks.map(w=>{
-            const wKey=`${ph.id}-${w.wk}`;const wO=expWeek===wKey;
-            const wd=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
-            const wPct=Math.round(wd/w.topics.length*100);
-            const qd=s.quizHistory[w.quizId];const isCur=w.wk===s.currentWeek;
-            return(<div key={w.wk} style={{border:`1px solid ${isCur?"rgba(0,255,136,0.4)":wO?"var(--wh)":"var(--w5)"}`,borderRadius:8,marginBottom:6,background:isCur?"rgba(0,255,136,0.04)":"var(--bo)"}}>
-              <div style={{padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:8}} onClick={()=>setExpWeek(wO?null:wKey)}>
-                <div style={{width:30,height:30,borderRadius:6,background:`${ph.color}22`,border:`1px solid ${ph.color}44`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <span style={{color:ph.color,fontSize:10,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{w.wk}</span>
-                </div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",display:"flex",alignItems:"center",gap:6}}>
-                    {isCur&&<span style={{fontSize:9,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"1px 5px",borderRadius:4}}>● الحالي</span>}
-                    {w.title}
-                  </div>
-                  <div style={{display:"flex",gap:8,marginTop:1}}>
-                    <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{wd}/{w.topics.length} topics</span>
-                    {qd&&<span style={{color:"#10b981",fontSize:10}}>✓ Quiz {qd.score}%</span>}
+  const CourseLibrary=()=>(
+    <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:12}}>
+        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>كتالوج الكورسات الكامل</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{SOURCE_PLAYLIST_COUNT} links input · {UNIQUE_PLAYLIST_COUNT} playlists unique · {LESSONS.length} lessons</div></div>
+        <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء":"عرض الكورسات"}</button>
+      </div>
+      {courseOpen&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {COURSES.map(course=>{
+          const lessons=COURSE_LESSONS[course.id]||[];
+          const done=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+          return(<details key={course.id} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
+            <summary style={{cursor:"pointer",listStyle:"none"}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+                <div style={{minWidth:0}}>
+                  <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{course.title}</div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:5}}>
+                    <span style={{color:"#00ff88",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{lessons.length} lessons</span>
+                    {(course.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}
                   </div>
                 </div>
-                <div style={{width:55}}><div className="bar"><div className="bar-fill" style={{width:`${wPct}%`,background:ph.color}}/></div></div>
-                <span style={{color:"var(--t1)",fontSize:11,transform:wO?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+                <div style={{minWidth:120}}><div className="bar"><div className="bar-fill" style={{width:`${pct(done,lessons.length)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div></div>
               </div>
-              {wO&&(<div style={{padding:"0 12px 12px"}}>
-                <div style={{display:"grid",gridTemplateColumns:g2,gap:10}}>
-                    <div className="stg">
-                    <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// missions (+5 XP)</div>
-                    {w.missions.map((m,mi)=>{const mk=`m-${w.wk}-${mi}`;const dn=!!s.doneMissions?.[mk];return(<div key={mi} className="topic-row" onClick={()=>markMission(w.wk,mi)}>
-                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
-                      <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{m}</span>
-                    </div>);})}
-                  </div>
-                  <div className="stg">
-                    <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:5}}>// topics (+10 XP)</div>
-                    {w.topics.map((t,ti)=>{const tk=`${w.wk}-${ti}`;const dn=!!s.doneTopics?.[tk];return(<div key={ti} className="topic-row" onClick={()=>markTopic(w.wk,ti)}>
-                      <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
-                      <span style={{color:dn?"var(--t2)":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{t}</span>
-                    </div>);})}
-                  </div>
+            </summary>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:7,marginTop:10}}>
+              {lessons.map(lesson=><a key={lesson.id} href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+                <div className="res-card" style={{marginBottom:0,borderColor:s.doneLessons?.[lesson.id]?"rgba(0,255,136,0.25)":"var(--wb)"}}>
+                  <div style={{color:s.doneLessons?.[lesson.id]?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.index}. {lesson.title}</div>
+                  <div style={{color:"var(--t2)",fontSize:10,marginTop:4}}>{formatDuration(lesson.durationSec)}</div>
                 </div>
-                {QUIZZES[w.quizId]&&(<div style={{marginTop:8,display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {!qd?<button className="btn btn-g" style={{fontSize:11,padding:"5px 12px"}} onClick={()=>startQuiz(w.quizId)}>📝 اختبار الأسبوع {w.quizId.replace("wk","")}</button>
-                      :<span style={{color:"#10b981",fontSize:12,fontFamily:"'Cairo',sans-serif",padding:"5px 0"}}>✓ اجتزت الاختبار — {qd.score}%</span>}
-                  {isCur&&qd&&<button className="btn btn-o" style={{fontSize:11,padding:"5px 12px"}} onClick={advWeek}>🚀 الأسبوع التالي</button>}
-                </div>)}
-                {ph.relatedTracks.filter(tid=>TRACKS[tid]).length>0&&(<div style={{marginTop:10,background:"var(--bo)",borderRadius:6,padding:8}}>
-                  <div style={{color:"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:6}}>// موارد مرتبطة</div>
-                  <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                    {ph.relatedTracks.filter(tid=>TRACKS[tid]).map(tid=>(<button key={tid} onClick={()=>{setResTid(tid);setPage("resources");}}
-                      style={{padding:"4px 10px",borderRadius:5,border:`1px solid ${TRACKS[tid].color}44`,background:`${TRACKS[tid].color}15`,color:TRACKS[tid].color,cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:11}}>
-                      {TRACKS[tid].icon} {TRACKS[tid].name} →
-                    </button>))}
-                  </div>
-                </div>)}
-              </div>)}
-            </div>);
-          })}
-        </div>)}
-      </div>);
-    })}
-  </div>);
+              </a>)}
+            </div>
+          </details>);
+        })}
+      </div>}
+    </div>
+  );
 
-  // ─── MISSIONS ───
-  const Missions=()=>{
-    const wD=curWk;if(!wD)return null;
-    const mD=wD.missions.filter((_,i)=>s.doneMissions?.[`m-${s.currentWeek}-${i}`]).length;
-    const tD=wD.topics.filter((_,i)=>s.doneTopics?.[`${s.currentWeek}-${i}`]).length;
-    const todayAr=getTodayDayAr();
-    const dayPlan=DAY_PLAN(s.currentWeek);
-    const todayPlan=dayPlan.find(d=>d.day===todayAr)||null;
-    const isFriday=todayAr==="الجمعة";
-    // ساعات الأسبوع
-    const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
-    const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
-    const todayHrs=s.studyLog?.[today()]||0;
-    const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
-    // تقرير الأسبوع المحفوظ
-    const savedReport=s.weeklyReports?.[`wk${s.currentWeek}`];
-    // قائمة المراجعة SR
-    const reviewWks=getReviewWeeks(s);
-    const qd=s.quizHistory[wD.quizId];
-    const phPct=Math.round((tD/wD.topics.length)*100);
-    return(<div className="slide">
-      {/* ─ رأس الصفحة ─ */}
-      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
-        <div>
-          <h1 style={{color:"var(--t0)",fontSize:isMobile?18:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>🎯 خطة اليوم والأسبوع</h1>
-          <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} — {wD.title} — {findPhase(s.currentWeek).nameAr}</p>
-        </div>
-        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-          <button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={doCheckIn}>🕌 حضور +15 XP</button>
-          <button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={saveWeekReport}>📋 حفظ التقرير</button>
-        </div>
+  const RoadmapSummary=()=>(
+    <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:12}}>
+        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>خريطة 80 أسبوع كتصنيف ثانوي</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>الأسابيع لم تعد الشاشة الأساسية؛ تظهر هنا كمؤشر عام مرتبط برقم يوم التدريب.</div></div>
+        <button className="btn btn-o" onClick={()=>setRoadmapOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{roadmapOpen?"إخفاء":"عرض الخريطة"}</button>
       </div>
+      {roadmapOpen&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:9}}>
+        {PHASES.map(ph=>{
+          const done=clamp(currentRoadmapWeek-ph.startWeek+1,0,ph.endWeek-ph.startWeek+1);
+          const total=ph.endWeek-ph.startWeek+1;
+          const percent=pct(done,total);
+          const active=currentPhase?.id===ph.id;
+          return(<div key={ph.id} style={{background:active?ph.bg:"var(--bo)",border:`1px solid ${active?ph.color+"66":"var(--wo)"}`,borderRadius:10,padding:12}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}>
+              <span style={{fontSize:22}}>{ph.icon}</span>
+              <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{Math.round(percent)}%</span>
+            </div>
+            <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{ph.nameAr}</div>
+            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:2}}>Weeks {ph.startWeek}-{ph.endWeek} · {ph.monthLabel}</div>
+            <div className="bar" style={{marginTop:8}}><div className="bar-fill" style={{width:`${percent}%`,background:ph.color}}/></div>
+          </div>);
+        })}
+      </div>}
+    </div>
+  );
 
-      {/* ─ بطاقات الحالة ─ */}
-      <div className="stg" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:16}}>
-        {[
-          {label:"المهام",val:`${mD}/${wD.missions.length}`,color:"#00ff88",icon:"🎯"},
-          {label:"المواضيع",val:`${tD}/${wD.topics.length}`,color:"#00d4ff",icon:"📚"},
-          {label:"ساعات اليوم",val:`${todayHrs}h`,color:"#a78bfa",icon:"⏱️"},
-          {label:"ساعات الأسبوع",val:`${weekHrs.toFixed(1)}h`,color:"#f97316",icon:"📅"},
-          {label:"إجمالي الساعات",val:`${totalHrs.toFixed(0)}h`,color:"#fbbf24",icon:"⭐"},
-          {label:"🔥 السلسلة",val:`${s.streak} يوم`,color:"#ef4444",icon:"🔥"},
-        ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click" style={{padding:12}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:16}}>{st.icon}</span>
-            <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
+  const Dashboard=()=>(
+    <div className="slide">
+      <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"20px 24px",marginBottom:14,position:"relative",overflow:"hidden"}}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+          <div style={{minWidth:0}}>
+            <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// Today-first YouTube training plan</div>
+            <h1 style={{color:"var(--t0)",fontSize:isMobile?22:30,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>Todo اليوم</h1>
+            <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif"}}>{fmtDate(selectedDate)} · {restDay?"جمعة راحة":`يوم تدريبي ${trainingDay}`} · البداية {s.trainingStartDate}</div>
           </div>
-          <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
-        </div>))}
-      </div>
-
-      {/* ─ تسجيل ساعات الدراسة ─ */}
-      <div style={{background:"linear-gradient(135deg,rgba(167,139,250,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(167,139,250,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
-        <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>⏱️ سجّل ساعات دراستك اليوم</div>
-        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-          <input type="number" min="0.5" max="16" step="0.5" placeholder="مثال: 2.5" value={studyHoursInput} onChange={e=>setStudyHoursInput(e.target.value)}
-            style={{width:120,flex:"0 0 auto"}} onKeyDown={e=>e.key==="Enter"&&logStudyHours(studyHoursInput)}/>
-          <span style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
-          <button className="btn btn-g" style={{fontSize:12,padding:"8px 18px"}} onClick={()=>logStudyHours(studyHoursInput)}>+ تسجيل</button>
-          {todayHrs>0&&<span style={{color:"#a78bfa",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"rgba(167,139,250,0.1)",padding:"4px 10px",borderRadius:6}}>اليوم: {todayHrs}h ✓</span>}
-        </div>
-        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
-          {weekDates.slice(0,7).reverse().map((d,i)=>{const h=s.studyLog?.[d]||0;const label=["ج","خ","أ","ث","إ","أح","س"][6-i]||"";
-            return(<div key={d} style={{textAlign:"center",flex:1,minWidth:32}}>
-              <div style={{height:40,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"var(--wm)",borderRadius:4,border:`1px solid ${h>0?"rgba(167,139,250,0.3)":"var(--wo)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:3}}>
-                <span style={{color:h>0?"#a78bfa":"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
-              </div>
-              <div style={{color:"var(--t2)",fontSize:9,marginTop:2}}>{label}</div>
-            </div>);
-          })}
-        </div>
-      </div>
-
-      {/* ─ خطة اليوم ─ */}
-      {isFriday?(
-        <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.25)",borderRadius:12,padding:16,marginBottom:16,textAlign:"center"}}>
-          <div style={{fontSize:36,marginBottom:8}}>🕌</div>
-          <div style={{color:"#fde047",fontSize:16,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>يوم الجمعة — يوم الراحة والعبادة</div>
-          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
-            ✦ قراءة سورة الكهف • ✦ صلاة الجمعة • ✦ الإكثار من الصلاة على النبي ﷺ<br/>
-            لا دراسة تقنية اليوم — استرح وجدّد نشاطك للأسبوع القادم
+          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+            <button className="btn btn-o" onClick={()=>setViewOffset(v=>v-1)} style={{fontSize:12,padding:"8px 12px"}}>اليوم السابق</button>
+            <button className="btn btn-g" onClick={goToday} style={{fontSize:12,padding:"8px 12px"}}>اليوم</button>
+            <button className="btn btn-o" onClick={()=>setViewOffset(v=>v+1)} style={{fontSize:12,padding:"8px 12px"}}>اليوم التالي</button>
           </div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:8,marginTop:14}}>
+          {[{label:"تقدم الكل",val:`${overallPct}%`,color:"#00ff88"},{label:"دروس اليوم",val:`${todayDone}/${todayTotal}`,color:"#00d4ff"},{label:"الجلسات",val:"3 × 90m",color:"#a78bfa"},{label:"المستوى",val:lv.ar,color:lv.color}].map((item,i)=><div key={i} className="stat-card" style={{padding:11}}>
+            <div style={{color:item.color,fontSize:16,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{item.val}</div>
+            <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{item.label}</div>
+          </div>)}
+        </div>
+        <div className="bar" style={{height:8,marginTop:12}}><div className="bar-fill" style={{width:`${overallPct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+      </div>
+
+      {restDay?<RestDay/>:dailyPlan.exhausted?(
+        <div className="card" style={{padding:18,marginBottom:14}}>
+          <div style={{color:"#00ff88",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>أكملت كل الدروس المستخرجة</div>
+          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>لا توجد دروس جديدة لهذا اليوم التدريبي. راجع الكتالوج أو أعد تثبيت تاريخ البداية.</div>
         </div>
       ):(
-        <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:6}}>
-            <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
-            {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs} ساعة مقترحة</span>}
-          </div>
-          {todayPlan?(
-            <div style={{display:"flex",flexDirection:"column",gap:7}}>
-              {todayPlan.items.map((item,i)=>{
-                const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
-                return(<div key={i} className="topic-row" style={{background:dn?"rgba(0,255,136,0.04)":"rgba(255,255,255,0.02)",border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--wo)"}`,borderRadius:8,padding:"10px 12px"}}
-                  onClick={()=>item.type==="mission"?markMission(item.wk,item.idx):markTopic(item.wk,item.idx)}>
-                  <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none"}}>{item.text}</span>
-                  </div>
-                  <span style={{fontSize:11,color:item.type==="mission"?"#00ff88":"#00d4ff",background:item.type==="mission"?"rgba(0,255,136,0.08)":"rgba(0,212,255,0.08)",padding:"2px 7px",borderRadius:4,flexShrink:0}}>{item.icon} +{item.xp}</span>
-                </div>);
-              })}
-            </div>
-          ):(
-            <div style={{color:"var(--t3)",textAlign:"center",padding:"20px 0",fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام مخطط لها اليوم</div>
-          )}
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          {dailyPlan.sessions.map(session=><SessionCard key={session.id} session={session}/>)}
         </div>
       )}
 
-      {/* ─ جميع المهام والمواضيع الأسبوعية ─ */}
-      <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
-        <div className="card" style={{padding:14}}>
-          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🎯 مهام الأسبوع <span style={{color:"#00ff88",fontSize:10}}>+5 XP لكل</span></div>
-          <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${Math.round(mD/wD.missions.length*100)}%`,background:"linear-gradient(90deg,#00ff88,#10b981)"}}/></div>
-          {wD.missions.map((m,i)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markMission(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{m}</span>
-          </div>);})}
-        </div>
-        <div className="card" style={{padding:14}}>
-          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📚 مواضيع الأسبوع <span style={{color:"#00d4ff",fontSize:10}}>+10 XP لكل</span></div>
-          <div className="bar" style={{marginBottom:8}}><div className="bar-fill" style={{width:`${phPct}%`,background:"linear-gradient(90deg,#00d4ff,#3b82f6)"}}/></div>
-          {wD.topics.map((t,i)=>{const dn=!!s.doneTopics?.[`${s.currentWeek}-${i}`];return(<div key={i} className="topic-row" onClick={()=>markTopic(s.currentWeek,i)}>
-            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</div>
-            <span style={{color:dn?"var(--t2)":"#cbd5e1",fontSize:12,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",flex:1}}>{t}</span>
-          </div>);})}
-          {QUIZZES[wD.quizId]&&(<div style={{marginTop:10,padding:10,background:qd?"rgba(16,185,129,0.06)":"rgba(0,212,255,0.05)",border:`1px solid ${qd?"rgba(16,185,129,0.3)":"rgba(0,212,255,0.2)"}`,borderRadius:8}}>
-            {!qd?(<><div style={{color:"#00d4ff",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>📝 اختبار الأسبوع متاح!</div>
-              <button className="btn btn-g" style={{fontSize:11,padding:"5px 12px",width:"100%"}} onClick={()=>startQuiz(wD.quizId)}>ابدأ الاختبار</button></>)
-            :(<div style={{color:"#10b981",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>✓ اجتزت الاختبار — {qd.score}% | {qd.score>=80?"✅ ناجح":"📖 يمكن التحسين"}</div>)}
-          </div>)}
-        </div>
-      </div>
-
-      {/* ─ مراجعة Spaced Repetition ─ */}
-      {reviewWks.length>0&&(<div style={{background:"rgba(251,191,36,0.05)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:14,marginBottom:16}}>
-        <div style={{color:"#fbbf24",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🔄 مراجعة مقترحة — Spaced Repetition</div>
-        <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
-        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-          {reviewWks.map(wk=>{const w=findWeek(wk);const ph=findPhase(wk);return w?(
-            <div key={wk} style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:8,padding:"8px 12px",cursor:"pointer"}} onClick={()=>{setExpPhase(ph.id);setExpWeek(`${ph.id}-${wk}`);setPage("program");}}>
-              <div style={{color:"#fbbf24",fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>Week {wk}</div>
-              <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
-            </div>
-          ):null;})}
-        </div>
-      </div>)}
-
-      {/* ─ التقرير الأسبوعي ─ */}
-      {(weekReportOpen||savedReport)&&(<div style={{background:"rgba(0,255,136,0.04)",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:16,marginBottom:16}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-          <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📋 تقرير الأسبوع {s.currentWeek}</div>
-          <button style={{background:"transparent",border:"none",color:"var(--t1)",cursor:"pointer",fontSize:16}} onClick={()=>setWeekReportOpen(false)}>×</button>
-        </div>
-        {(()=>{const r=savedReport||generateWeekReport();if(!r)return null;return(
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:8}}>
-            {[
-              {label:"المرحلة",val:r.phase,color:"#3b82f6",icon:"🏗️"},
-              {label:"الموضوع",val:r.title,color:"var(--t0)",icon:"📖"},
-              {label:"المهام",val:`${r.mDone}/${r.mTotal}`,color:"#00ff88",icon:"🎯"},
-              {label:"المواضيع",val:`${r.tDone}/${r.tTotal}`,color:"#00d4ff",icon:"📚"},
-              {label:"ساعات الدراسة",val:`${r.weekHrs}h`,color:"#a78bfa",icon:"⏱️"},
-              {label:"نتيجة الاختبار",val:r.quizScore!==null?`${r.quizScore}%`:"لم يُجتز",color:r.quizScore>=80?"#10b981":"#f59e0b",icon:"📝"},
-            ].map((st,i)=>(<div key={i} style={{background:"var(--bo)",borderRadius:8,padding:"10px",border:"1px solid rgba(255,255,255,0.06)"}}>
-              <div style={{fontSize:16,marginBottom:4}}>{st.icon}</div>
-              <div style={{color:st.color,fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{st.val}</div>
-              <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{st.label}</div>
-            </div>))}
-          </div>
-        );})()}
-      </div>)}
-
-      {/* ─ زر التقدم للأسبوع التالي ─ */}
-      {qd&&s.currentWeek<80&&(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.3)",borderRadius:12,padding:14,textAlign:"center"}}>
-        <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>✅ أكملت اختبار هذا الأسبوع — جاهز للتقدم!</div>
-        <button className="btn btn-g" style={{fontSize:13,padding:"10px 28px"}} onClick={()=>{saveWeekReport();advWeek();}}>🚀 الأسبوع {s.currentWeek+1} ←</button>
-      </div>)}
-    </div>);};
-
-
-  // ─── QUIZ ───
-  const QuizPage=()=>{
-    if(!quiz.active||!quiz.wkId)return(<div className="slide">
-      <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>📝 الاختبارات الأسبوعية</h1>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:10}}>
-        {Object.entries(QUIZZES).map(([id,q])=>{const dn=s.quizHistory[id];const wn=parseInt(id.replace("wk",""));const ph=findPhase(wn);return(<div key={id} className="card" style={{padding:14,cursor:"pointer"}} onClick={()=>startQuiz(id)}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-            <span style={{fontSize:16}}>{ph?.icon||"📝"}</span>
-            <div style={{flex:1}}>
-              <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{q.title}</div>
-              <div style={{color:"var(--t2)",fontSize:10}}>Week {wn} — {q.qs.length} أسئلة</div>
-            </div>
-            {dn&&<span style={{color:"#10b981",fontSize:10,background:"rgba(16,185,129,0.12)",padding:"2px 7px",borderRadius:4}}>{dn.score}% ✓</span>}
-          </div>
-          <button style={{width:"100%",padding:"6px",borderRadius:6,border:`1px solid ${dn?"#10b981":"rgba(0,255,136,0.3)"}`,background:dn?"rgba(16,185,129,0.08)":"transparent",color:dn?"#10b981":"#00ff88",cursor:"pointer",fontFamily:"'Fira Code',monospace",fontSize:11}}>
-            {dn?"🔄 إعادة الاختبار":"▶ ابدأ الاختبار"}
-          </button>
-        </div>);})}
-      </div>
-    </div>);
-    const q=QUIZZES[quiz.wkId];
-    return(<div className="slide">
-      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <button className="btn btn-o" style={{fontSize:11,padding:"5px 10px"}} onClick={()=>setQuiz({active:false,wkId:null,ans:{},submitted:false,score:0})}>← رجوع</button>
-        <div><h1 style={{color:"var(--t0)",fontSize:18,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{q.title}</h1><p style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{q.qs.length} أسئلة</p></div>
-      </div>
-      {quiz.submitted?(<div>
-        <div style={{background:quiz.score>=80?"rgba(16,185,129,0.08)":"rgba(239,68,68,0.08)",border:`1px solid ${quiz.score>=80?"#10b981":"#ef4444"}`,borderRadius:12,padding:18,marginBottom:18,textAlign:"center"}}>
-          <div style={{fontSize:44,marginBottom:6}}>{quiz.score===100?"🏆":quiz.score>=80?"✅":"📖"}</div>
-          <div style={{color:"var(--t0)",fontSize:26,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{quiz.score}%</div>
-          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{quiz.score===100?"ممتاز — علامة كاملة!":quiz.score>=80?"جيد جداً — تجاوزت الحد!":"تحتاج مزيداً من الدراسة"}</div>
-        </div>
-        {q.qs.map((qst,i)=>{const ans=quiz.ans[i];const ok=ans===qst.a;return(<div key={i} style={{background:"rgba(255,255,255,0.02)",border:`1px solid ${ok?"rgba(16,185,129,0.3)":"rgba(239,68,68,0.3)"}`,borderRadius:8,padding:12,marginBottom:8}}>
-          <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>{ok?"✅":"❌"} {qst.q}</div>
-          <div style={{color:ok?"#6ee7b7":"#f87171",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>إجابتك: {ans!==undefined?qst.os[ans]:"لم تجب"}</div>
-          {!ok&&<div style={{color:"#6ee7b7",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>الصحيح: {qst.os[qst.a]}</div>}
-          <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{qst.exp}</div>
-        </div>);})}
-        <div style={{display:"flex",gap:8}}>
-          <button className="btn btn-o" onClick={()=>setQuiz({active:true,wkId:quiz.wkId,ans:{},submitted:false,score:0})}>🔄 إعادة</button>
-          <button className="btn btn-g" onClick={()=>setQuiz({active:false,wkId:null,ans:{},submitted:false,score:0})}>← الكل</button>
-        </div>
-      </div>):(<div>
-        {q.qs.map((qst,i)=>(<div key={i} style={{background:"var(--bt)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,padding:14,marginBottom:14}}>
-          <div style={{color:"var(--t0)",fontSize:14,fontFamily:"'Cairo',sans-serif",marginBottom:10,fontWeight:600}}>{i+1}. {qst.q}</div>
-          <div style={{display:"grid",gridTemplateColumns:g2,gap:8}}>
-            {qst.os.map((opt,oi)=>(<button key={oi} className={`quiz-opt ${quiz.ans[i]===oi?"sel":""}`} onClick={()=>setQuiz(prev=>({...prev,ans:{...prev.ans,[i]:oi}}))}>
-              {["A","B","C","D"][oi]}. {opt}
-            </button>))}
-          </div>
-        </div>))}
-        <button className="btn btn-g" onClick={submitQuiz} disabled={Object.keys(quiz.ans).length<q.qs.length} style={{opacity:Object.keys(quiz.ans).length<q.qs.length?0.5:1}}>
-          📤 تسليم ({Object.keys(quiz.ans).length}/{q.qs.length})
-        </button>
-      </div>)}
-    </div>);};
-
-  // ─── ACHIEVEMENTS ───
-  const Achievements=()=>{
-    // تحقق من الشهادات المستحقة
-    PHASES.forEach(ph=>{
-      const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
-      const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
-      const quizzesDone=ph.weeks.every(w=>!QUIZZES[w.quizId]||s.quizHistory[w.quizId]);
-      if(pd===pt&&quizzesDone&&!s.certificates?.includes(ph.id))earnCertificate(ph.id);
-    });
-    return(<div className="slide">
-    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🏅 الإنجازات والشهادات</h1>
-    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{s.badges.length}/{BADGES.length} شارة · {s.certificates?.length||0}/5 شهادة</p>
-
-    {/* ─ شهادات المراحل ─ */}
-    <h2 style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎓 شهادات إنهاء المراحل</h2>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:10,marginBottom:20}}>
-      {PHASES.map(ph=>{
-        const earned=s.certificates?.includes(ph.id);
-        const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
-        const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
-        const pct=pt>0?Math.round(pd/pt*100):0;
-        return(<div key={ph.id} style={{background:earned?`linear-gradient(135deg,${ph.color}15,${ph.color}08)`:"var(--bt)",border:`2px solid ${earned?ph.color:"var(--wb)"}`,borderRadius:12,padding:14,position:"relative",overflow:"hidden",cursor:earned?"pointer":"default"}}
-          onClick={()=>earned&&setCertModal(ph)}>
-          {earned&&<div style={{position:"absolute",top:0,right:0,background:`linear-gradient(135deg,${ph.color},${ph.color}88)`,color:"var(--bg4)",fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:"0 12px 0 8px"}}>✓ مكتسبة</div>}
-          <div style={{fontSize:32,marginBottom:8,opacity:earned?1:0.3}}>{ph.icon}</div>
-          <div style={{color:earned?ph.color:"var(--t1)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{ph.nameAr}</div>
-          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:8}}>{ph.monthLabel} · Wk {ph.startWeek}–{ph.endWeek}</div>
-          <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{pd}/{pt} موضوع</span>
-            <span style={{color:earned?ph.color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
-          </div>
-          {earned&&<div style={{color:"#fbbf24",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:6}}>🎓 انقر لعرض الشهادة</div>}
-        </div>);
-      })}
+      <CourseLibrary/>
+      <RoadmapSummary/>
     </div>
-
-    {/* ─ مستوى XP ─ */}
-    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:18,marginBottom:18}}>
-      <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
-        <div style={{textAlign:"center"}}>
-          <div style={{fontSize:44}}>{lv.icon}</div>
-          <div style={{color:lv.color,fontSize:13,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{lv.ar}</div>
-          <div style={{color:"var(--t1)",fontSize:11}}>{lv.en}</div>
-        </div>
-        <div style={{flex:1,minWidth:0}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-            <span style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>Level {lv.lv} → {nlv?.lv||"MAX"}</span>
-            <span style={{color:lv.color,fontSize:12,fontFamily:"'Fira Code',monospace"}}>{s.xp} XP</span>
-          </div>
-          <div className="bar" style={{height:10}}><div className="bar-fill" style={{width:`${lvPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
-          <div style={{color:"var(--t2)",fontSize:11,marginTop:4,fontFamily:"'Cairo',sans-serif"}}>{nlv&&nlv.lv!==lv.lv?`${nlv.min-s.xp} XP للمستوى التالي: ${nlv.ar}`:"وصلت لأعلى مستوى 🏆"}</div>
-        </div>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(90px,1fr))",gap:7,marginTop:14}}>
-        {LEVELS.map(l=>(<div key={l.lv} style={{padding:"7px",borderRadius:7,background:lv.lv>=l.lv?`${l.color}15`:"var(--bo)",border:`1px solid ${lv.lv>=l.lv?l.color+"44":"var(--w5)"}`,textAlign:"center"}}>
-          <div style={{fontSize:18,opacity:lv.lv>=l.lv?1:0.25}}>{l.icon}</div>
-          <div style={{color:lv.lv>=l.lv?l.color:"var(--t3)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginTop:3}}>{l.ar}</div>
-          <div style={{color:"var(--t3)",fontSize:9}}>{l.min} XP</div>
-        </div>))}
-      </div>
-    </div>
-    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🎖️ الشارات</h2>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10}}>
-      {BADGES.map(b=>{const earned=s.badges.includes(b.id);return(<div key={b.id} style={{background:earned?"rgba(0,255,136,0.05)":"var(--bo)",border:`1px solid ${earned?"rgba(0,255,136,0.3)":"var(--wo)"}`,borderRadius:10,padding:12,opacity:earned?1:0.5}}>
-        <div style={{fontSize:28,marginBottom:5}}>{b.icon}</div>
-        <div style={{color:earned?"var(--t0)":"var(--t1)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{b.ar}</div>
-        <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:2}}>{b.desc}</div>
-        <div style={{color:earned?"#00ff88":"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{earned?"✓ مكتسبة":"+"+b.xp+" XP"}</div>
-      </div>);})}
-    </div>
-  </div>);};
-
-  // ─── RESOURCES ───
-  const Resources=()=>(<div className="slide">
-    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📚 مكتبة الموارد الشاملة</h1>
-    <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:12}}>{allRes.length}+ مورد — روابط حقيقية ومتحقق منها من 16 تراك</p>
-    <div className="res-filters" style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-      <select value={resType} onChange={e=>setResType(e.target.value)} style={{flex:"1 1 120px",fontSize:12}}>
-        <option value="all">📋 كل الأنواع</option>
-        <option value="video">▶ Videos</option><option value="lab">⚗ Labs</option>
-        <option value="article">📄 Articles</option><option value="writeup">✍ Writeups</option>
-        <option value="book">📚 Books</option>
-      </select>
-      <select value={resLang} onChange={e=>setResLang(e.target.value)} style={{flex:"1 1 100px",fontSize:12}}>
-        <option value="all">🌐 كل اللغات</option>
-        <option value="ar">🇸🇦 عربي</option><option value="en">🌐 English</option>
-      </select>
-      <select value={resTid} onChange={e=>setResTid(e.target.value)} style={{flex:"1 1 140px",fontSize:12}}>
-        <option value="all">🗺️ كل التراكات</option>
-        {TRACK_ORDER.map(tid=><option key={tid} value={tid}>{TRACKS[tid].icon} {TRACKS[tid].name}</option>)}
-      </select>
-      <span style={{color:"var(--t2)",fontSize:12,fontFamily:"'Fira Code',monospace",display:"flex",alignItems:"center",gap:4}}>{filtRes.length} نتيجة</span>
-      {resTid!=="all"&&<button className="btn btn-o" style={{fontSize:11,padding:"4px 10px"}} onClick={()=>setResTid("all")}>× إزالة الفلتر</button>}
-    </div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:8,marginBottom:14}}>
-      {[{type:"video",label:"Videos",color:"#ef4444"},{type:"lab",label:"Labs",color:"#10b981"},{type:"article",label:"Articles",color:"#f97316"},{type:"writeup",label:"Writeups",color:"#ec4899"},{type:"book",label:"Books",color:"#eab308"}].map(st=>(<div key={st.type} style={{padding:"8px",borderRadius:8,background:`${st.color}12`,border:`1px solid ${st.color}25`,textAlign:"center",cursor:"pointer",transition:"all .2s"}} onClick={()=>setResType(resType===st.type?"all":st.type)}>
-        <div style={{color:st.color,fontSize:15,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{allRes.filter(r=>r.type===st.type).length}</div>
-        <div style={{color:"var(--t1)",fontSize:11}}>{st.label}</div>
-      </div>))}
-    </div>
-    <div style={{display:"flex",flexDirection:"column",gap:7}}>
-      {filtRes.map((r,i)=>(<a key={i} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-        <div className="res-card">
-          <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{color:"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{r.title}</div>
-              <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}>
-                {TRACKS[r.tid]&&<span style={{fontSize:11,color:TRACKS[r.tid].color,fontFamily:"'Fira Code',monospace"}}>{TRACKS[r.tid].icon} {TRACKS[r.tid].name}</span>}
-                <span style={{color:"var(--t3)",fontSize:10}}>{r.ph}</span>
-              </div>
-            </div>
-            <Tag type={r.type} lang={r.lang}/>
-          </div>
-        </div>
-      </a>))}
-    </div>
-  </div>);
-
-  // ─── TODO ───
-  const Todo=()=>(<div className="slide">
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
-      <div><h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>✅ قائمة المهام</h1><p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{doneTd}/{todos.length} مكتمل</p></div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-        {[{id:"all",label:"الكل"},{id:"pending",label:"متبقية"},{id:"done",label:"مكتملة"},{id:"high",label:"⚡ عاجل"}].map(f=>(<button key={f.id} onClick={()=>setTodoFilter(f.id)}
-          style={{padding:"5px 11px",borderRadius:6,border:`1px solid ${todoFilter===f.id?"#00ff88":"var(--wh)"}`,background:todoFilter===f.id?"rgba(0,255,136,0.1)":"transparent",color:todoFilter===f.id?"#00ff88":"var(--t4)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
-          {f.label}
-        </button>))}
-      </div>
-    </div>
-    <div style={{background:"rgba(0,255,136,0.04)",border:"1px solid rgba(0,255,136,0.15)",borderRadius:12,padding:12,marginBottom:14}}>
-      <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:7}}>// إضافة مهمة جديدة</div>
-      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-        <input type="text" placeholder="وصف المهمة..." value={newTask} onChange={e=>setNewTask(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTodo()} style={{flex:"1 1 180px",minWidth:0,direction:"rtl"}}/>
-        <select value={newPri} onChange={e=>setNewPri(e.target.value)} style={{width:105,fontSize:12}}>
-          <option value="high">⚡ عاجل</option><option value="medium">📌 متوسط</option><option value="low">🟢 منخفض</option>
-        </select>
-        <select value={newTrack} onChange={e=>setNewTrack(e.target.value)} style={{width:130,fontSize:12}}>
-          <option value="general">🌐 عام</option>
-          {TRACK_ORDER.map(tid=><option key={tid} value={tid}>{TRACKS[tid].icon} {TRACKS[tid].name}</option>)}
-        </select>
-        <button className="btn btn-g" onClick={addTodo}>+ إضافة</button>
-      </div>
-    </div>
-    {filtTd.length===0?(<div style={{textAlign:"center",padding:"40px 20px",color:"var(--t3)"}}><div style={{fontSize:36,marginBottom:8}}>✅</div><div style={{fontFamily:"'Cairo',sans-serif"}}>لا توجد مهام هنا</div></div>)
-    :filtTd.map(t=>(<div key={t.id} className="todo-item" style={{opacity:t.done?0.6:1}}>
-      <div style={{width:17,height:17,border:`2px solid ${t.done?"#00ff88":"rgba(0,255,136,0.4)"}`,borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,background:t.done?"#00ff88":"transparent"}} onClick={()=>togTodo(t.id)}>
-        {t.done&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}
-      </div>
-      <div style={{flex:1,minWidth:0}}>
-        <div style={{color:t.done?"var(--t2)":"var(--t0)",fontSize:13,fontFamily:"'Cairo',sans-serif",textDecoration:t.done?"line-through":"none",wordBreak:"break-word"}}>{t.text}</div>
-        <div style={{display:"flex",gap:7,marginTop:3,flexWrap:"wrap"}}>
-          <span style={{fontSize:10,color:"var(--t1)",fontFamily:"'Fira Code',monospace"}}>{t.date}</span>
-          {t.track!=="general"&&TRACKS[t.track]&&<span style={{fontSize:10,color:TRACKS[t.track].color}}>{TRACKS[t.track].icon} {TRACKS[t.track].name}</span>}
-        </div>
-      </div>
-      <span style={{padding:"3px 9px",borderRadius:20,fontSize:10,fontFamily:"'Fira Code',monospace",background:PRI_BG[t.priority],color:PRI_COL[t.priority],border:`1px solid ${PRI_COL[t.priority]}40`,flexShrink:0}}>
-        {t.priority==="high"?"⚡ عاجل":t.priority==="medium"?"📌 متوسط":"🟢 منخفض"}
-      </span>
-      <button onClick={()=>delTodo(t.id)} style={{background:"transparent",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:15,padding:"0 3px",flexShrink:0}}>✕</button>
-    </div>))}
-    <div style={{marginTop:14,background:"var(--bt)",borderRadius:10,padding:12,border:"1px solid rgba(255,255,255,0.06)"}}>
-      <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
-        {[{label:"إجمالي",val:todos.length,color:"var(--t4)"},{label:"مكتملة",val:doneTd,color:"#10b981"},{label:"متبقية",val:todos.filter(t=>!t.done).length,color:"#f59e0b"},{label:"عاجلة",val:todos.filter(t=>t.priority==="high"&&!t.done).length,color:"#ef4444"}].map((st,i)=>(<div key={i} style={{textAlign:"center",flex:1,minWidth:60}}>
-          <div style={{color:st.color,fontSize:20,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</div>
-          <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{st.label}</div>
-        </div>))}
-      </div>
-    </div>
-  </div>);
-
-  // ─── ROUTINE ───
-  const Routine=()=>(<div className="slide">
-    <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>🕐 الروتين اليومي المتكامل</h1>
-    <p style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>روتين يومي محكم يجمع بين الجانب الإسلامي والتعلم المنظم — مستوحى من هدي النبي ﷺ</p>
-    <div style={{display:"grid",gridTemplateColumns:g2,gap:10,marginBottom:14}}>
-      <div style={{background:"linear-gradient(135deg,rgba(250,204,21,0.08),rgba(52,211,153,0.04))",border:"1px solid rgba(250,204,21,0.2)",borderRadius:12,padding:12}}>
-        <div style={{color:"#fde047",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:5}}>🕌 يوم الجمعة — مميزات خاصة</div>
-        <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ قراءة سورة الكهف كاملة صباحاً<br/>✦ التبكير إلى صلاة الجمعة<br/>✦ الإكثار من الصلاة على النبي ﷺ<br/>✦ الدعاء في ساعة الإجابة (بعد العصر)<br/>✦ وقت مخفف للتعلم — يوم أسري</div>
-      </div>
-      <div style={{background:"linear-gradient(135deg,rgba(52,211,153,0.1),rgba(250,204,21,0.04))",border:"1px solid rgba(52,211,153,0.2)",borderRadius:12,padding:12}}>
-        <div style={{color:"#34d399",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:5}}>🌙 رمضان المبارك</div>
-        <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>✦ السحور + التعلم قبل الفجر<br/>✦ النوم بعد الفجر → الاستيقاظ الضحى<br/>✦ تخفيف جلسات التعلم أثناء الصيام<br/>✦ الاستثمار في تلاوة القرآن وختمه<br/>✦ التراويح والقيام أولوية</div>
-      </div>
-    </div>
-    <div style={{background:"rgba(52,211,153,0.06)",border:"1px solid rgba(52,211,153,0.2)",borderRadius:10,padding:12,marginBottom:12}}>
-      <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
-        <span style={{fontSize:20}}>🌙</span>
-        <div><div style={{color:"#34d399",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>تذكير إسلامي</div>
-          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7}}>«إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلًا أَنْ يُتْقِنَهُ» — الإتقان في التعلم عبادة. ابدأ كل جلسة بالبسملة.</div>
-        </div>
-      </div>
-    </div>
-    <div style={{display:"flex",gap:5,marginBottom:12,flexWrap:"wrap"}}>
-      {[{id:"all",label:"📋 الكل",c:"var(--t4)"},{id:"prayer",label:"🕌 الصلوات",c:"#fde047"},{id:"quran",label:"📖 القرآن",c:"#6ee7b7"},{id:"islamic",label:"📿 الأذكار",c:"#34d399"},{id:"study",label:"💻 التعلم",c:"#60a5fa"},{id:"health",label:"🏃 الصحة",c:"#4ade80"}].map(f=>(<button key={f.id} onClick={()=>setRoutineFilter(f.id)}
-        style={{padding:"5px 10px",borderRadius:6,border:`1px solid ${routineFilter===f.id?f.c:"var(--wb)"}`,background:routineFilter===f.id?`${f.c}18`:"transparent",color:routineFilter===f.id?f.c:"var(--t1)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:12}}>
-        {f.label}
-      </button>))}
-    </div>
-    <div style={{position:"relative",paddingLeft:14}}>
-      <div style={{position:"absolute",left:18,top:0,bottom:0,width:2,background:"linear-gradient(180deg,#00ff8822,#00d4ff22)",borderRadius:1}}/>
-      {ROUTINE.filter(r=>routineFilter==="all"||r.type===routineFilter).map((r,i)=>(<div key={i} className="routine-row" style={{paddingLeft:30,position:"relative"}}>
-        <div style={{position:"absolute",left:8,top:12,width:18,height:18,borderRadius:"50%",background:R_COL[r.type]||"rgba(148,163,184,0.1)",border:`2px solid ${R_TXT[r.type]||"var(--t1)"}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,zIndex:1}}>{r.icon}</div>
-        <div style={{flex:1,background:R_COL[r.type]||"rgba(0,0,0,0)",padding:"9px 12px",borderRadius:8,border:`1px solid ${R_TXT[r.type]||"var(--t1)"}20`}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
-            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",flexShrink:0}}>{r.time}</span>
-            <span style={{color:R_TXT[r.type]||"var(--t4)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{r.label}</span>
-          </div>
-          <div style={{color:"var(--t1)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.detail}</div>
-        </div>
-      </div>))}
-    </div>
-  </div>);
-
-  // ─── STATS ───
-  const Stats=()=>{
-    const qAvg=Object.values(s.quizHistory).length>0?Math.round(Object.values(s.quizHistory).reduce((a,q)=>a+q.score,0)/Object.values(s.quizHistory).length):0;
-    const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
-    const avgDailyHrs=Object.keys(s.studyLog||{}).length>0?(totalHrs/Object.keys(s.studyLog).length).toFixed(1):0;
-    // آخر 14 يوم من سجل الدراسة
-    const last14=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];}).reverse();
-    const maxHrs=Math.max(1,...last14.map(d=>s.studyLog?.[d]||0));
-    const totalReports=Object.keys(s.weeklyReports||{}).length;
-    const totalCerts=s.certificates?.length||0;
-    return(<div className="slide">
-      <h1 style={{color:"var(--t0)",fontSize:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>📈 الإحصائيات التفصيلية</h1>
-      <p style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:16}}>تحليل شامل لرحلتك التعليمية كمنحة</p>
-
-      {/* ─ بطاقات رئيسية ─ */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10,marginBottom:18}}>
-        {[
-          {label:"XP الكلي",val:s.xp,color:"#fbbf24",icon:"⭐"},
-          {label:"المستوى",val:`${lv.icon} ${lv.ar}`,color:lv.color,icon:"🏆"},
-          {label:"الأسبوع الحالي",val:`${s.currentWeek}/80`,color:"#00ff88",icon:"📅"},
-          {label:"التقدم الكلي",val:`${donePct}%`,color:"#00d4ff",icon:"📊"},
-          {label:"إجمالي ساعات الدراسة",val:`${totalHrs.toFixed(0)}h`,color:"#a78bfa",icon:"⏱️"},
-          {label:"متوسط الدراسة اليومي",val:`${avgDailyHrs}h`,color:"#f97316",icon:"📅"},
-          {label:"السلسلة الحالية",val:`${s.streak} يوم 🔥`,color:"#ef4444",icon:"🔥"},
-          {label:"أطول سلسلة",val:`${s.bestStreak} يوم`,color:"#ef4444",icon:"👑"},
-          {label:"الاختبارات المجتازة",val:Object.keys(s.quizHistory).length,color:"#60a5fa",icon:"📝"},
-          {label:"متوسط الاختبارات",val:`${qAvg}%`,color:"#10b981",icon:"✅"},
-          {label:"الشهادات المكتسبة",val:`${totalCerts}/5`,color:"#fbbf24",icon:"🎓"},
-          {label:"التقارير الأسبوعية",val:totalReports,color:"#00ff88",icon:"📋"},
-        ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click">
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-            <span style={{fontSize:18}}>{st.icon}</span>
-            <span style={{color:st.color,fontSize:16,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
-          </div>
-          <div style={{color:"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:5}}>{st.label}</div>
-        </div>))}
-      </div>
-
-      {/* ─ رسم بياني لساعات الدراسة ─ */}
-      <div style={{background:"rgba(167,139,250,0.05)",border:"1px solid rgba(167,139,250,0.15)",borderRadius:12,padding:14,marginBottom:16}}>
-        <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:12}}>⏱️ ساعات الدراسة — آخر 14 يوم</div>
-        <div style={{display:"flex",gap:4,alignItems:"flex-end",height:70}}>
-          {last14.map((d,i)=>{const h=s.studyLog?.[d]||0;const pct=maxHrs>0?h/maxHrs:0;const isToday=d===today();
-            return(<div key={d} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
-              <div style={{width:"100%",background:isToday?`rgba(0,255,136,${0.15+pct*0.7})`:`rgba(167,139,250,${0.1+pct*0.7})`,borderRadius:"3px 3px 0 0",height:`${Math.max(4,pct*60)}px`,border:`1px solid ${isToday?"rgba(0,255,136,0.4)":"rgba(167,139,250,0.3)"}`,transition:"height .3s"}}/>
-              <div style={{color:"var(--t3)",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</div>
-            </div>);
-          })}
-        </div>
-        <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-          <span style={{color:"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>{last14[0]?.slice(5)}</span>
-          <span style={{color:"var(--t3)",fontSize:9,fontFamily:"'Fira Code',monospace"}}>اليوم ↑</span>
-        </div>
-      </div>
-
-      {/* ─ تقدم المراحل + الاختبارات ─ */}
-      <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:16}}>
-        <div className="card" style={{padding:14}}>
-          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📊 تقدم المراحل الخمس</div>
-          {PHASES.map(ph=>{
-            const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
-            const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
-            const pct=pt>0?Math.round(pd/pt*100):0;
-            const cert=s.certificates?.includes(ph.id);
-            return(<div key={ph.id} style={{marginBottom:10}}>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                <span style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{ph.icon} {ph.nameAr} {cert?"🎓":""}</span>
-                <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
-              </div>
-              <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
-            </div>);
-          })}
-        </div>
-        <div className="card" style={{padding:14}}>
-          <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📝 تاريخ الاختبارات</div>
-          {Object.entries(s.quizHistory).length===0?(<div style={{color:"var(--t3)",fontFamily:"'Cairo',sans-serif",fontSize:12,textAlign:"center",padding:"20px 0"}}>لم تجتز أي اختبار بعد</div>)
-          :Object.entries(s.quizHistory).map(([id,q])=>(<div key={id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid rgba(255,255,255,0.04)"}}>
-            <span style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{QUIZZES[id]?.title||id}</span>
-            <span style={{color:q.score>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace",background:q.score>=80?"rgba(16,185,129,0.1)":"rgba(245,158,11,0.1)",padding:"1px 6px",borderRadius:4}}>{q.score}%</span>
-          </div>))}
-        </div>
-      </div>
-
-      {/* ─ التقارير الأسبوعية المحفوظة ─ */}
-      {Object.keys(s.weeklyReports||{}).length>0&&(<div style={{background:"rgba(0,255,136,0.03)",border:"1px solid rgba(0,255,136,0.12)",borderRadius:12,padding:14,marginBottom:16}}>
-        <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>📋 التقارير الأسبوعية المحفوظة</div>
-        <div style={{display:"flex",flexDirection:"column",gap:6}}>
-          {Object.entries(s.weeklyReports).map(([key,r])=>(
-            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"var(--bo)",borderRadius:8,border:"1px solid rgba(255,255,255,0.06)",flexWrap:"wrap",gap:6}}>
-              <div><div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>{r.phase} — الأسبوع {r.wk}</div>
-                <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{r.title} · {r.date}</div></div>
-              <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-                <span style={{color:"#00ff88",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.mDone}/{r.mTotal} مهام</span>
-                <span style={{color:"#00d4ff",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.tDone}/{r.tTotal} مواضيع</span>
-                <span style={{color:"#a78bfa",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.weekHrs}h</span>
-                {r.quizScore!==null&&<span style={{color:r.quizScore>=80?"#10b981":"#f59e0b",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{r.quizScore}%</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>)}
-
-      {/* ─ تقدم التراكات الـ 16 ─ */}
-      <div style={{background:"var(--bt)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:14}}>
-        <div style={{color:"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🗺️ تقدم التراكات الـ 16</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:8}}>
-          {TRACK_ORDER.map(tid=>{const t=TRACKS[tid];const pct=getTrkPct(tid);return(<div key={tid} style={{padding:"9px",background:"rgba(255,255,255,0.02)",borderRadius:8,border:`1px solid ${t.color}22`}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-              <span style={{fontSize:14}}>{t.icon}</span>
-              <span style={{color:t.color,fontSize:10,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
-            </div>
-            <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginBottom:3}}>{t.name}</div>
-            <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:t.color}}/></div>
-          </div>);})}
-        </div>
-      </div>
-    </div>);};
-
-  const BottomNav=()=>(
-    <nav className="bottom-nav">
-      {NAV_ITEMS.map(item=>(
-        <div key={item.id} className={`bnav-item ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)}>
-          <span>{item.icon}</span>
-          <span>{item.label}</span>
-        </div>
-      ))}
-    </nav>
   );
+
+  if(loading)return(<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"var(--bg)",flexDirection:"column",gap:16}}>
+    <style>{FONTS+CSS}</style><div className="pulse" style={{fontSize:48}}>CP</div>
+    <div style={{color:"#00ff88",fontFamily:"'Fira Code',monospace",fontSize:14}}>جاري التحميل...</div>
+  </div>);
 
   return(<div className="matrix-bg" data-theme={theme} style={{fontFamily:"'Fira Code',monospace",background:"var(--bg)",minHeight:"100vh",color:"var(--t0)"}}>
     <style>{FONTS+CSS}</style>
     {toast&&<div className="xp-toast">{toast}</div>}
-
-    {/* ─── مودال الشهادة ─── */}
-    {certModal&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:9000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setCertModal(null)}>
-      <div style={{background:"linear-gradient(135deg,var(--bg3),var(--bg))",border:`2px solid ${certModal.color}`,borderRadius:20,padding:isMobile?"24px 20px":"40px",maxWidth:520,width:"100%",textAlign:"center",position:"relative",boxShadow:`0 0 60px ${certModal.color}33`}} onClick={e=>e.stopPropagation()}>
-        <div style={{position:"absolute",top:0,left:0,right:0,height:4,background:`linear-gradient(90deg,${certModal.color},${certModal.color}88)`,borderRadius:"20px 20px 0 0"}}/>
-        <div style={{fontSize:10,color:"var(--t1)",fontFamily:"'Fira Code',monospace",marginBottom:12,letterSpacing:3}}>CYBERPATH ACADEMY — CERTIFICATE OF COMPLETION</div>
-        <div style={{fontSize:64,marginBottom:8}}>{certModal.icon}</div>
-        <div style={{color:"var(--t0)",fontSize:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>{certModal.nameAr}</div>
-        <div style={{color:certModal.color,fontSize:14,fontFamily:"'Fira Code',monospace",marginBottom:16}}>{certModal.nameEn}</div>
-        <div style={{background:`${certModal.color}12`,border:`1px solid ${certModal.color}33`,borderRadius:10,padding:"12px 20px",marginBottom:16}}>
-          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
-            {certModal.desc}<br/>
-            <span style={{color:"var(--t1)",fontSize:10}}>الأسابيع {certModal.startWeek}–{certModal.endWeek} · {certModal.monthLabel}</span>
-          </div>
-        </div>
-        <div style={{color:"#fbbf24",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:20}}>🏆 +150 XP · تاريخ الإنجاز: {today()}</div>
-        <div style={{display:"flex",gap:10,justifyContent:"center"}}>
-          <button className="btn btn-g" style={{fontSize:13,padding:"10px 28px"}} onClick={()=>setCertModal(null)}>✓ رائع!</button>
-          <button className="btn btn-o" style={{fontSize:13,padding:"10px 20px"}} onClick={()=>{setPage("achievements");setCertModal(null);}}>🏅 الإنجازات</button>
-        </div>
-      </div>
-    </div>)}
-
     {isMobile&&sideOpen&&<div className="sidebar-overlay" onClick={()=>setSideOpen(false)}/>}
     <Sidebar/>
-    <BottomNav/>
-    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"60px 14px 90px":"26px 26px 40px",maxWidth:isMobile?"100%":1100,transition:"margin-left 0.3s ease"}}>
+    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"60px 14px 24px":"26px 26px 40px",maxWidth:isMobile?"100%":1180,transition:"margin-left 0.3s ease"}}>
       {isMobile&&<div style={{position:"fixed",top:0,left:0,right:0,zIndex:50,background:"var(--bg)",borderBottom:"1px solid var(--sbd15)",display:"flex",alignItems:"center",gap:10,padding:"10px 14px"}}>
         <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
           <span style={{fontSize:16,color:"#050810",fontWeight:900}}>☰</span>
         </div>
-        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath</div>
+        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">Todo اليوم</div>
+        <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"} style={{margin:0}}>{theme==="dark"?"☀":"☾"}</button>
       </div>}
-      {page==="dashboard"&&<Dashboard/>}
-      {page==="program"&&<Program/>}
-      {page==="missions"&&<Missions/>}
-      {page==="quiz"&&<QuizPage/>}
-      {page==="achievements"&&<Achievements/>}
-      {page==="resources"&&<Resources/>}
-      {page==="todo"&&<Todo/>}
-      {page==="routine"&&<Routine/>}
-      {page==="stats"&&<Stats/>}
+      <Dashboard/>
     </main>
   </div>);
 }
