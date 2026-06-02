@@ -3252,9 +3252,7 @@ export default function CyberPath(){
   </div>);
 
   const NAV_ITEMS=[
-    {id:"dashboard",icon:"📊",label:"Dashboard"},
-    {id:"program",icon:"🗺️",label:"البرنامج"},
-    {id:"missions",icon:"🎯",label:"المهام"},
+    {id:"dashboard",icon:"🗺️",label:"الرحلة"},
     {id:"quiz",icon:"📝",label:"اختبارات"},
     {id:"achievements",icon:"🏅",label:"إنجازات"},
     {id:"resources",icon:"📚",label:"موارد"},
@@ -3274,9 +3272,7 @@ export default function CyberPath(){
     </div>
     {sideOpen&&<div style={{fontSize:10,color:"var(--t3)",padding:"4px 6px",fontFamily:"'Fira Code',monospace"}}>NAVIGATION</div>}
     {[
-      {id:"dashboard",icon:"📊",label:"Dashboard"},
-      {id:"program",icon:"🗺️",label:"البرنامج الكامل"},
-      {id:"missions",icon:"🎯",label:"Daily Missions"},
+      {id:"dashboard",icon:"🗺️",label:"الرحلة الكاملة",sub:"Roadmap"},
       {id:"quiz",icon:"📝",label:"الاختبارات"},
       {id:"achievements",icon:"🏅",label:"الإنجازات"},
       {id:"resources",icon:"📚",label:"Resources Hub"},
@@ -3285,7 +3281,7 @@ export default function CyberPath(){
       {id:"stats",icon:"📈",label:"الإحصائيات"},
     ].map(item=>(<div key={item.id} className={`nav ${page===item.id?"on":""}`} onClick={()=>setPage(item.id)} title={item.label} style={{minHeight:44}}>
       <span style={{fontSize:18,flexShrink:0}}>{item.icon}</span>
-      {sideOpen&&<span style={{fontFamily:"'Cairo',sans-serif",fontSize:13}}>{item.label}</span>}
+      {sideOpen&&<span style={{fontFamily:"'Cairo',sans-serif",fontSize:13,display:"flex",flexDirection:"column",lineHeight:1.2}}>{item.label}{item.sub&&<span style={{fontSize:9,color:"var(--t3)",fontFamily:"'Fira Code',monospace",marginTop:1}}>{item.sub}</span>}</span>}
     </div>))}
     {sideOpen&&(<div style={{marginTop:"auto",padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
@@ -3302,35 +3298,82 @@ export default function CyberPath(){
 
   // ─── DASHBOARD ───
   const Dashboard=()=>(<div className="slide">
-    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"24px 28px",marginBottom:20,position:"relative",overflow:"hidden"}}>
+    <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"20px 24px",marginBottom:16,position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:-20,right:-20,width:200,height:200,background:"radial-gradient(circle,rgba(0,255,136,0.08),transparent 70%)",pointerEvents:"none"}}/>
       <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مرحباً في CyberPath Academy</div>
-      <h1 style={{color:"var(--t0)",fontSize:isMobile?18:22,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
-      <p style={{color:"var(--t4)",fontSize:isMobile?12:13,fontFamily:"'Cairo',sans-serif",marginBottom:14}}>برنامج 24 شهراً | 80 أسبوع | 5 مراحل | 16 Track + موارد حقيقية ومتحقق منها</p>
-      <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-        <button className="btn btn-g" onClick={()=>setPage("program")}>🗺️ البرنامج الكامل</button>
-        <button className="btn btn-o" onClick={()=>setPage("missions")}>🎯 مهام اليوم</button>
-        <button className="btn btn-o" onClick={doCheckIn}>🕌 تسجيل الحضور</button>
+      <h1 style={{color:"var(--t0)",fontSize:isMobile?17:21,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>طريقك للاحتراف في الأمن السيبراني 🛡️</h1>
+      <p style={{color:"var(--t4)",fontSize:isMobile?11:12,fontFamily:"'Cairo',sans-serif",marginBottom:12}}>برنامج 24 شهراً · 80 أسبوع · 5 مراحل · {donePct}% مكتمل</p>
+      <div className="bar" style={{height:8,marginBottom:6}}><div className="bar-fill" style={{width:`${donePct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+        <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{s.totalDone}/{totalT} موضوع · Wk {s.currentWeek}/80</span>
+        <div style={{display:"flex",gap:6}}>
+          <button className="btn btn-g" style={{fontSize:11,padding:"6px 12px"}} onClick={doCheckIn}>🕌 حضور</button>
+          {curWk&&QUIZZES[curWk.quizId]&&!s.quizHistory[curWk.quizId]&&(<button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={()=>startQuiz(curWk.quizId)}>📝 اختبار الأسبوع</button>)}
+          {curWk&&s.quizHistory[curWk.quizId]&&(<button className="btn btn-o" style={{fontSize:11,padding:"6px 12px"}} onClick={advWeek}>🚀 التالي</button>)}
+        </div>
       </div>
     </div>
-    <div className="stg" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))",gap:8,marginBottom:20}}>
+    <div className="stg" style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(auto-fill,minmax(110px,1fr))",gap:6,marginBottom:16}}>
       {[
-        {label:"تقدم البرنامج",val:`${donePct}%`,icon:"📊",color:"#00ff88",sub:`${s.totalDone}/${totalT} موضوع`},
-        {label:"المستوى",val:lv.icon,icon:"🏆",color:lv.color,sub:lv.ar},
-        {label:"🔥 السلسلة",val:`${s.streak} يوم`,icon:"🔥",color:"#f97316",sub:`الأفضل: ${s.bestStreak}`},
-        {label:"XP الكلي",val:s.xp,icon:"⭐",color:"#fbbf24",sub:`${nlv.lv>lv.lv?nlv.min-s.xp:0} XP للتالي`},
-        {label:"الإنجازات",val:`${s.badges.length}/${BADGES.length}`,icon:"🏅",color:"#a78bfa",sub:"شارة"},
-        {label:"الاختبارات",val:Object.keys(s.quizHistory).length,icon:"📝",color:"#00d4ff",sub:`من ${Object.keys(QUIZZES).length}`},
-      ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click">
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          <span style={{fontSize:18}}>{st.icon}</span>
-          <span style={{color:st.color,fontSize:18,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
+        {label:"المستوى",val:lv.icon,sub:lv.ar,color:lv.color,icon:"🏆"},
+        {label:"XP",val:s.xp,sub:`+${nlv.lv>lv.lv?(nlv.min-s.xp):0} للتالي`,color:"#fbbf24",icon:"⭐"},
+        {label:"🔥 سلسلة",val:s.streak,sub:`الأفضل ${s.bestStreak}`,color:"#f97316",icon:"🔥"},
+        {label:"إنجازات",val:`${s.badges.length}/${BADGES.length}`,sub:"شارة",color:"#a78bfa",icon:"🏅"},
+        {label:"اختبارات",val:Object.keys(s.quizHistory).length,sub:`من ${Object.keys(QUIZZES).length}`,color:"#00d4ff",icon:"📝"},
+      ].map((st,i)=>(<div key={i} className="stat-card hov-up scale-click" style={{padding:10}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:14}}>{st.icon}</span>
+          <span style={{color:st.color,fontSize:15,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{st.val}</span>
         </div>
-        <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{st.label}</div>
-        <div style={{color:"var(--t2)",fontSize:11,marginTop:2,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
+        <div style={{color:"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{st.label}</div>
+        <div style={{color:"var(--t2)",fontSize:10,marginTop:1,fontFamily:"'Cairo',sans-serif"}}>{st.sub}</div>
       </div>))}
     </div>
-    {/* ─ بطاقة خطة اليوم الرئيسية ─ */}
+
+    {/* ─ بطاقة الأسبوع الحالي: المواضيع + المهام + الاختبار + الموارد ─ */}
+    {curWk&&(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.25)",borderRadius:14,padding:isMobile?12:16,marginBottom:16}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
+        <div>
+          <div style={{color:curPh.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{curPh.icon} {curPh.nameAr} · Wk {s.currentWeek}</div>
+          <div style={{color:"var(--t0)",fontSize:isMobile?14:16,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{curWk.title}</div>
+        </div>
+        <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+          {(()=>{const t=curWk.topics.filter((_,i)=>s.doneTopics?.[`${s.currentWeek}-${i}`]).length;const m=curWk.missions.filter((_,i)=>s.doneMissions?.[`m-${s.currentWeek}-${i}`]).length;const pct=Math.round(((t+m)/(curWk.topics.length+curWk.missions.length))*100);return(
+            <span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>✓ {t}/{curWk.topics.length} topics · {m}/{curWk.missions.length} missions · {pct}%</span>
+          );})()}
+        </div>
+      </div>
+      <div className="stg" style={{display:"grid",gridTemplateColumns:g2,gap:8,marginBottom:curPh.relatedTracks?.length?10:0}}>
+        <div>
+          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مهام (+5 XP)</div>
+          {curWk.missions.map((m,mi)=>{const dn=!!s.doneMissions?.[`m-${s.currentWeek}-${mi}`];return(<div key={mi} className="topic-row" onClick={()=>markMission(s.currentWeek,mi)}>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"var(--t2)":"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",lineHeight:1.3}}>{m}</span>
+          </div>);})}
+        </div>
+        <div>
+          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// مواضيع (+10 XP)</div>
+          {curWk.topics.slice(0,8).map((t,ti)=>{const dn=!!s.doneTopics?.[`${s.currentWeek}-${ti}`];return(<div key={ti} className="topic-row" onClick={()=>markTopic(s.currentWeek,ti)}>
+            <div className={`chk ${dn?"on":""}`}>{dn&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</div>
+            <span style={{color:dn?"var(--t2)":"var(--t5)",fontSize:11,fontFamily:"'Cairo',sans-serif",textDecoration:dn?"line-through":"none",lineHeight:1.3}}>{t}</span>
+          </div>);})}
+          {curWk.topics.length>8&&(<div style={{color:"var(--t1)",fontSize:10,textAlign:"center",fontFamily:"'Cairo',sans-serif",padding:"4px"}}>+{curWk.topics.length-8} موضوع آخر</div>)}
+        </div>
+      </div>
+      <div style={{display:"flex",gap:6,marginTop:10,flexWrap:"wrap",alignItems:"center"}}>
+        {QUIZZES[curWk.quizId]&&(!s.quizHistory[curWk.quizId]?<button className="btn btn-g" style={{fontSize:11,padding:"5px 12px"}} onClick={()=>startQuiz(curWk.quizId)}>📝 ابدأ الاختبار</button>
+          :<span style={{color:"#10b981",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>✓ اختبار {s.quizHistory[curWk.quizId].score}%</span>)}
+        {curPh.relatedTracks&&curPh.relatedTracks.filter(tid=>TRACKS[tid]).length>0&&(<>
+          <span style={{color:"var(--t3)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>// مسارات:</span>
+          {curPh.relatedTracks.filter(tid=>TRACKS[tid]).slice(0,3).map(tid=>(<button key={tid} onClick={()=>{setResTid(tid);setPage("resources");}}
+            style={{padding:"3px 8px",borderRadius:5,border:`1px solid ${TRACKS[tid].color}44`,background:`${TRACKS[tid].color}15`,color:TRACKS[tid].color,cursor:"pointer",fontFamily:"'Cairo',sans-serif",fontSize:10}}>
+            {TRACKS[tid].icon} {TRACKS[tid].name}
+          </button>))}
+        </>)}
+      </div>
+    </div>)}
+
+    {/* ─ اليوم: ساعات دراسة + خطة اليوم + مراجعة ─ */}
     {(()=>{
       const todayAr=getTodayDayAr();
       const isFriday=todayAr==="الجمعة";
@@ -3339,90 +3382,137 @@ export default function CyberPath(){
       const todayHrs=s.studyLog?.[today()]||0;
       const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().split("T")[0];});
       const weekHrs=weekDates.reduce((a,d)=>a+(s.studyLog?.[d]||0),0);
-      return(<div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.25)",borderRadius:14,padding:isMobile?"14px":"18px",marginBottom:18}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:8}}>
-          <div>
-            <div style={{color:"#00ff88",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
-            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>الأسبوع {s.currentWeek} · {curWk?.title}</div>
-          </div>
-          <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-            {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs}h مقترحة</span>}
-            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"var(--bt)",color:todayHrs>0?"#a78bfa":"var(--t3)",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>✓ {todayHrs}h مسجلة</span>
-            <span style={{background:"rgba(249,115,22,0.1)",color:"#f97316",fontSize:11,padding:"3px 10px",borderRadius:6,fontFamily:"'Fira Code',monospace"}}>📅 {weekHrs.toFixed(1)}h أسبوعياً</span>
+      const totalHrs=Object.values(s.studyLog||{}).reduce((a,h)=>a+h,0);
+      const reviewWks=getReviewWeeks(s);
+      return(<>
+      {/* ─ تسجيل ساعات الدراسة ─ */}
+      <div style={{background:"linear-gradient(135deg,rgba(167,139,250,0.07),rgba(0,212,255,0.04))",border:"1px solid rgba(167,139,250,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
+          <div style={{color:"#a78bfa",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>⏱️ ساعات الدراسة</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            <span style={{background:todayHrs>0?"rgba(167,139,250,0.15)":"var(--bt)",color:todayHrs>0?"#a78bfa":"var(--t3)",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>اليوم {todayHrs}h</span>
+            <span style={{background:"rgba(249,115,22,0.1)",color:"#f97316",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>الأسبوع {weekHrs.toFixed(1)}h</span>
+            <span style={{background:"rgba(251,191,36,0.1)",color:"#fbbf24",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>الإجمالي {totalHrs.toFixed(0)}h</span>
           </div>
         </div>
+        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:10}}>
+          <input type="number" min="0.5" max="16" step="0.5" placeholder="مثال: 2.5" value={studyHoursInput} onChange={e=>setStudyHoursInput(e.target.value)}
+            style={{width:100,flex:"0 0 auto",fontSize:12,padding:"7px 10px"}} onKeyDown={e=>e.key==="Enter"&&logStudyHours(studyHoursInput)}/>
+          <span style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>ساعة</span>
+          <button className="btn btn-g" style={{fontSize:11,padding:"6px 14px"}} onClick={()=>logStudyHours(studyHoursInput)}>+ تسجيل</button>
+        </div>
+        <div style={{display:"flex",gap:4}}>
+          {weekDates.slice(0,7).reverse().map((d,i)=>{const h=s.studyLog?.[d]||0;const label=["ج","خ","أ","ث","إ","أح","س"][6-i]||"";const isToday=d===today();
+            return(<div key={d} style={{textAlign:"center",flex:1,minWidth:28}}>
+              <div style={{height:36,background:h>0?`rgba(167,139,250,${Math.min(0.8,h*0.15)})`:"var(--wm)",borderRadius:4,border:`1px solid ${isToday?"rgba(0,255,136,0.5)":h>0?"rgba(167,139,250,0.3)":"var(--wo)"}`,display:"flex",alignItems:"flex-end",justifyContent:"center",paddingBottom:2}}>
+                <span style={{color:h>0?"#a78bfa":"var(--t3)",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{h>0?h:""}</span>
+              </div>
+              <div style={{color:isToday?"#00ff88":"var(--t2)",fontSize:8,marginTop:1,fontWeight:isToday?700:400}}>{label}</div>
+            </div>);
+          })}
+        </div>
+      </div>
+
+      {/* ─ خطة اليوم ─ */}
+      <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,212,255,0.03))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6}}>
+          <div style={{color:"#00ff88",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>📅 خطة اليوم — {todayAr}</div>
+          {todayPlan&&<span style={{background:"rgba(0,255,136,0.1)",color:"#00ff88",fontSize:10,padding:"3px 8px",borderRadius:5,fontFamily:"'Fira Code',monospace"}}>⏱ {todayPlan.hrs}h مقترحة</span>}
+        </div>
         {isFriday?(
-          <div style={{textAlign:"center",padding:"12px 0",color:"#fde047",fontSize:13,fontFamily:"'Cairo',sans-serif"}}>🕌 يوم الجمعة — يوم الراحة والعبادة · سورة الكهف · صلاة الجمعة</div>
+          <div style={{textAlign:"center",padding:"10px 0",color:"#fde047",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>
+            🕌 يوم الجمعة — يوم الراحة والعبادة<br/>
+            <span style={{color:"var(--t3)",fontSize:11}}>سورة الكهف • صلاة الجمعة • الإكثار من الصلاة على النبي ﷺ</span>
+          </div>
         ):todayPlan?(
-          <div style={{display:"flex",flexDirection:"column",gap:6}}>
-            {todayPlan.items.slice(0,4).map((item,i)=>{
+          <div style={{display:"flex",flexDirection:"column",gap:5}}>
+            {todayPlan.items.map((item,i)=>{
               const dn=item.type==="mission"?!!s.doneMissions?.[`m-${item.wk}-${item.idx}`]:!!s.doneTopics?.[`${item.wk}-${item.idx}`];
-              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",background:dn?"rgba(0,255,136,0.04)":"var(--bo)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--w5)"}`,cursor:"pointer"}}
-                onClick={()=>{setPage("missions");}}>
-                <div style={{width:16,height:16,borderRadius:4,border:`1.5px solid ${dn?"#00ff88":"rgba(0,255,136,0.3)"}`,background:dn?"#00ff88":"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  {dn&&<span style={{color:"var(--bg4)",fontSize:8,fontWeight:900}}>✓</span>}
-                </div>
-                <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
+              return(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",background:dn?"rgba(0,255,136,0.04)":"var(--bo)",borderRadius:8,border:`1px solid ${dn?"rgba(0,255,136,0.2)":"var(--w5)"}`,cursor:"pointer"}}
+                onClick={()=>item.type==="mission"?markMission(item.wk,item.idx):markTopic(item.wk,item.idx)}>
+                <div className={`chk ${dn?"on":""}`} style={{flexShrink:0}}>{dn&&<span style={{color:"var(--bg4)",fontSize:8,fontWeight:900}}>✓</span>}</div>
+                <span style={{color:dn?"var(--t2)":"var(--t0)",fontSize:11,fontFamily:"'Cairo',sans-serif",flex:1,textDecoration:dn?"line-through":"none"}}>{item.icon} {item.text}</span>
                 <span style={{color:item.type==="mission"?"#00ff88":"#00d4ff",fontSize:10,flexShrink:0}}>+{item.xp} XP</span>
               </div>);
             })}
-            {todayPlan.items.length>4&&(<div style={{color:"var(--t2)",fontSize:11,textAlign:"center",fontFamily:"'Cairo',sans-serif",cursor:"pointer",padding:"5px"}} onClick={()=>setPage("missions")}>+ {todayPlan.items.length-4} مهام أخرى ← اعرض الكل</div>)}
           </div>
         ):(
-          <div style={{color:"var(--t3)",textAlign:"center",padding:"12px 0",fontFamily:"'Cairo',sans-serif",fontSize:12}}>لا توجد مهام مخطط لهذا اليوم</div>
+          <div style={{color:"var(--t3)",textAlign:"center",padding:"10px 0",fontFamily:"'Cairo',sans-serif",fontSize:11}}>لا توجد مهام مخطط لها اليوم</div>
         )}
-        <div style={{display:"flex",gap:8,marginTop:12,flexWrap:"wrap"}}>
-          <button className="btn btn-g" style={{fontSize:11,padding:"6px 14px",flex:1}} onClick={()=>setPage("missions")}>🎯 خطة الأسبوع الكاملة</button>
-          <button className="btn btn-o" style={{fontSize:11,padding:"6px 14px"}} onClick={doCheckIn}>🕌 تسجيل الحضور</button>
+      </div>
+
+      {/* ─ مراجعة Spaced Repetition ─ */}
+      {reviewWks.length>0&&(<div style={{background:"rgba(251,191,36,0.05)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:isMobile?10:14,marginBottom:12}}>
+        <div style={{color:"#fbbf24",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:6}}>🔄 مراجعة مقترحة — Spaced Repetition</div>
+        <p style={{color:"var(--t3)",fontSize:10,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>هذه الأسابيع تحتاج مراجعة للترسيخ في الذاكرة طويلة الأمد</p>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {reviewWks.map(wk=>{const w=findWeek(wk);const ph=findPhase(wk);return w?(
+            <div key={wk} style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:8,padding:"6px 10px",cursor:"pointer"}} onClick={()=>{setExpPhase(ph.id);setPage("program");}}>
+              <div style={{color:"#fbbf24",fontSize:11,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>Week {wk}</div>
+              <div style={{color:"var(--t4)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{w.title}</div>
+            </div>
+          ):null;})}
         </div>
-      </div>);
+      </div>)}
+      </>);
     })()}
 
-    <div style={{display:"grid",gridTemplateColumns:g2,gap:14,marginBottom:20}}>
-      <div className="card" style={{padding:14}}>
-        <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>📍 الأسبوع الحالي — Week {s.currentWeek}</div>
-        {curWk&&(<>
-          <div style={{color:curPh.color,fontSize:12,fontFamily:"'Fira Code',monospace",marginBottom:6}}>{curPh.icon} {curPh.nameAr}</div>
-          <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>{curWk.title}</div>
-          <div className="bar"><div className="bar-fill" style={{width:`${donePct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
-          <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
-            <button className="btn btn-o" style={{fontSize:11,padding:"5px 10px"}} onClick={()=>setPage("missions")}>🎯 المهام</button>
-            {QUIZZES[curWk.quizId]&&!s.quizHistory[curWk.quizId]&&(<button className="btn btn-g" style={{fontSize:11,padding:"5px 10px"}} onClick={()=>startQuiz(curWk.quizId)}>📝 اختبار</button>)}
-            {s.quizHistory[curWk.quizId]&&(<button className="btn btn-g" style={{fontSize:11,padding:"5px 10px"}} onClick={advWeek}>🚀 الأسبوع التالي</button>)}
-          </div>
-        </>)}
-      </div>
-      <div className="card" style={{padding:14}}>
-        <div style={{color:"var(--t0)",fontSize:14,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🕌 أوقات الصلاة</div>
-        {ROUTINE.filter(r=>r.type==="prayer").slice(0,5).map((r,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 8px",borderRadius:7,background:"rgba(250,204,21,0.06)",border:"1px solid rgba(250,204,21,0.1)",marginBottom:5}}>
-          <span style={{fontSize:13}}>{r.icon}</span>
-          <span style={{color:"#fde047",fontSize:12,fontFamily:"'Cairo',sans-serif",flex:1}}>{r.label}</span>
-          <span style={{color:"#78716c",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{r.time}</span>
-        </div>))}
-      </div>
-    </div>
-    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>🚀 المراحل الخمس</h2>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:10}}>
+    {/* ─ خريطة الـ Roadmap: كل المراحل مع أسابيعها ─ */}
+    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🗺️ خريطة الرحلة</h2>
+    <div className="stg" style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
       {PHASES.map(ph=>{
         const pt=ph.weeks.reduce((a,w)=>a+w.topics.length,0);
         const pd=ph.weeks.reduce((a,w)=>a+w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length,0);
         const pct=pt>0?Math.round(pd/pt*100):0;
-        return(<div key={ph.id} className="card" style={{padding:14,cursor:"pointer",borderColor:ph.id===curPh.id?"rgba(0,255,136,0.4)":""}} onClick={()=>{setPage("program");setExpPhase(ph.id);}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-            <span style={{fontSize:22}}>{ph.icon}</span>
-            <div>
-              <div style={{color:"var(--t0)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr}</div>
-              <div style={{color:"var(--t2)",fontSize:10}}>{ph.monthLabel}</div>
+        const isCur=ph.id===curPh.id;
+        const isComplete=pct===100;
+        return(<div key={ph.id} className="card" style={{padding:isMobile?10:14,borderColor:isCur?"rgba(0,255,136,0.4)":isComplete?ph.color+"44":"var(--wb)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
+            <span style={{fontSize:20}}>{ph.icon}</span>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                <span style={{color:"var(--t0)",fontSize:13,fontWeight:600,fontFamily:"'Cairo',sans-serif"}}>{ph.nameAr}</span>
+                {isCur&&<span style={{fontSize:9,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"1px 5px",borderRadius:3}}>● نشط</span>}
+                {isComplete&&<span style={{fontSize:9,color:ph.color,background:`${ph.color}15`,padding:"1px 5px",borderRadius:3}}>✓ مكتمل</span>}
+              </div>
+              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{ph.monthLabel} · {ph.startWeek}-{ph.endWeek} · +{ph.phaseXP} XP</div>
             </div>
-            {ph.id===curPh.id&&<span style={{marginLeft:"auto",fontSize:10,color:"#00ff88",background:"rgba(0,255,136,0.12)",padding:"2px 7px",borderRadius:4}}>● نشط</span>}
+            <div style={{minWidth:60,textAlign:"left"}}>
+              <div className="bar" style={{height:5}}><div className="bar-fill" style={{width:`${pct}%`,background:ph.color}}/></div>
+              <div style={{color:ph.color,fontSize:10,fontFamily:"'Fira Code',monospace",textAlign:"right",marginTop:2}}>{pct}%</div>
+            </div>
           </div>
-          <div className="bar"><div className="bar-fill" style={{width:`${pct}%`,background:`linear-gradient(90deg,${ph.color},${ph.color}88)`}}/></div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-            <span style={{color:"var(--t1)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>{ph.desc.substring(0,35)}…</span>
-            <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct}%</span>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(28px,1fr))",gap:3,marginTop:6}}>
+            {ph.weeks.map(w=>{
+              const wd=w.topics.filter((_,i)=>s.doneTopics?.[`${w.wk}-${i}`]).length;
+              const wPct=Math.round(wd/w.topics.length*100);
+              const isCurW=w.wk===s.currentWeek;
+              const isDoneW=wPct===100;
+              return(<div key={w.wk} onClick={()=>{setExpPhase(ph.id);setPage("program");}} title={`Wk ${w.wk} · ${w.title} · ${wPct}%`}
+                style={{aspectRatio:"1",borderRadius:4,background:isDoneW?`${ph.color}`:wPct>0?`${ph.color}55`:"var(--bo)",border:`1.5px solid ${isCurW?"#00ff88":isDoneW?ph.color:"var(--w5)"}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .15s"}}
+                onMouseEnter={e=>e.currentTarget.style.transform="scale(1.2)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+                {isCurW&&<span style={{color:"#00ff88",fontSize:8,fontWeight:900}}>●</span>}
+                {isDoneW&&!isCurW&&<span style={{color:"#04080f",fontSize:10,fontWeight:900}}>✓</span>}
+                {wPct>0&&wPct<100&&!isCurW&&<span style={{color:"#fff",fontSize:8,fontFamily:"'Fira Code',monospace"}}>{wPct}</span>}
+              </div>);
+            })}
           </div>
+          <div style={{color:"var(--t4)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{ph.desc}</div>
         </div>);
       })}
+    </div>
+
+    {/* ─ أوقات الصلاة والروتين ─ */}
+    <h2 style={{color:"var(--t0)",fontSize:15,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>🕌 الروتين اليومي</h2>
+    <div className="card" style={{padding:isMobile?10:14,marginBottom:16}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:6}}>
+        {ROUTINE.filter(r=>r.type==="prayer").map((r,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 8px",borderRadius:6,background:"rgba(250,204,21,0.06)",border:"1px solid rgba(250,204,21,0.1)"}}>
+          <span style={{fontSize:12}}>{r.icon}</span>
+          <span style={{color:"#fde047",fontSize:11,fontFamily:"'Cairo',sans-serif",flex:1}}>{r.label}</span>
+          <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{r.time}</span>
+        </div>))}
+      </div>
+      <button className="btn btn-o" style={{fontSize:11,padding:"5px 12px",marginTop:8,width:"100%"}} onClick={()=>setPage("routine")}>📅 عرض الروتين الكامل ←</button>
     </div>
   </div>);
 
