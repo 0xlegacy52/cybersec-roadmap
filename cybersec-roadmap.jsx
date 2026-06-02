@@ -21160,11 +21160,12 @@ function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,align
 //  MAIN
 // ─────────────────────────────────────────────
 export default function CyberPath(){
+  const initialMobile=typeof window!=="undefined"&&window.innerWidth<768;
   const [s,setS]=useState(D0);
   const [toast,setToast]=useState(null);
   const [loading,setLoading]=useState(true);
-  const [sideOpen,setSideOpen]=useState(true);
-  const [isMobile,setIsMobile]=useState(()=>typeof window!=="undefined"&&window.innerWidth<768);
+  const [sideOpen,setSideOpen]=useState(()=>!initialMobile);
+  const [isMobile,setIsMobile]=useState(()=>initialMobile);
   const [viewOffset,setViewOffset]=useState(0);
   const [courseOpen,setCourseOpen]=useState(false);
   const [openTrackId,setOpenTrackId]=useState(null);
@@ -21213,6 +21214,7 @@ export default function CyberPath(){
     setLoading(false);
   },[saveState]);
   useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
+  useEffect(()=>{if(isMobile)setSideOpen(false);},[isMobile]);
   useEffect(()=>{const id=setInterval(()=>setTimerTick(t=>t+1),1000);return()=>clearInterval(id);},[]);
 
   const selectedDate=addDays(new Date(),viewOffset);
@@ -21385,7 +21387,7 @@ export default function CyberPath(){
 
   const InlineVideoPanel=({lesson,compact=false})=>{
     if(!lesson)return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:14,color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>اختر درسًا لعرض الفيديو والملاحظات.</div>);
-    const course=COURSE_BY_ID[lesson.courseId],embed=getLessonEmbedUrl(lesson),note=s.lessonNotes?.[lesson.id]||"",done=!!s.doneLessons?.[lesson.id];
+    const course=COURSE_BY_ID[lesson.courseId],embed=getLessonEmbedUrl(lesson),note=s.lessonNotes?.[lesson.id]||"",done=!!s.doneLessons?.[lesson.id],showEmbed=activeVideoLessonId===lesson.id;
     return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:compact?10:12}}>
       <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",flexWrap:"wrap",marginBottom:10}}>
         <div style={{minWidth:0}}>
@@ -21393,12 +21395,15 @@ export default function CyberPath(){
           <div style={{color:"var(--t0)",fontSize:compact?13:15,fontWeight:900,fontFamily:"'Cairo',sans-serif",lineHeight:1.6,overflowWrap:"anywhere"}}>{lesson.title}</div>
         </div>
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {embed&&<button className="btn btn-o" onClick={()=>setActiveVideoLessonId(showEmbed?null:lesson.id)} style={{fontSize:11,padding:"7px 10px"}}>{showEmbed?"إخفاء الفيديو":"مشاهدة داخل التطبيق"}</button>}
           <button className="btn btn-o" onClick={()=>toggleLesson(lesson)} style={{fontSize:11,padding:"7px 10px"}}>{done?"إلغاء الإنجاز":"إنهاء الدرس"}</button>
           <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 10px"}}>فتح YouTube</a>
         </div>
       </div>
-      {embed?(<div style={{aspectRatio:"16 / 9",width:"100%",borderRadius:10,overflow:"hidden",border:"1px solid var(--wo)",background:"#000",marginBottom:10}}>
-        <iframe title={lesson.title} src={embed} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen style={{width:"100%",height:"100%",border:0}}/>
+      {embed&&showEmbed?(<div style={{aspectRatio:"16 / 9",width:"100%",borderRadius:10,overflow:"hidden",border:"1px solid var(--wo)",background:"#000",marginBottom:10}}>
+        <iframe title={lesson.title} src={embed} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{width:"100%",height:"100%",border:0}}/>
+      </div>):embed?(<div style={{background:"var(--w3)",border:"1px solid var(--wo)",borderRadius:10,padding:14,color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7,marginBottom:10}}>
+        الفيديو جاهز داخل التطبيق بدون تحميل تلقائي. استخدم زر “مشاهدة داخل التطبيق” أو افتحه مباشرة في YouTube.
       </div>):(<div style={{background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.24)",borderRadius:8,padding:10,color:"#f87171",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>تعذر استخراج embed لهذا الفيديو، استخدم زر YouTube.</div>)}
       <textarea value={note} onChange={e=>saveLessonNote(lesson.id,e.target.value)} placeholder="ملاحظات الدرس، نقاط صعبة، أسئلة للمراجعة..." style={{width:"100%",minHeight:compact?64:86,resize:"vertical",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--w3)",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}/>
     </div>);

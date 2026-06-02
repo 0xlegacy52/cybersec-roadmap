@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true
+      },
       includeAssets: ['icon-192.svg', 'icon-512.svg'],
       manifest: {
         name: 'CyberPath Academy',
