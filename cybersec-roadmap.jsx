@@ -20994,6 +20994,391 @@ const RESOURCE_INDEX=TRACK_ORDER.flatMap(tid=>{
   if(!track)return[];
   return track.phases.flatMap(ph=>ph.resources.map(r=>({...r,tid,phase:ph.name,trackName:track.name,trackIcon:track.icon,trackColor:track.color})));
 });
+const KNOWLEDGE_PILLARS=[
+  {id:"concepts",label:"Concepts",ar:"المفاهيم",desc:"تعرف ماذا يحدث ولماذا قبل تشغيل الأداة."},
+  {id:"tools",label:"Tools",ar:"الأدوات",desc:"استخدام عملي منظم للأدوات الأساسية والمتقدمة."},
+  {id:"labs",label:"Labs",ar:"المعامل",desc:"تطبيق قابل للتكرار مع أدلة وبيئة تدريب."},
+  {id:"reports",label:"Reports",ar:"التقارير",desc:"توثيق النتائج، الأدلة، المخاطر، وخطوات الإصلاح."},
+  {id:"portfolio",label:"Portfolio",ar:"المشاريع",desc:"مخرجات تثبت المهارة وتصلح للعرض الوظيفي."},
+  {id:"review",label:"Review",ar:"المراجعة",desc:"تثبيت المعرفة بالملاحظات والمراجعة المتباعدة."},
+];
+const PROJECT_LIBRARY=[
+  {id:"foundations-network-lab",trackId:"foundations",level:"Foundation",title:"Network Analyst Starter Pack",goal:"بناء معمل شبكة صغير وتحليل Traffic أساسي.",deliverables:["رسم Network topology","ملف PCAP مشروح","Nmap scan report","قائمة منافذ وخدمات مع تفسيرها"],rubric:["OSI/TCP-IP واضح","الأدلة قابلة لإعادة التنفيذ","التقرير مرتب ومختصر"]},
+  {id:"web-bugbounty-mini",trackId:"web",level:"Core",title:"Mini Bug Bounty Report Pack",goal:"اختبار تطبيق ويب تدريبي وتقديم 3 تقارير ثغرات.",deliverables:["Recon notes","3 vulnerability reports","Screenshots/PoC","Remediation section"],rubric:["تصنيف المخاطر صحيح","PoC قابل للتكرار","الإصلاحات عملية"]},
+  {id:"mobile-android-audit",trackId:"mobile",level:"Core",title:"Android App Security Review",goal:"تحليل تطبيق Android تدريبي واستخراج مشاكل التخزين والاتصالات.",deliverables:["Static analysis notes","Dynamic testing notes","Findings table","Hardening checklist"],rubric:["استخدام أدوات مناسب","تغطية storage/network/auth","أدلة واضحة"]},
+  {id:"api-contract-abuse",trackId:"api",level:"Core",title:"API Abuse Casebook",goal:"اختبار API من منظور Auth, rate limit, data exposure.",deliverables:["Endpoint map","Auth test matrix","Abuse cases","Postman/HTTP examples"],rubric:["تغطية endpoints مهمة","تمييز impact","اقتراح ضوابط"]},
+  {id:"network-segmentation-review",trackId:"network",level:"Intermediate",title:"Network Segmentation Review",goal:"تقييم تقسيم شبكة افتراضية وتحديد مسارات الحركة الخطرة.",deliverables:["Asset inventory","Attack path diagram","Firewall rule review","Risk summary"],rubric:["التحليل منطقي","المسارات واضحة","التوصيات قابلة للتطبيق"]},
+  {id:"ad-enterprise-attack",trackId:"ad",level:"Intermediate",title:"Active Directory Attack & Defense Lab",goal:"تنفيذ سلسلة هجوم AD تدريبية ثم كتابة دفاعات مقابلة.",deliverables:["Attack chain timeline","Misconfiguration list","Detection ideas","Hardening plan"],rubric:["الخطوات مترابطة","الدفاعات مرتبطة بالهجوم","لا توجد فجوات توثيق"]},
+  {id:"malware-triage-report",trackId:"malware",level:"Advanced",title:"Malware Triage Report",goal:"تحليل عينة تدريبية واستخراج IOCs وسلوكها.",deliverables:["Static indicators","Dynamic behavior","IOCs","YARA/Sigma draft"],rubric:["فصل الحقائق عن الاستنتاج","IOCs دقيقة","القواعد قابلة للاختبار"]},
+  {id:"ctf-writeup-series",trackId:"ctf",level:"Core",title:"CTF Writeup Series",goal:"كتابة سلسلة حلول منظمة لتحديات مختلفة.",deliverables:["5 writeups","Commands used","Lessons learned","Reusable checklist"],rubric:["الشرح تعليمي","الأوامر كاملة","الدروس المستفادة صريحة"]},
+  {id:"cloud-iam-audit",trackId:"cloud",level:"Intermediate",title:"Cloud IAM & Storage Audit",goal:"مراجعة IAM وStorage في بيئة Cloud تدريبية.",deliverables:["Identity inventory","Over-permission findings","Storage exposure checks","Least privilege plan"],rubric:["فهم IAM واضح","الأدلة موثقة","الخطة تقلل الصلاحيات"]},
+  {id:"osint-target-profile",trackId:"osint",level:"Core",title:"OSINT Investigation Dossier",goal:"بناء ملف OSINT قانوني ومنهجي لهدف تدريبي.",deliverables:["Source log","Confidence levels","Timeline","Final dossier"],rubric:["التوثيق أخلاقي","المصادر قابلة للتحقق","لا خلط بين ظن ودليل"]},
+  {id:"web3-smart-contract-review",trackId:"web3track",level:"Advanced",title:"Smart Contract Review Notes",goal:"مراجعة عقد تدريبي وتحديد أخطاء منطقية وأمنية.",deliverables:["Contract map","Threat scenarios","Findings","Fix recommendations"],rubric:["فهم المنطق","اختبارات أو أمثلة واضحة","Impact محدد"]},
+  {id:"dfir-incident-timeline",trackId:"dfir",level:"Intermediate",title:"Incident Timeline Reconstruction",goal:"إعادة بناء Timeline لحادث تدريبي من Logs وArtifacts.",deliverables:["Evidence inventory","Timeline","Root cause","Containment lessons"],rubric:["ترتيب زمني دقيق","الأدلة مرتبطة بالاستنتاج","الدروس قابلة للتنفيذ"]},
+  {id:"wireless-wifi-assessment",trackId:"wireless",level:"Intermediate",title:"Wi-Fi Security Assessment",goal:"تقييم إعدادات Wi-Fi تدريبية وتقديم خطة تقوية.",deliverables:["Configuration review","Capture notes","Weaknesses","Hardening checklist"],rubric:["الاختبار قانوني ومحدود","المخاطر واضحة","التقوية عملية"]},
+  {id:"crypto-implementation-review",trackId:"crypto",level:"Advanced",title:"Crypto Misuse Review",goal:"تحليل تطبيق تدريبي يستخدم Crypto بشكل خاطئ.",deliverables:["Primitive map","Misuse findings","Attack explanation","Safer design"],rubric:["المفاهيم دقيقة","لا مبالغة في الادعاء","الإصلاح صحيح"]},
+  {id:"pwn-binary-exploit-notes",trackId:"pwn",level:"Advanced",title:"Binary Exploitation Notebook",goal:"توثيق استغلال Binary تدريبي خطوة بخطوة.",deliverables:["Recon output","Memory notes","Exploit script","Mitigation notes"],rubric:["الفهم منخفض المستوى واضح","السكريبت قابل للتشغيل","شرح mitigations"]},
+  {id:"social-awareness-campaign",trackId:"social",level:"Core",title:"Security Awareness Campaign",goal:"تصميم حملة توعية ضد Phishing وسلوكيات المخاطر.",deliverables:["Scenario list","Awareness material","Response checklist","Metrics plan"],rubric:["اللغة مناسبة للجمهور","لا يوجد محتوى مؤذ","القياس واضح"]},
+  {id:"general-career-portfolio",trackId:"general",level:"Career",title:"Cyber Portfolio Operating System",goal:"تجميع أعمالك في Portfolio ومنهج متابعة مستمر.",deliverables:["Portfolio outline","Project index","Weekly report template","Learning backlog"],rubric:["يعرض المهارات بوضوح","سهل التحديث","مرتبط بأهداف وظيفية"]},
+];
+const CTF_PLATFORMS=[
+  {id:"tryhackme",title:"TryHackMe",url:"https://tryhackme.com",level:"Beginner → Advanced",category:"guided",trackIds:["foundations","web","network","ad","dfir"],note:"Rooms وLearning Paths؛ يحتاج متابعة لأن المسارات تتغير."},
+  {id:"hackthebox",title:"Hack The Box",url:"https://www.hackthebox.com",level:"Core → Advanced",category:"machines",trackIds:["network","web","ad","pwn"],note:"Machines وStarting Point وPro Labs."},
+  {id:"portswigger",title:"PortSwigger Web Security Academy",url:"https://portswigger.net/web-security",level:"Beginner → Expert",category:"web",trackIds:["web","api"],note:"أساسي للـ Web وBug Bounty."},
+  {id:"overthewire",title:"OverTheWire",url:"https://overthewire.org",level:"Beginner → Core",category:"wargame",trackIds:["foundations","web","crypto","pwn"],note:"Bandit/Natas/Leviathan كبداية ممتازة."},
+  {id:"picoctf",title:"picoCTF",url:"https://picoctf.org",level:"Beginner",category:"ctf",trackIds:["ctf","crypto","pwn","dfir"],note:"مناسب جدًا كبداية CTF عامة."},
+  {id:"rootme",title:"Root-Me",url:"https://www.root-me.org",level:"Core → Advanced",category:"ctf",trackIds:["web","network","crypto","pwn","dfir"],note:"تحديات كثيرة متعددة المجالات."},
+  {id:"hacker101",title:"Hacker101 CTF",url:"https://ctf.hacker101.com",level:"Beginner → Core",category:"bug-bounty",trackIds:["web"],note:"مفيد كبوابة Bug Bounty."},
+  {id:"hacksplaining",title:"Hacksplaining Exercises",url:"https://www.hacksplaining.com/exercises",level:"Beginner",category:"web",trackIds:["web"],note:"شرح تفاعلي للثغرات."},
+  {id:"attackdefense",title:"AttackDefense",url:"https://attackdefense.com",level:"Core → Advanced",category:"labs",trackIds:["network","web","pwn","cloud"],note:"Labs عملية متنوعة."},
+  {id:"exploit-education",title:"Exploit Education",url:"https://exploit.education",level:"Core → Advanced",category:"pwn",trackIds:["pwn"],note:"Binary exploitation وmemory corruption."},
+  {id:"pwnablekr",title:"pwnable.kr",url:"https://pwnable.kr/play.php",level:"Core → Advanced",category:"pwn",trackIds:["pwn"],note:"تحديات Pwn كلاسيكية."},
+  {id:"pwn-college",title:"pwn.college",url:"https://pwn.college",level:"Core → Advanced",category:"pwn",trackIds:["pwn"],note:"منهج قوي ومنظم للاستغلال."},
+  {id:"microcorruption",title:"Microcorruption",url:"https://microcorruption.com/login",level:"Core",category:"reversing",trackIds:["pwn","malware"],note:"Embedded reversing challenges."},
+  {id:"reversingkr",title:"Reversing.kr",url:"http://reversing.kr/index.php",level:"Advanced",category:"reversing",trackIds:["malware","pwn"],note:"Reversing challenges قديمة لكنها مفيدة."},
+  {id:"google-ctf",title:"Google CTF",url:"https://capturetheflag.withgoogle.com",level:"Core → Advanced",category:"ctf",trackIds:["ctf","web","crypto","pwn"],note:"Archive وتحديات سنوية."},
+  {id:"google-gruyere",title:"Google Gruyere",url:"https://google-gruyere.appspot.com/",level:"Beginner",category:"web",trackIds:["web"],note:"Web security lab للمبتدئين."},
+  {id:"ctftime",title:"CTFtime",url:"https://ctftime.org/",level:"All",category:"events",trackIds:["ctf"],note:"تقويم ومسابقات CTF عالمية."},
+  {id:"ctflearn",title:"CTFlearn",url:"https://ctflearn.com/",level:"Beginner → Core",category:"ctf",trackIds:["ctf","crypto","dfir"],note:"تحديات تدريبية عامة."},
+  {id:"ctf365",title:"CTF365",url:"https://ctf365.com/",level:"Core",category:"network",trackIds:["network"],note:"تدريب شبكي/CTF."},
+  {id:"academy-hackaflag",title:"Academy Hackaflag",url:"https://academy.hackaflag.com.br",level:"Beginner → Core",category:"ctf",trackIds:["ctf"],note:"منصة تدريب CTF."},
+  {id:"komodosec",title:"CTF Komodo Security",url:"https://ctf.komodosec.com",level:"Core",category:"ctf",trackIds:["ctf"],note:"منصة CTF تحتاج تدقيق دوري."},
+  {id:"hackaflag-br",title:"Hacker Security / Hackaflag",url:"https://capturetheflag.com.br",level:"Core",category:"ctf",trackIds:["ctf"],note:"منصة برازيلية للتدريب."},
+  {id:"hacking-lab",title:"Hacking-Lab",url:"https://www.hacking-lab.com/index.html",level:"Core",category:"labs",trackIds:["ctf","web","network"],note:"Security challenges وtraining."},
+  {id:"immersivelabs",title:"Immersive Labs",url:"https://immersivelabs.com",level:"Enterprise",category:"labs",trackIds:["dfir","network","web"],note:"غالبًا منصة مؤسسية."},
+  {id:"wizard-security",title:"Labs Wizard Security",url:"https://labs.wizard-security.net",level:"Core",category:"labs",trackIds:["ctf"],note:"Labs تحتاج تدقيق حالة."},
+  {id:"hstrike",title:"HSTRIKE",url:"https://hstrike.com",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+  {id:"hackthis",title:"HackThis",url:"https://www.hackthis.co.uk",level:"Beginner → Core",category:"web",trackIds:["web"],note:"Web hacking challenges."},
+  {id:"hackthissite",title:"Hack This Site",url:"https://www.hackthissite.org/",level:"Beginner → Core",category:"web",trackIds:["web"],note:"منصّة كلاسيكية للتحديات."},
+  {id:"cmdchallenge",title:"CMD Challenge",url:"https://cmdchallenge.com",level:"Beginner",category:"linux",trackIds:["foundations"],note:"Command line practice."},
+  {id:"alert1",title:"alert to win",url:"https://alf.nu/alert1",level:"Core",category:"web",trackIds:["web"],note:"XSS/JS challenge قديم ومفيد."},
+  {id:"ringzer0team",title:"RingZer0 Team",url:"https://ringzer0team.com/",level:"Core → Advanced",category:"ctf",trackIds:["ctf","crypto","web","pwn"],note:"تحديات متنوعة."},
+  {id:"hellboundhackers",title:"Hellbound Hackers",url:"https://www.hellboundhackers.org/",level:"Beginner → Core",category:"web",trackIds:["web"],note:"منصة كلاسيكية."},
+  {id:"try2hack",title:"Try2Hack",url:"http://www.try2hack.nl/",level:"Beginner",category:"web",trackIds:["web"],note:"تاريخية؛ تحتاج تدقيق حالة."},
+  {id:"hackme",title:"Hack.me",url:"https://hack.me/",level:"Core",category:"web",trackIds:["web"],note:"قد تحتاج تدقيق حالة."},
+  {id:"enigmagroup",title:"Enigma Group",url:"https://www.enigmagroup.org/",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+  {id:"gameofhacks",title:"Game of Hacks",url:"http://www.gameofhacks.com/",level:"Beginner",category:"code-review",trackIds:["web"],note:"اختبار اكتشاف ثغرات في الكود."},
+  {id:"rootinjail",title:"Root in Jail",url:"http://ctf.rootinjail.com",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+  {id:"shellterlabs",title:"Shellter Labs",url:"https://shellterlabs.com/pt",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+  {id:"holidayhack",title:"SANS Holiday Hack Challenge",url:"https://www.holidayhackchallenge.com",level:"Beginner → Core",category:"seasonal",trackIds:["ctf","dfir","web"],note:"تحديات موسمية ممتازة."},
+  {id:"smashthestack",title:"SmashTheStack",url:"http://smashthestack.org/wargames.html",level:"Core",category:"wargame",trackIds:["pwn","network"],note:"Wargames كلاسيكية."},
+  {id:"ionetgarage",title:"io.netgarage",url:"http://io.netgarage.org/",level:"Core",category:"wargame",trackIds:["pwn"],note:"Wargame قديم يحتاج تدقيق حالة."},
+  {id:"practical-pentest-labs",title:"Practical Pentest Labs",url:"https://practicalpentestlabs.com",level:"Core",category:"pentest",trackIds:["network","web"],note:"Practice labs."},
+  {id:"pentesterlab",title:"PentesterLab",url:"https://pentesterlab.com",level:"Beginner → Advanced",category:"web",trackIds:["web","api"],note:"Web security badges/exercises."},
+  {id:"practice-mindmap",title:"Penetration Testing Practice Labs Mindmap",url:"http://www.amanhardikar.com/mindmaps/Practice.html",level:"Reference",category:"directory",trackIds:["general"],note:"دليل منصات تدريب."},
+  {id:"pentestit",title:"PentestIT LAB",url:"https://lab.pentestit.ru",level:"Core → Advanced",category:"pentest",trackIds:["network","web","ad"],note:"Pentest lab روسي."},
+  {id:"backdoor-sdslabs",title:"Backdoor SDSLabs",url:"https://backdoor.sdslabs.co/",level:"Core",category:"ctf",trackIds:["ctf"],note:"CTF challenges."},
+  {id:"pentest-training",title:"Pentest Training",url:"https://pentest.training/",level:"Core",category:"pentest",trackIds:["network","web"],note:"Training labs."},
+  {id:"hackergateway",title:"Hacker Gateway",url:"https://www.hackergateway.com/",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+  {id:"solveme",title:"SolveMe",url:"http://solveme.safflower.kr/",level:"Core",category:"reversing",trackIds:["malware","pwn"],note:"Reversing/logic challenges."},
+  {id:"challengeland",title:"ChallengeLand",url:"http://challengeland.co/",level:"Core",category:"ctf",trackIds:["ctf"],note:"تحتاج تدقيق حالة."},
+];
+const EXTRA_LEARNING_RESOURCES=[
+  {id:"fsu-offsec",title:"FSU Offensive Security Lectures",url:"https://youtube.com/playlist?list=PLPH3_iKGpl87SxBPtTZDQBLd-lvPEH_gq",type:"course",trackIds:["web","network","pwn","malware"],note:"Offensive Security: Web, Network, Fuzzing, Reverse, Exploit Dev."},
+  {id:"wisconsin-cs642",title:"University of Wisconsin CS642 Information Security",url:"http://pages.cs.wisc.edu/~ace/cs642-spring-2016.html",type:"course",trackIds:["foundations","crypto","web"],note:"كورس جامعي مجاني."},
+  {id:"samsclass",title:"SAMS Class",url:"https://www.samsclass.info/",type:"course",trackIds:["web","network","pwn","malware"],note:"Classes مجانية كثيرة."},
+  {id:"securitytube",title:"SecurityTube",url:"http://www.securitytube.net",type:"course",trackIds:["general","network","web"],note:"أرشيف فيديوهات أمنية."},
+  {id:"seed-labs",title:"SEED Security Labs",url:"https://seedsecuritylabs.org/labs.html",type:"lab",trackIds:["foundations","web","network","crypto"],note:"Labs جامعية منظمة حسب categories."},
+  {id:"mit-6858",title:"MIT 6.858 Computer Systems Security",url:"https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/",type:"course",trackIds:["foundations","web","crypto","pwn"],note:"محاضرات، quizzes، labs، notes، final project."},
+  {id:"opensecuritytraining",title:"OpenSecurityTraining2",url:"https://opensecuritytraining.info/Training.html",type:"course",trackIds:["pwn","malware","foundations"],note:"ممتاز للـ low-level وexploitation."},
+  {id:"ufoctf",title:"UFO CTF Course",url:"https://kmb.ufoctf.ru/",type:"ctf-course",trackIds:["ctf"],note:"Course للتحديات؛ قد يحتاج ترجمة."},
+  {id:"computersecuritystudent",title:"Computer Security Student",url:"https://computersecuritystudent.com/START/ABOUT/lesson1/index.html",type:"course",trackIds:["foundations","web","network"],note:"Training متدرج بنظام أحزمة."},
+  {id:"cybrary-offensive",title:"Cybrary Offensive Penetration Testing",url:"https://www.cybrary.it/course/offensive-penetration-testing",type:"course",trackIds:["web","network","pwn"],note:"قد تتغير سياسة الوصول/السعر."},
+  {id:"zardus-ctf-tools",title:"zardus/ctf-tools",url:"https://github.com/zardus/ctf-tools",type:"tools",trackIds:["ctf","pwn","crypto"],note:"مجموعة أدوات CTF."},
+  {id:"ctf-tools-mugiwara",title:"MrMugiwara/CTF-Tools",url:"https://github.com/MrMugiwara/CTF-Tools",type:"tools",trackIds:["ctf"],note:"Tool collection."},
+  {id:"pwntools",title:"pwntools",url:"https://github.com/Gallopsled/pwntools",type:"tools",trackIds:["pwn"],note:"Framework مهم جدًا للـ pwn."},
+  {id:"rsactftool",title:"RsaCtfTool",url:"https://github.com/RsaCtfTool/RsaCtfTool",type:"tools",trackIds:["crypto"],note:"RSA attacks في CTF."},
+  {id:"hackingarticles",title:"Hacking Articles",url:"https://www.hackingarticles.in/",type:"writeups",trackIds:["web","network","ad"],note:"Articles وwalkthroughs."},
+  {id:"thehacker-recipes",title:"The Hacker Recipes",url:"https://www.thehacker.recipes/",type:"methodology",trackIds:["ad","network"],note:"وصفات عملية خصوصًا AD."},
+  {id:"highoncoffee",title:"HighOn.Coffee",url:"https://highon.coffee/",type:"writeups",trackIds:["web","network","mobile"],note:"Cheatsheets وwriteups."},
+  {id:"infosecwriteups",title:"InfoSec Writeups",url:"https://infosecwriteups.com/",type:"writeups",trackIds:["general","web","bug-bounty"],note:"Writeups عامة."},
+  {id:"hacktricks",title:"HackTricks",url:"https://book.hacktricks.xyz/welcome/readme",type:"methodology",trackIds:["web","network","cloud","ad"],note:"مرجع شامل يجب استخدامه بوعي."},
+  {id:"pentestreports",title:"Pentest Reports",url:"https://pentestreports.com/",type:"reports",trackIds:["general","web","network"],note:"أمثلة تقارير احترافية."},
+  {id:"pentest-methodology",title:"Pentest Methodology Collection",url:"https://github.com/kyawthiha7/pentest-methodology",type:"methodology",trackIds:["network","web"],note:"منهجيات اختبار اختراق."},
+  {id:"ptes-blackbox",title:"Blackbox Network Pentest PTES Process",url:"https://github.com/jr69ss/process-pentest-blackbox-ptes",type:"methodology",trackIds:["network"],note:"Process مبني على PTES."},
+  {id:"owasp-wstg-methodology",title:"OWASP Testing Framework",url:"https://github.com/OWASP/wstg/blob/master/document/3-The_OWASP_Testing_Framework/1-Penetration_Testing_Methodologies.md",type:"methodology",trackIds:["web"],note:"مرجع OWASP الرسمي."},
+  {id:"iot-methodology",title:"IoT Pentesting Methodology",url:"https://github.com/adi0x90/IoT-Pentesting-Methodology",type:"methodology",trackIds:["network"],note:"IoT security methodology."},
+  {id:"awesome-web-hacking",title:"Awesome Web Hacking",url:"https://github.com/infoslack/awesome-web-hacking",type:"directory",trackIds:["web"],note:"قائمة Web hacking."},
+  {id:"my-recon-methodology",title:"My Recon Methodology",url:"https://github.com/MrEmpy/My-Recon-Methodology",type:"methodology",trackIds:["web","osint"],note:"Recon methodology."},
+  {id:"azure-red-team",title:"Azure Red Team",url:"https://github.com/rootsecdev/Azure-Red-Team",type:"methodology",trackIds:["cloud"],note:"Azure pentest/red team."},
+  {id:"free-programming-books",title:"Free Programming Books",url:"https://github.com/EbookFoundation/free-programming-books/tree/main",type:"books",trackIds:["foundations"],note:"كتب برمجة مجانية بلغات كثيرة."},
+  {id:"bugbounty-blacklist",title:"Bug Bounty Scam Program List",url:"https://github.com/x0r-1/SC/blob/main/scamProg.txt",type:"safety",trackIds:["web","general"],note:"استخدمها كإشارة تحذير لا كحكم نهائي."},
+];
+const CAREER_MODES=[
+  {id:"bug-hunter",title:"Bug Hunter",focus:["web","api","osint"],desc:"ركز على Web, Recon, Reports, Program discipline."},
+  {id:"pentester",title:"Pentester",focus:["network","web","ad"],desc:"ركز على Enumeration, Exploitation, PrivEsc, Reporting."},
+  {id:"soc",title:"SOC Analyst",focus:["dfir","network","malware"],desc:"ركز على Logs, Detection, Incident response, Threat hunting."},
+  {id:"malware",title:"Malware Analyst",focus:["malware","pwn","dfir"],desc:"ركز على Reverse engineering, Sandboxes, IOCs, YARA/Sigma."},
+  {id:"cloud",title:"Cloud Security",focus:["cloud","network","dfir"],desc:"ركز على IAM, Storage exposure, Cloud logging, Least privilege."},
+];
+const SKILL_TREE=[
+  {id:"networking",title:"Networking",trackId:"foundations",requires:[],goal:"OSI/TCP/IP, DNS, HTTP, TLS, routing."},
+  {id:"linux",title:"Linux",trackId:"foundations",requires:["networking"],goal:"Shell, permissions, processes, logs, automation."},
+  {id:"http-burp",title:"HTTP + Burp",trackId:"web",requires:["networking"],goal:"Requests, headers, proxying, repeater, intruder basics."},
+  {id:"web-core",title:"Web Core Vulns",trackId:"web",requires:["http-burp"],goal:"XSS, SQLi, IDOR, CSRF, file upload, SSRF."},
+  {id:"bug-reporting",title:"Bug Report",trackId:"web",requires:["web-core"],goal:"Impact, reproduction, evidence, remediation."},
+  {id:"network-pentest",title:"Network Pentest",trackId:"network",requires:["networking","linux"],goal:"Recon, enumeration, initial access, priv esc."},
+  {id:"ad-core",title:"Active Directory",trackId:"ad",requires:["network-pentest"],goal:"LDAP, Kerberos, BloodHound, attack paths."},
+  {id:"dfir-core",title:"DFIR/SOC",trackId:"dfir",requires:["networking"],goal:"Logs, timelines, PCAP, memory, detection."},
+  {id:"malware-core",title:"Malware Analysis",trackId:"malware",requires:["linux"],goal:"Static/dynamic analysis, IOCs, sandboxing."},
+  {id:"cloud-core",title:"Cloud Security",trackId:"cloud",requires:["networking"],goal:"IAM, buckets, metadata, audit tools."},
+  {id:"pwn-core",title:"Binary Exploitation",trackId:"pwn",requires:["linux"],goal:"Memory, GDB, stack, ROP, pwntools."},
+  {id:"portfolio",title:"Portfolio Ready",trackId:"general",requires:["bug-reporting"],goal:"Reports, writeups, projects, proof of work."},
+];
+const BUG_BOUNTY_PATH=[
+  {id:"bb-web-basics",title:"Web Basics",check:"HTTP, browser, cookies, auth, same-origin."},
+  {id:"bb-recon",title:"Recon",check:"Subdomains, URLs, parameters, technologies."},
+  {id:"bb-auth",title:"Auth",check:"Login, reset, MFA, session handling."},
+  {id:"bb-access",title:"Access Control",check:"IDOR, privilege, tenant isolation."},
+  {id:"bb-business",title:"Business Logic",check:"Workflows, race, abuse cases."},
+  {id:"bb-reports",title:"Reports",check:"Quality, impact, evidence, fix."},
+  {id:"bb-programs",title:"Programs",check:"Scope, policy, safe testing, reputation."},
+  {id:"bb-reputation",title:"Reputation",check:"Consistency, duplicates avoided, clear communication."},
+];
+const CTF_LADDER=[
+  {id:"bandit",platformId:"overthewire",title:"Bandit",gate:"أنهِ Linux basics واكتب أوامر الحل في notes.",trackIds:["foundations"]},
+  {id:"pico",platformId:"picoctf",title:"picoCTF",gate:"حل 10 تحديات beginner متنوعة.",trackIds:["ctf","crypto","dfir"]},
+  {id:"portswigger-core",platformId:"portswigger",title:"PortSwigger Core",gate:"حل Labs من SQLi/XSS/Access Control.",trackIds:["web"]},
+  {id:"htb-starting",platformId:"hackthebox",title:"HTB Starting Point",gate:"أنهِ Machines beginner مع writeup.",trackIds:["network","web"]},
+  {id:"rootme-core",platformId:"rootme",title:"Root-Me",gate:"حل Web + Crypto + Forensics challenges.",trackIds:["ctf"]},
+  {id:"pwn-college-core",platformId:"pwn-college",title:"pwn.college",gate:"ابدأ modules memory/pwn بعد Linux.",trackIds:["pwn"]},
+];
+const CHALLENGE_RULES=[
+  {id:"cq-xss",match:["xss","cross site scripting"],title:"PortSwigger XSS labs",url:"https://portswigger.net/web-security/cross-site-scripting",meta:"بعد XSS videos: حل 3 labs واكتب report.",trackId:"web"},
+  {id:"cq-sqli",match:["sqli","sql injection"],title:"PortSwigger SQL Injection labs",url:"https://portswigger.net/web-security/sql-injection",meta:"بعد SQLi theory: manual proof قبل أي automation.",trackId:"web"},
+  {id:"cq-access",match:["idor","access control","authorization"],title:"PortSwigger Access Control labs",url:"https://portswigger.net/web-security/access-control",meta:"بعد Auth/IDOR: اختبر object-level authorization.",trackId:"web"},
+  {id:"cq-linux",match:["linux","bash","shell","permissions"],title:"OverTheWire Bandit",url:"https://overthewire.org/wargames/bandit/",meta:"بعد Linux basics: ابدأ Bandit واكتب commands.",trackId:"foundations"},
+  {id:"cq-ad",match:["ad","active directory","kerberos","ldap"],title:"TryHackMe Active Directory rooms",url:"https://tryhackme.com/hacktivities?tab=search&page=1&search=active%20directory",meta:"بعد Windows/LDAP/Kerberos: rooms عملية ثم report.",trackId:"ad"},
+  {id:"cq-api",match:["api","jwt","graphql","oauth"],title:"PortSwigger API testing",url:"https://portswigger.net/web-security/api-testing",meta:"بعد API basics: اختبر auth, mass assignment, rate limits.",trackId:"api"},
+  {id:"cq-pwn",match:["pwn","binary","rop","gdb"],title:"pwn.college modules",url:"https://pwn.college/",meta:"بعد Linux/memory basics: module واحد مع notes.",trackId:"pwn"},
+  {id:"cq-dfir",match:["dfir","forensics","pcap","memory"],title:"picoCTF Forensics practice",url:"https://play.picoctf.org/practice?category=4",meta:"بعد PCAP/memory: حل تحديين ودوّن indicators.",trackId:"dfir"},
+];
+const TOOL_MASTERY=[
+  {id:"nmap",title:"Nmap",trackIds:["network","foundations"],check:"Host discovery, ports, scripts, service/version scan."},
+  {id:"wireshark",title:"Wireshark",trackIds:["foundations","dfir"],check:"Filters, TCP streams, DNS/HTTP/TLS analysis."},
+  {id:"burp",title:"Burp Suite",trackIds:["web","api"],check:"Proxy, Repeater, Intruder, Comparer, extensions."},
+  {id:"ffuf",title:"ffuf",trackIds:["web","osint"],check:"Content discovery, vhosts, parameters, recursion."},
+  {id:"nuclei",title:"nuclei",trackIds:["web","osint"],check:"Templates, safe validation, false-positive control."},
+  {id:"sqlmap",title:"sqlmap",trackIds:["web"],check:"Use only in labs/authorized scopes, understand manual SQLi first."},
+  {id:"frida",title:"Frida",trackIds:["mobile"],check:"Hooks, SSL pinning labs, runtime observation."},
+  {id:"bloodhound",title:"BloodHound",trackIds:["ad"],check:"Graph collection, paths, edges, remediation ideas."},
+  {id:"volatility",title:"Volatility",trackIds:["dfir","malware"],check:"Memory profiles, processes, netscan, suspicious artifacts."},
+  {id:"ghidra",title:"Ghidra",trackIds:["malware","pwn"],check:"Functions, strings, xrefs, decompile, notes."},
+];
+const CERT_MAP=[
+  {id:"security-plus",title:"Security+",trackIds:["foundations","network"],goal:"Security foundations benchmark."},
+  {id:"ejpt",title:"eJPT",trackIds:["network","web"],goal:"Junior pentest readiness."},
+  {id:"pnpt",title:"PNPT",trackIds:["network","ad","web"],goal:"Practical pentest/report benchmark."},
+  {id:"burp-cert",title:"Burp Suite Certified Practitioner",trackIds:["web"],goal:"Advanced web exploitation benchmark."},
+  {id:"btl1",title:"BTL1",trackIds:["dfir","network"],goal:"Blue team/SOC practical benchmark."},
+  {id:"aws-security",title:"AWS Security Specialty",trackIds:["cloud"],goal:"Cloud security benchmark."},
+];
+const RESEARCH_FEED=[
+  {id:"portswigger-research",title:"PortSwigger Research",url:"https://portswigger.net/research",trackIds:["web"],why:"Web research and exploitation patterns."},
+  {id:"assetnote",title:"Assetnote Research",url:"https://www.assetnote.io/resources/research",trackIds:["web","api"],why:"Real-world attack surface research."},
+  {id:"google-project-zero",title:"Google Project Zero",url:"https://googleprojectzero.blogspot.com/",trackIds:["pwn","malware"],why:"High-quality vulnerability research."},
+  {id:"watchtowr",title:"watchTowr Labs",url:"https://labs.watchtowr.com/",trackIds:["web","network"],why:"Modern exploitation research."},
+  {id:"orange",title:"Orange Tsai Blog",url:"https://blog.orange.tw/",trackIds:["web"],why:"Classic web exploitation research."},
+];
+const REPORT_FIELDS=[
+  ["summary","Summary"],
+  ["steps","Steps"],
+  ["evidence","Evidence"],
+  ["impact","Impact"],
+  ["fix","Fix"],
+  ["lessons","Lessons Learned"],
+];
+const PROOF_FIELDS=[
+  ["screenshot","Screenshot / Evidence link"],
+  ["writeup","Writeup link"],
+  ["github","GitHub / Portfolio URL"],
+  ["commands","Command output"],
+  ["report","Report URL"],
+];
+const ATTACK_CHAIN_STEPS=[
+  ["recon","Recon","ما الذي عرفته عن الهدف؟ domains, services, technologies, users."],
+  ["initial","Initial Access","ما نقطة الدخول المصرح بها في Lab؟ vuln, weak config, exposed service."],
+  ["privesc","Privilege Escalation","كيف يرتفع الأثر؟ permissions, secrets, misconfig, logic."],
+  ["lateral","Lateral Movement","هل توجد حركة داخلية؟ sessions, tokens, trust relationships."],
+  ["exfil","Exfiltration / Impact","ما الدليل الآمن على الأثر بدون إضرار؟ sample, metadata, screenshot."],
+  ["report","Report","كيف تلخص السلسلة في تقرير واضح قابل للإصلاح؟"],
+];
+const RECON_FIELDS=[
+  ["subdomains","Subdomains"],
+  ["urls","URLs"],
+  ["parameters","Parameters"],
+  ["technologies","Technologies"],
+  ["interestingFiles","Interesting files"],
+  ["notes","Recon notes"],
+];
+const THREAT_MODEL_FIELDS=[
+  ["assets","Assets"],
+  ["entryPoints","Entry points"],
+  ["trustBoundaries","Trust boundaries"],
+  ["abuseCases","Abuse cases"],
+  ["controls","Controls"],
+];
+const SCOPE_CHECKS=[
+  ["policy","قرأت policy بالكامل"],
+  ["scope","الهدف داخل scope"],
+  ["outOfScope","راجعت Out of Scope"],
+  ["safe","الاختبار آمن وغير تخريبي"],
+  ["rate","ملتزم بـ rate limits"],
+  ["data","لن ألمس بيانات حقيقية إلا حسب السياسة"],
+];
+const COMMAND_VAULT=[
+  {id:"nmap-discovery",toolId:"nmap",title:"Nmap safe discovery",trackIds:["foundations","network"],command:"nmap -Pn -sV -sC -oN scans/services.txt <authorized-target>",use:"Service discovery في Lab أو Scope مصرح."},
+  {id:"nmap-udp-top",toolId:"nmap",title:"Nmap top UDP",trackIds:["network"],command:"nmap -sU --top-ports 20 -oN scans/udp.txt <authorized-target>",use:"UDP triage محدود لتقليل الضوضاء."},
+  {id:"wireshark-http",toolId:"wireshark",title:"Wireshark HTTP filter",trackIds:["foundations","dfir","network"],command:"http || dns || tls",use:"فلترة traffic في PCAP تدريبي."},
+  {id:"ffuf-content",toolId:"ffuf",title:"ffuf content discovery",trackIds:["web","osint"],command:"ffuf -u https://lab.example/FUZZ -w wordlists/common.txt -mc all -fc 404",use:"Content discovery على هدف مصرح."},
+  {id:"ffuf-vhost",toolId:"ffuf",title:"ffuf vhost discovery",trackIds:["web","osint"],command:"ffuf -u https://<authorized-target>/ -H 'Host: FUZZ.<domain>' -w wordlists/subdomains.txt -fs <baseline-size>",use:"Virtual host discovery بعد baseline."},
+  {id:"burp-repeater",toolId:"burp",title:"Burp Repeater checklist",trackIds:["web","api"],command:"Send to Repeater -> change one variable -> compare status, length, role, tenant",use:"اختبار يدوي منظم بدل الضغط العشوائي."},
+  {id:"sqlmap-lab",toolId:"sqlmap",title:"sqlmap lab-only validation",trackIds:["web"],command:"sqlmap -u 'https://lab.example/item?id=1' --batch --risk=1 --level=1",use:"للتأكيد داخل Labs فقط بعد فهم SQLi يدويًا."},
+  {id:"nuclei-safe",toolId:"nuclei",title:"nuclei safe templates",trackIds:["web","osint"],command:"nuclei -u https://<authorized-target> -tags exposure,misconfig -severity low,medium -rate-limit 2",use:"تحقق منخفض الضوضاء مع مراجعة false positives."},
+  {id:"frida-android",toolId:"frida",title:"Frida process list",trackIds:["mobile"],command:"frida-ps -Uai",use:"تحديد package/process في Android lab."},
+  {id:"bloodhound-edges",toolId:"bloodhound",title:"BloodHound path question",trackIds:["ad"],command:"Shortest Paths to High Value Targets",use:"سؤال تحليلي داخل BloodHound بعد collection مصرح."},
+  {id:"volatility-ps",toolId:"volatility",title:"Volatility triage",trackIds:["dfir","malware"],command:"vol.py -f memory.raw windows.pslist && vol.py -f memory.raw windows.netscan",use:"Triage أولي لذاكرة تدريبية."},
+  {id:"ghidra-strings",toolId:"ghidra",title:"Ghidra first pass",trackIds:["malware","pwn"],command:"Strings -> Xrefs -> main/control flow -> rename functions",use:"منهجية أول 20 دقيقة في reversing."},
+];
+const PAYLOAD_LIBRARY=[
+  {id:"xss-reflected",topicTags:["xss","web"],title:"XSS reflection probe",payload:"\"><svg/onload=alert(1)>",defense:"Context-aware output encoding + CSP as defense-in-depth.",warning:"استخدمه فقط في Labs أو scope مصرح."},
+  {id:"sqli-boolean",topicTags:["sqli","sql","web"],title:"SQLi boolean probe",payload:"' AND '1'='1' --",defense:"Parameterized queries and safe ORM patterns.",warning:"لا تستخدم automation قبل إثبات يدوي آمن."},
+  {id:"idor-id-swap",topicTags:["idor","access","auth"],title:"IDOR object swap",payload:"Change /api/invoices/1001 -> /api/invoices/1002",defense:"Object-level authorization on every request.",warning:"لا تعرض أو تحفظ بيانات مستخدمين حقيقيين."},
+  {id:"ssrf-localhost",topicTags:["ssrf","cloud","web"],title:"SSRF localhost probe",payload:"http://127.0.0.1:80/",defense:"Egress allowlists, metadata protection, URL parsing hardening.",warning:"تجنب endpoints داخلية حساسة خارج Labs."},
+  {id:"xxe-file",topicTags:["xxe","xml","web"],title:"XXE harmless file probe",payload:"<!DOCTYPE x [<!ENTITY test SYSTEM 'file:///etc/hostname'>]>",defense:"Disable external entities and DTD processing.",warning:"Lab-only ولا تقرأ أسرار أو ملفات حقيقية."},
+  {id:"ssti-math",topicTags:["ssti","template","web"],title:"SSTI math probe",payload:"{{7*7}}",defense:"Avoid user-controlled templates, sandbox strictly.",warning:"ابدأ بـ math probe فقط في بيئة مصرح بها."},
+  {id:"lfi-passwd",topicTags:["lfi","file","web"],title:"LFI path traversal probe",payload:"../../../../etc/passwd",defense:"Normalize paths, allowlist files, avoid direct path input.",warning:"استخدم ملفًا تدريبيًا إن أمكن بدل ملفات نظام حقيقية."},
+  {id:"cmd-injection",topicTags:["rce","command","web"],title:"Command injection separator probe",payload:"; id",defense:"No shell execution with user input; strict allowlists.",warning:"لا تشغل payloads مؤذية أو destructive."},
+];
+const REAL_WORLD_CASES=[
+  {id:"case-ssrf-capital-one",match:["ssrf","cloud","metadata"],title:"SSRF -> Cloud metadata exposure",caseName:"Capital One-style cloud metadata chain",lesson:"SSRF لا يقف عند request؛ فكر في identity, metadata, IAM blast radius."},
+  {id:"case-log4shell",match:["rce","java","logging","deserialization"],title:"Log4Shell -> RCE",caseName:"Log4Shell",lesson:"Input reaches a parser/interpreter can become code execution."},
+  {id:"case-idor-bounty",match:["idor","access","authorization"],title:"IDOR -> Account data exposure",caseName:"Common Bug Bounty reports",lesson:"كل object يحتاج authorization مستقل، وليس مجرد hidden UI."},
+  {id:"case-solarwinds",match:["supply","malware","dfir"],title:"Supply chain compromise",caseName:"SolarWinds-style supply chain",lesson:"الثقة في build/update pipeline جزء من attack surface."},
+  {id:"case-kerberoast",match:["kerberos","ad","windows"],title:"Kerberoasting -> Credential risk",caseName:"Active Directory attack paths",lesson:"Service accounts وكلمات المرور الضعيفة تتحول إلى مسار سيطرة."},
+  {id:"case-s3",match:["cloud","storage","bucket"],title:"Public storage exposure",caseName:"Cloud bucket leaks",lesson:"Misconfiguration قد يكون أخطر من exploit معقد."},
+];
+const BUILD_TO_BREAK_LABS=[
+  {id:"btb-xss",topicTags:["xss","web"],title:"Build-To-Break: Comment box XSS",steps:["ابنِ comment box محلي بسيط","أدخل payload آمن يثبت reflection","أصلح بـ output encoding","اكتب before/after report"]},
+  {id:"btb-sqli",topicTags:["sqli","sql","web"],title:"Build-To-Break: Login SQLi",steps:["ابنِ login lab بقاعدة بيانات محلية","اختبر boolean bypass تدريبي","حوّل query إلى prepared statement","وثق الفرق في التقرير"]},
+  {id:"btb-idor",topicTags:["idor","access","auth"],title:"Build-To-Break: Invoice IDOR",steps:["ابنِ API invoices بمستخدمين وهميين","اختبر تبديل ID","أضف object-level authorization","اكتب threat model مختصر"]},
+  {id:"btb-ssrf",topicTags:["ssrf","cloud","web"],title:"Build-To-Break: URL fetcher SSRF",steps:["ابنِ fetcher محلي","اختبر localhost probe","أضف allowlist وblock private IPs","اكتب detection ideas"]},
+  {id:"btb-linux",topicTags:["linux","permissions"],title:"Build-To-Break: Linux permissions lab",steps:["أنشئ users/files محليًا","اكسر permission assumption","أصلح ownership/mode","سجل commands في vault notes"]},
+];
+const FLASHCARD_SEEDS=[
+  {id:"fc-http-302",trackIds:["web","foundations"],front:"HTTP 302 يعني ماذا؟",back:"Redirect مؤقت؛ مهم في auth flows وopen redirect tests."},
+  {id:"fc-cookie-flags",trackIds:["web"],front:"أهم Cookie flags؟",back:"HttpOnly, Secure, SameSite, Path/Domain بوعي."},
+  {id:"fc-linux-suid",trackIds:["foundations","network","pwn"],front:"ما معنى SUID؟",back:"تشغيل binary بصلاحيات مالكه؛ مهم في PrivEsc labs."},
+  {id:"fc-dns-cname",trackIds:["foundations","osint"],front:"CNAME يفيدك في Recon كيف؟",back:"يكشف service/provider وقد يلمح إلى takeover risk."},
+  {id:"fc-kerberos-spn",trackIds:["ad"],front:"ما هو SPN؟",back:"Service Principal Name يربط service account بخدمة في Kerberos."},
+  {id:"fc-yara",trackIds:["malware","dfir"],front:"YARA تستخدم لماذا؟",back:"وصف patterns في الملفات/العينات لاكتشاف malware families."},
+  {id:"fc-volatility-netscan",trackIds:["dfir"],front:"Volatility netscan يكشف ماذا؟",back:"Network connections/sockets من memory image."},
+  {id:"fc-iam-least",trackIds:["cloud"],front:"Least privilege يعني؟",back:"منح أقل صلاحيات لازمة للعمل مع مراجعة مستمرة."},
+  {id:"fc-cors",trackIds:["web","api"],front:"CORS misconfig خطير متى؟",back:"عندما يسمح origin غير موثوق بقراءة responses حساسة مع credentials."},
+  {id:"fc-rop",trackIds:["pwn"],front:"ROP لماذا يستخدم؟",back:"إعادة استخدام gadgets لتجاوز قيود مثل NX في binary exploitation."},
+];
+const DEEP_WORK_SEGMENTS=[
+  ["prep","10m تجهيز","افتح Lab، جهز notes، حدد سؤال الجلسة."],
+  ["practice","60m تطبيق","نفذ بيدك، لا تجمع مصادر جديدة إلا عند الحاجة."],
+  ["report","15m تقرير","اكتب Steps/Evidence/Impact/Fix."],
+  ["review","5m مراجعة","حدد خطأ واحد وFlashcard أو Cheatsheet."],
+];
+const DEEP_WORK_SECONDS={prep:10*60,practice:60*60,report:15*60,review:5*60};
+const REPORT_TEMPLATES=[
+  {id:"generic",title:"Generic Finding",match:["general","lab","challenge","project"],fields:{
+    summary:"Describe the finding or solved challenge in one clear paragraph: target, condition, result, and why it matters.",
+    steps:"1. Define the authorized target/scope.\n2. Reproduce the behavior safely.\n3. Capture request/response or commands.\n4. Confirm impact without harming data.\n5. Document the fix or lesson.",
+    evidence:"Add screenshots, request/response snippets, command output, timestamps, affected endpoint, and any harmless proof.",
+    impact:"Explain realistic business/security impact, affected users/assets, and what an attacker could do in scope.",
+    fix:"Describe a practical fix, validation rule, control, logging idea, and how to retest.",
+    lessons:"What assumption was wrong? What will you check faster next time?",
+  }},
+  {id:"xss",title:"XSS Report",match:["xss","cross site scripting","csp","javascript"],fields:{
+    summary:"User-controlled input is reflected/executed in the browser, allowing JavaScript execution in a victim context.",
+    steps:"1. Identify reflection point.\n2. Test safe context probe.\n3. Confirm execution in a lab/account you control.\n4. Check cookie/session impact and CSP.\n5. Record exact request and response.",
+    evidence:"Payload, affected parameter, browser screenshot, response context, CSP headers, and sanitized PoC link if safe.",
+    impact:"Session theft risk, account actions, phishing, data exposure, or stored impact depending on context.",
+    fix:"Context-aware output encoding, input validation, safe templating, HttpOnly/SameSite cookies, and strict CSP as defense-in-depth.",
+    lessons:"Always classify sink/context first: HTML, attribute, JS string, URL, DOM sink.",
+  }},
+  {id:"sqli",title:"SQL Injection Report",match:["sqli","sql injection","database","sql"],fields:{
+    summary:"A database query appears to include user input unsafely, allowing query logic manipulation in an authorized test.",
+    steps:"1. Find parameter reaching SQL.\n2. Compare normal/error/boolean responses.\n3. Use a harmless proof.\n4. Estimate data/authorization impact.\n5. Retest after prepared statements.",
+    evidence:"Parameter, request/response pairs, timing/error/boolean difference, and DBMS hints if visible.",
+    impact:"Authentication bypass, unauthorized data access, data modification, or RCE in severe DB configurations.",
+    fix:"Prepared statements, safe ORM usage, allowlisted query building, least-privilege DB accounts, and error handling.",
+    lessons:"Do not jump to tools before proving the query behavior manually.",
+  }},
+  {id:"idor",title:"IDOR / Access Control",match:["idor","access control","authorization","auth","object"],fields:{
+    summary:"An object can be accessed or modified without verifying ownership or role authorization.",
+    steps:"1. Create two test accounts.\n2. Capture object request from account A.\n3. Replay/change identifier as account B.\n4. Verify unauthorized read/write.\n5. Document object-level control gap.",
+    evidence:"Two account IDs, affected endpoint, object IDs, request/response comparison, and safe screenshots.",
+    impact:"Unauthorized access to another user's records, privacy breach, account takeover path, or business logic abuse.",
+    fix:"Object-level authorization on every request, deny-by-default access checks, audit logs, and regression tests.",
+    lessons:"Hidden UI is not authorization. Every object operation needs a server-side decision.",
+  }},
+  {id:"ssrf",title:"SSRF / URL Fetching",match:["ssrf","metadata","url fetch","cloud"],fields:{
+    summary:"A server-side URL fetcher may access internal or restricted network resources through attacker-controlled input.",
+    steps:"1. Identify URL-fetching feature.\n2. Use harmless external callback or localhost probe in lab.\n3. Check redirect and parser behavior.\n4. Test allowlist/private-IP bypasses safely.\n5. Map cloud metadata risk if relevant.",
+    evidence:"Submitted URL, server response, callback logs, redirect behavior, blocked/allowed cases, and timestamps.",
+    impact:"Internal service access, cloud metadata exposure, credential leakage, or pivoting depending on network access.",
+    fix:"Strict allowlists, block private/link-local ranges after DNS resolution, no redirects to internal addresses, egress controls, and metadata protections.",
+    lessons:"URL parsing is tricky; validate after normalization and DNS resolution, not before only.",
+  }},
+  {id:"ctf",title:"CTF Writeup",match:["ctf","pico","bandit","hackthebox","root-me","pwn"],fields:{
+    summary:"Challenge solved with a clear path from initial observation to final flag/proof.",
+    steps:"1. State challenge name and category.\n2. List initial clues.\n3. Show failed attempts briefly.\n4. Explain the working technique.\n5. Add final command/proof and lesson.",
+    evidence:"Commands, screenshots, decoded values, exploit notes, flag proof if allowed, and links to the challenge.",
+    impact:"Translate the challenge idea to a real-world weakness or defensive lesson.",
+    fix:"Describe the defensive control or secure pattern that would prevent the challenge condition.",
+    lessons:"Write the one heuristic you learned and one thing to try earlier next time.",
+  }},
+  {id:"ad",title:"Active Directory Finding",match:["ad","active directory","kerberos","ldap","windows"],fields:{
+    summary:"An Active Directory configuration or credential path enables privilege escalation or lateral movement in the lab.",
+    steps:"1. Enumerate domain objects safely.\n2. Identify weak permission/credential path.\n3. Validate with least-invasive proof.\n4. Map attack path.\n5. Recommend hardening and monitoring.",
+    evidence:"BloodHound path, commands, object names, timestamps, and sanitized screenshots.",
+    impact:"Privilege escalation, lateral movement, domain compromise path, or credential exposure.",
+    fix:"Least privilege, service account hygiene, Kerberos hardening, ACL review, monitoring, and password rotation where needed.",
+    lessons:"Draw the graph. AD bugs are usually relationships, not isolated commands.",
+  }},
+  {id:"project",title:"Portfolio Project Case Study",match:["project","portfolio","case study"],fields:{
+    summary:"Project goal, security question, implementation approach, and what the final artifact proves.",
+    steps:"1. Define the scenario.\n2. Build or configure the lab.\n3. Break/test it.\n4. Fix or document controls.\n5. Publish artifact and lessons.",
+    evidence:"GitHub link, screenshots, diagrams, commands, notes, and final README/report.",
+    impact:"Explain what skill this project demonstrates and where it fits in a professional portfolio.",
+    fix:"List improvements, hardening controls, and future extension ideas.",
+    lessons:"What did building it teach you that watching a course did not?",
+  }},
+];
+const getTrackCourses=tid=>TRACK_COURSE_TREE.find(item=>item.tid===tid)?.courses||[];
+const getTrackLessons=tid=>LESSONS.filter(lesson=>(lesson.trackIds||[]).includes(tid));
+const getTrackResources=tid=>RESOURCE_INDEX.filter(resource=>resource.tid===tid);
+const getTrackTopics=tid=>(TRACKS[tid]?.phases||[]).flatMap(phase=>(phase.topics||[]).map((topic,index)=>({id:`${tid}-${phase.id}-topic-${index}`,phase:phase.name,topic})));
+const getTrackLabs=tid=>{
+  const topicLabs=(TRACKS[tid]?.phases||[]).flatMap(phase=>(phase.topics||[])
+    .filter(topic=>/^lab[:：]/i.test(String(topic).trim())||textNorm(topic).includes(" lab"))
+    .map((topic,index)=>({id:`${tid}-${phase.id}-topic-lab-${index}`,source:"topic",title:String(topic).replace(/^Lab[:：]\s*/i,""),phase:phase.name,url:null,type:"guided"})));
+  const resourceLabs=getTrackResources(tid).filter(r=>r.type==="lab").map((r,index)=>({id:`${tid}-resource-lab-${index}`,source:"resource",title:r.title,phase:r.phase,url:r.url,type:r.lang||"lab"}));
+  return[...topicLabs,...resourceLabs];
+};
+const getTrackProjects=tid=>PROJECT_LIBRARY.filter(project=>project.trackId===tid);
+const trackCoverage=tid=>({
+  courses:getTrackCourses(tid).length,
+  lessons:getTrackLessons(tid).length,
+  topics:getTrackTopics(tid).length,
+  resources:getTrackResources(tid).length,
+  labs:getTrackLabs(tid).length,
+  projects:getTrackProjects(tid).length,
+});
+const extractEnglishKeywords=(...parts)=>[...new Set(parts.join(" ").match(/[A-Za-z][A-Za-z0-9+#._-]{2,}/g)||[])]
+  .filter(word=>!["https","http","www","com","the","and","for","with","this","that","from","into","your","you"].includes(word.toLowerCase()))
+  .slice(0,18);
+const safeFileName=value=>String(value||"cyberpath")
+  .toLowerCase()
+  .replace(/[^a-z0-9._-]+/g,"-")
+  .replace(/^-+|-+$/g,"")
+  .replace(/-+/g,"-")
+  .slice(0,70)||"cyberpath";
 
 // ─────────────────────────────────────────────
 //  HELPERS
@@ -21006,12 +21391,17 @@ const STUDY_DAYS=[0,1,2,3,4,6];
 const AR_DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const TAB_ITEMS=[
   {id:"today",label:"اليوم",hint:"جلسة الدراسة"},
+  {id:"command",label:"Command",hint:"Missions"},
+  {id:"knowledge",label:"الخريطة",hint:"Knowledge graph"},
   {id:"library",label:"المكتبة",hint:"المسارات والكورسات"},
+  {id:"labs",label:"Labs",hint:"تطبيق عملي"},
+  {id:"ctf",label:"CTF",hint:"Ladder"},
+  {id:"projects",label:"Projects",hint:"Portfolio"},
   {id:"search",label:"البحث",hint:"كل الدروس"},
   {id:"review",label:"المراجعة",hint:"Queue ذكي"},
   {id:"progress",label:"التقدم",hint:"إحصائيات"},
 ];
-const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[],trainingStartDate:null,doneLessons:{},doneDailySessions:{},lessonNotes:{},activeTab:"today",sessionTimers:{},lessonReview:{},searchFilters:{q:"",track:"all",status:"all"},libraryFilter:"all"};
+const D0={xp:0,currentWeek:1,streak:0,bestStreak:0,lastCheckIn:null,doneMissions:{},doneTopics:{},donePhases:[],quizHistory:{},badges:[],totalDone:0,perfectQuiz:0,islamicDays:0,trackChecked:{},studyLog:{},weeklyReports:{},certificates:[],reviewQueue:[],trainingStartDate:null,doneLessons:{},doneDailySessions:{},lessonNotes:{},activeTab:"today",sessionTimers:{},lessonReview:{},searchFilters:{q:"",track:"all",status:"all"},libraryFilter:"all",doneLabs:{},doneProjects:{},projectNotes:{},doneCtfPlatforms:{},ctfFilters:{track:"all",level:"all",category:"all"},careerGoal:"bug-hunter",missionSteps:{},missionReports:{},proofOfWork:{},mistakeNotebook:{},beforeAfter:{},toolMastery:{},attackChains:{},reconDashboards:{},bugBountyPrograms:{},scopeDiscipline:{},threatModels:{},weeklyBosses:{},flashcardReview:{},deepWorkSegments:{},activeReportContext:null};
 
 const pad2=n=>String(n).padStart(2,"0");
 const parseDate=(value)=>{
@@ -21038,6 +21428,57 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const pct=(done,total)=>total?Math.round(done/total*100):0;
 const trackLabel=tid=>TRACKS[tid]?`${TRACKS[tid].icon} ${TRACKS[tid].name}`:tid;
 const textNorm=v=>String(v||"").toLowerCase().replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+const STOP_TERMS=new Set(["lesson","lab","labs","phase","part","intro","introduction","basic","basics","course","security","cyber","cybersecurity","and","the","for","with","using","عملي","مقدمة","درس","شرح","أساسيات","كورس","تطبيق"]);
+const topicTerms=topic=>textNorm(topic).replace(/[^\p{L}\p{N}\s]/gu," ").split(/\s+/).filter(term=>term.length>2&&!STOP_TERMS.has(term)).slice(0,10);
+const resourceScore=(terms,text)=>{
+  const hay=textNorm(text);
+  const tokens=new Set(hay.split(/\s+/));
+  return terms.reduce((sum,term)=>sum+(term.length<=4?(tokens.has(term)?2:0):(hay.includes(term)?1:0)),0);
+};
+const uniqueByUrl=items=>{
+  const seen=new Set();
+  return items.filter(item=>{
+    const key=item.url||item.id||item.title;
+    if(seen.has(key))return false;
+    seen.add(key);
+    return true;
+  });
+};
+const takeRanked=(items,terms,limit,fallback=[])=>{
+  const ranked=items.map(item=>({...item,_score:resourceScore(terms,`${item.title} ${item.meta||""} ${item.note||""}`)}))
+    .sort((a,b)=>b._score-a._score);
+  const strong=ranked.filter(item=>item._score>0);
+  return uniqueByUrl([...strong,...ranked,...fallback]).slice(0,limit).map(({_score,...item})=>item);
+};
+const getTopicResourcePack=(tid,phase,topic)=>{
+  const terms=topicTerms(topic);
+  const trackLessons=getTrackLessons(tid);
+  const trackCourses=getTrackCourses(tid);
+  const trackResources=getTrackResources(tid);
+  const phaseName=phase?.name||"";
+  const phaseResources=trackResources.filter(resource=>resource.phase===phaseName);
+  const courseVideos=trackCourses.map(course=>({id:`course-${course.id}`,title:course.title,url:course.url,meta:`playlist · ${course.channel||"YouTube"} · ${course.lessonCount||COURSE_LESSONS[course.id]?.length||0} lessons`,source:"playlist"}));
+  const lessonVideos=trackLessons.map(lesson=>({id:lesson.id,title:lesson.title,url:lesson.url,meta:`lesson #${lesson.index} · ${COURSE_BY_ID[lesson.courseId]?.title||"YouTube lesson"} · ${(lesson.topicTags||[]).join(" ")}`,source:"lesson"}));
+  const videoResources=trackResources.filter(resource=>resource.type==="video").map(resource=>({id:`video-${resource.url}`,title:resource.title,url:resource.url,meta:`${resource.lang||""} · ${resource.phase}`,source:"video"}));
+  const articleResources=trackResources.filter(resource=>["article","book"].includes(resource.type)).map(resource=>({id:`article-${resource.url}`,title:resource.title,url:resource.url,meta:`${resource.type} · ${resource.lang||""} · ${resource.phase}`,source:resource.type}));
+  const writeupResources=trackResources.filter(resource=>resource.type==="writeup").map(resource=>({id:`writeup-${resource.url}`,title:resource.title,url:resource.url,meta:`writeup · ${resource.lang||""} · ${resource.phase}`,source:"writeup"}));
+  const labResources=trackResources.filter(resource=>resource.type==="lab").map(resource=>({id:`lab-${resource.url}`,title:resource.title,url:resource.url,meta:`lab · ${resource.lang||""} · ${resource.phase}`,source:"lab"}));
+  const sameTrackExtras=EXTRA_LEARNING_RESOURCES.filter(resource=>(resource.trackIds||[]).includes(tid)||resource.trackIds?.includes("general"));
+  const extraArticles=sameTrackExtras.filter(resource=>["course","books","directory"].includes(resource.type)).map(resource=>({id:`extra-article-${resource.id}`,title:resource.title,url:resource.url,meta:`${resource.type} · extra`,note:resource.note,source:resource.type}));
+  const extraWriteups=sameTrackExtras.filter(resource=>["writeups","reports"].includes(resource.type)).map(resource=>({id:`extra-writeup-${resource.id}`,title:resource.title,url:resource.url,meta:`${resource.type} · extra`,note:resource.note,source:resource.type}));
+  const extraMethods=sameTrackExtras.filter(resource=>["methodology","tools","safety","lab","ctf-course"].includes(resource.type)).map(resource=>({id:`extra-method-${resource.id}`,title:resource.title,url:resource.url,meta:`${resource.type} · extra`,note:resource.note,source:resource.type}));
+  const ctfLinks=CTF_PLATFORMS.filter(platform=>(platform.trackIds||[]).includes(tid)||platform.trackIds?.includes("ctf")).map(platform=>({id:`ctf-${platform.id}`,title:platform.title,url:platform.url,meta:`${platform.category} · ${platform.level}`,note:platform.note,source:"ctf"}));
+  const topicLab={id:`topic-lab-${tid}-${textNorm(topic).slice(0,36)}`,title:String(topic).replace(/^Lab[:：]\s*/i,""),url:null,meta:"guided lab idea · طبقه بيدك ثم اكتب report",source:"guided"};
+  const globalArticles=EXTRA_LEARNING_RESOURCES.filter(resource=>["methodology","writeups","reports","books","directory"].includes(resource.type)).map(resource=>({id:`global-${resource.id}`,title:resource.title,url:resource.url,meta:`${resource.type} · global fallback`,note:resource.note,source:resource.type}));
+  const globalLabs=CTF_PLATFORMS.slice(0,12).map(platform=>({id:`global-ctf-${platform.id}`,title:platform.title,url:platform.url,meta:`${platform.category} · ${platform.level}`,note:platform.note,source:"ctf"}));
+  return{
+    videos:takeRanked([...lessonVideos,...videoResources,...courseVideos],terms,5,[...videoResources,...courseVideos]),
+    articles:takeRanked([...articleResources,...extraArticles],terms,4,[...phaseResources.filter(r=>r.type==="article").map(r=>({id:`phase-article-${r.url}`,title:r.title,url:r.url,meta:`article · ${r.phase}`,source:"article"})),...globalArticles]),
+    writeups:takeRanked([...writeupResources,...extraWriteups],terms,4,[...globalArticles]),
+    labs:takeRanked([topicLab,...labResources,...ctfLinks],terms,5,[...labResources,...globalLabs]),
+    methods:takeRanked([...extraMethods,...EXTRA_LEARNING_RESOURCES.filter(resource=>["methodology","tools"].includes(resource.type)).map(resource=>({id:`method-${resource.id}`,title:resource.title,url:resource.url,meta:`${resource.type}`,note:resource.note,source:resource.type}))],terms,4),
+  };
+};
 const formatTimer=sec=>{
   const safe=Math.max(0,Math.ceil(sec||0));
   const h=Math.floor(safe/3600),m=Math.floor((safe%3600)/60),s=safe%60;
@@ -21159,37 +21600,106 @@ function Tag({type,lang}){return(<span style={{display:"inline-flex",gap:4,align
 // ─────────────────────────────────────────────
 //  MAIN
 // ─────────────────────────────────────────────
+const MODERN_CSS=`
+.mo-root{min-height:100vh;background:var(--bg);color:var(--t0);font-family:'Cairo',sans-serif}
+.mo-shell{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh}
+.mo-side{position:sticky;top:0;height:100vh;padding:18px;border-left:1px solid var(--wo);background:linear-gradient(180deg,var(--w5),transparent)}
+.mo-main{min-width:0;padding:18px 18px 40px}
+.mo-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.mo-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mo-logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#03120a;display:grid;place-items:center;font-weight:900;font-family:'Fira Code',monospace;box-shadow:0 16px 40px rgba(0,255,136,.16)}
+.mo-panel{background:linear-gradient(180deg,var(--w5),var(--w3));border:1px solid var(--wo);border-radius:14px}
+.mo-card{background:var(--w3);border:1px solid var(--wo);border-radius:12px}
+.mo-card:hover{border-color:var(--sbd25)}
+.mo-muted{color:var(--t2)}
+.mo-kbd{font-family:'Fira Code',monospace;font-size:11px;color:var(--t2)}
+.mo-tabs{display:grid;gap:8px;margin-top:14px}
+.mo-tab{border:1px solid transparent;background:transparent;color:var(--t3);border-radius:10px;padding:10px 12px;text-align:right;cursor:pointer;font-family:'Cairo',sans-serif}
+.mo-tab.on{background:var(--sbg12);border-color:var(--sbd25);color:#00ff88}
+.mo-btn{border:1px solid var(--wo);background:var(--w5);color:var(--t0);border-radius:10px;padding:9px 12px;min-height:40px;cursor:pointer;font-family:'Cairo',sans-serif}
+.mo-btn:hover{border-color:var(--sbd25);background:var(--sbg06)}
+.mo-btn.primary{border-color:transparent;background:linear-gradient(135deg,#00ff88,#00d4ff);color:#04100a;font-weight:900}
+.mo-grid{display:grid;gap:12px}
+.mo-stat{padding:12px;border-radius:12px;background:var(--w3);border:1px solid var(--wo)}
+.mo-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--wo);background:var(--w3);border-radius:999px;padding:4px 9px;color:var(--t3);font-size:11px}
+.mo-progress{height:8px;border-radius:999px;background:var(--w7);overflow:hidden}
+.mo-progress>span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#00ff88,#00d4ff)}
+.mo-input,.mo-select,.mo-textarea{width:100%;border:1px solid var(--wo);background:var(--w3);color:var(--t0);border-radius:10px;padding:10px 12px;font-family:'Cairo',sans-serif;outline:none}
+.mo-textarea{min-height:92px;resize:vertical}
+.mo-input:focus,.mo-select:focus,.mo-textarea:focus{border-color:var(--sbd3)}
+.mo-node{position:relative;padding:12px;border-radius:12px;border:1px solid var(--wo);background:linear-gradient(180deg,var(--w5),var(--w3))}
+.mo-node:before{content:"";position:absolute;inset-inline-start:12px;top:12px;width:8px;height:8px;border-radius:99px;background:#00ff88;box-shadow:0 0 16px rgba(0,255,136,.4)}
+.mo-node-body{padding-inline-start:18px}
+.mo-list{display:grid;gap:8px}
+.mo-small{font-size:12px;line-height:1.75}
+.mo-soft{background:var(--sbg06);border-color:var(--sbd15)}
+.mo-mobilebar{display:none}
+@media(max-width:860px){
+  .mo-shell{display:block}
+  .mo-side{display:none}
+  .mo-main{padding:112px 12px 28px}
+  .mo-mobilebar{display:grid;position:fixed;top:0;left:0;right:0;z-index:90;gap:9px;background:rgba(4,8,15,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--wo);padding:10px 12px}
+  .mo-mobile-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .mo-mobile-tabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .mo-mobile-tabs::-webkit-scrollbar{display:none}
+  .mo-mobile-tab{white-space:nowrap;border:1px solid var(--wo);background:var(--w3);color:var(--t3);border-radius:999px;padding:7px 11px;font-family:'Cairo',sans-serif;font-size:12px}
+  .mo-mobile-tab.on{color:#00ff88;border-color:var(--sbd25);background:var(--sbg12)}
+  [data-theme="light"] .mo-mobilebar{background:rgba(248,250,252,.94)}
+  .mo-desk-only{display:none!important}
+}
+`;
+
 export default function CyberPath(){
-  const initialMobile=typeof window!=="undefined"&&window.innerWidth<768;
+  const initialMobile=typeof window!=="undefined"&&window.innerWidth<861;
   const [s,setS]=useState(D0);
-  const [toast,setToast]=useState(null);
   const [loading,setLoading]=useState(true);
-  const [sideOpen,setSideOpen]=useState(()=>!initialMobile);
+  const [theme,setTheme]=useState("dark");
+  const [toast,setToast]=useState(null);
   const [isMobile,setIsMobile]=useState(()=>initialMobile);
   const [viewOffset,setViewOffset]=useState(0);
-  const [courseOpen,setCourseOpen]=useState(false);
-  const [openTrackId,setOpenTrackId]=useState(null);
-  const [openCourseKey,setOpenCourseKey]=useState(null);
-  const [roadmapOpen,setRoadmapOpen]=useState(false);
-  const [activeVideoLessonId,setActiveVideoLessonId]=useState(null);
+  const [openTrack,setOpenTrack]=useState(TRACK_COURSE_TREE[0]?.tid||"foundations");
+  const [openCourse,setOpenCourse]=useState(null);
+  const [openTopicPacks,setOpenTopicPacks]=useState({});
+  const [activeLessonId,setActiveLessonId]=useState(null);
+  const [videoOpen,setVideoOpen]=useState(false);
   const [timerTick,setTimerTick]=useState(0);
-  const [theme,setTheme]=useState("dark");
+  const [programDraft,setProgramDraft]=useState({name:"",scope:"",outOfScope:"",rewards:"",rules:"",lastTested:"",notes:"",trusted:false});
 
-  const saveState=useCallback(ns=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(ns));}catch(e){}},[]);
+  const saveState=useCallback((next)=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));}catch(e){}},[]);
   const mergeState=raw=>{
-    const ns={...D0,...raw};
+    const ns={...D0,...(raw||{})};
     ns.trainingStartDate=raw?.trainingStartDate||today();
     ns.doneLessons=raw?.doneLessons||{};
     ns.doneDailySessions=raw?.doneDailySessions||{};
     ns.lessonNotes=raw?.lessonNotes||{};
-    ns.activeTab=raw?.activeTab||"today";
     ns.sessionTimers=raw?.sessionTimers||{};
     ns.lessonReview=raw?.lessonReview||{};
+    ns.doneLabs=raw?.doneLabs||{};
+    ns.doneProjects=raw?.doneProjects||{};
+    ns.projectNotes=raw?.projectNotes||{};
+    ns.doneCtfPlatforms=raw?.doneCtfPlatforms||{};
+    ns.ctfFilters={...D0.ctfFilters,...(raw?.ctfFilters||{})};
+    ns.careerGoal=CAREER_MODES.some(mode=>mode.id===raw?.careerGoal)?raw.careerGoal:D0.careerGoal;
+    ns.missionSteps=raw?.missionSteps||{};
+    ns.missionReports=raw?.missionReports||{};
+    ns.proofOfWork=raw?.proofOfWork||{};
+    ns.mistakeNotebook=raw?.mistakeNotebook||{};
+    ns.beforeAfter=raw?.beforeAfter||{};
+    ns.toolMastery=raw?.toolMastery||{};
+    ns.attackChains=raw?.attackChains||{};
+    ns.reconDashboards=raw?.reconDashboards||{};
+    ns.bugBountyPrograms=raw?.bugBountyPrograms||{};
+    ns.scopeDiscipline=raw?.scopeDiscipline||{};
+    ns.threatModels=raw?.threatModels||{};
+    ns.weeklyBosses=raw?.weeklyBosses||{};
+    ns.flashcardReview=raw?.flashcardReview||{};
+    ns.deepWorkSegments=raw?.deepWorkSegments||{};
+    ns.activeReportContext=raw?.activeReportContext&&raw.activeReportContext.id?raw.activeReportContext:null;
+    ns.reviewQueue=Array.isArray(raw?.reviewQueue)?raw.reviewQueue:[];
     ns.searchFilters={...D0.searchFilters,...(raw?.searchFilters||{})};
-    ns.libraryFilter=raw?.libraryFilter||"all";
+    ns.activeTab=TAB_ITEMS.some(tab=>tab.id===raw?.activeTab)?raw.activeTab:"today";
+    ns.totalDone=Object.values(ns.doneLessons).filter(Boolean).length;
     ns.badges=raw?.badges||[];
-    ns.certificates=raw?.certificates||[];
-    ns.totalDone=Object.values(ns.doneLessons).filter(Boolean).length||ns.totalDone||0;
     return ns;
   };
   const upd=useCallback(patch=>{
@@ -21199,22 +21709,37 @@ export default function CyberPath(){
       return next;
     });
   },[saveState]);
-  const showToast=m=>{setToast(m);setTimeout(()=>setToast(null),2600);};
-  const toggleTheme=()=>setTheme(p=>p==="dark"?"light":"dark");
+  const notify=msg=>{setToast(msg);setTimeout(()=>setToast(null),2300);};
+  const downloadText=(filename,content)=>{
+    try{
+      const blob=new Blob([content],{type:"text/markdown;charset=utf-8"});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;
+      a.download=filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      notify(`تم تجهيز ${filename}`);
+    }catch(e){
+      navigator.clipboard?.writeText(content);
+      notify("لم يعمل التحميل، تم نسخ المحتوى بدلًا من ذلك");
+    }
+  };
 
   useEffect(()=>{
     try{
       const raw=localStorage.getItem(STORAGE_KEY);
-      const ns=mergeState(raw?JSON.parse(raw):{});
-      setS(ns);
-      saveState(ns);
+      const next=mergeState(raw?JSON.parse(raw):{});
+      setS(next);
+      saveState(next);
     }catch(e){
-      setS(mergeState({}));
+      const next=mergeState({});
+      setS(next);
+      saveState(next);
     }
     setLoading(false);
   },[saveState]);
-  useEffect(()=>{const fn=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);},[]);
-  useEffect(()=>{if(isMobile)setSideOpen(false);},[isMobile]);
+  useEffect(()=>{const onResize=()=>setIsMobile(window.innerWidth<861);window.addEventListener("resize",onResize);return()=>window.removeEventListener("resize",onResize);},[]);
   useEffect(()=>{const id=setInterval(()=>setTimerTick(t=>t+1),1000);return()=>clearInterval(id);},[]);
 
   const selectedDate=addDays(new Date(),viewOffset);
@@ -21222,424 +21747,1792 @@ export default function CyberPath(){
   const trainingDay=getTrainingDay(s.trainingStartDate||today(),selectedDateKey);
   const restDay=isFriday(selectedDate);
   const dailyPlan=restDay?{dayNumber:trainingDay,sessions:[],exhausted:false}:buildDailyTodo(trainingDay);
+  const todayLessons=dailyPlan.sessions.flatMap(session=>session.lessons);
+  const activeTab=s.activeTab||"today";
   const doneLessonCount=Object.values(s.doneLessons||{}).filter(Boolean).length;
   const totalLessonCount=LESSONS.length;
   const overallPct=pct(doneLessonCount,totalLessonCount);
-  const lv=getLevel(s.xp);
-  const nextLevel=LEVELS.find(l=>l.lv===lv.lv+1)||lv;
-  const levelPct=clamp(Math.round((s.xp-lv.min)/((nextLevel.min||lv.min+1000)-lv.min)*100),0,100);
-  const todayDone=dailyPlan.sessions.flatMap(session=>session.lessons).filter(lesson=>s.doneLessons?.[lesson.id]).length;
-  const todayTotal=dailyPlan.sessions.reduce((sum,session)=>sum+session.lessons.length,0);
-  const currentRoadmapWeek=clamp(Math.ceil(Math.max(1,trainingDay)/6),1,80);
-  const currentPhase=findPhase(currentRoadmapWeek);
-  const SB=sideOpen?260:72;
-  const activeTab=s.activeTab||"today";
+  const todayDone=todayLessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+  const lv=getLevel(s.xp||0);
+  const currentWeek=clamp(Math.ceil(Math.max(1,trainingDay)/6),1,80);
+  const currentPhase=findPhase(currentWeek);
+  const activeLesson=LESSONS.find(lesson=>lesson.id===activeLessonId)||todayLessons.find(lesson=>!s.doneLessons?.[lesson.id])||todayLessons[0]||LESSONS[0];
+  const activeCourse=COURSE_BY_ID[activeLesson?.courseId];
+  const activeResources=activeLesson?getLessonRelatedResources(activeLesson).slice(0,8):[];
   const searchFilters={...D0.searchFilters,...(s.searchFilters||{})};
-  const activeVideoLesson=activeVideoLessonId?LESSONS.find(lesson=>lesson.id===activeVideoLessonId):null;
+  const selectedTrack=TRACKS[openTrack]||TRACKS.foundations;
+  const selectedCoverage=trackCoverage(openTrack);
+  const ctfFilters={...D0.ctfFilters,...(s.ctfFilters||{})};
+  const careerMode=CAREER_MODES.find(mode=>mode.id===s.careerGoal)||CAREER_MODES[0];
+  const activeReportContext=s.activeReportContext&&s.activeReportContext.id?s.activeReportContext:null;
+  const reportContextTrack=activeReportContext?.trackId&&TRACKS[activeReportContext.trackId]?activeReportContext.trackId:null;
+  const missionTrackId=reportContextTrack||activeLesson?.trackIds?.[0]||careerMode.focus?.[0]||openTrack;
+  const missionTrack=TRACKS[missionTrackId]||selectedTrack;
+  const missionTopics=getTrackTopics(missionTrackId);
+  const missionTopic=activeReportContext
+    ?{id:`${activeReportContext.type}-${activeReportContext.id}`,phase:activeReportContext.source||"Report Factory",topic:activeReportContext.title||"Report Context"}
+    :missionTopics.length?missionTopics[Math.abs(trainingDay-1)%missionTopics.length]:{id:`lesson-${activeLesson?.id||"default"}`,phase:missionTrack.name,topic:activeLesson?.title||"Daily Cyber Mission"};
+  const missionPhase=(TRACKS[missionTrackId]?.phases||[]).find(phase=>phase.name===missionTopic.phase)||{name:missionTopic.phase};
+  const missionKey=activeReportContext?`context-${activeReportContext.type}-${activeReportContext.id}`:`${selectedDateKey}-${missionTrackId}-${missionTopic.id}`;
+  const missionPack=getTopicResourcePack(missionTrackId,missionPhase,missionTopic.topic);
+  const missionReport={summary:"",steps:"",evidence:"",impact:"",fix:"",lessons:"",...(s.missionReports?.[missionKey]||{})};
+  const missionProof={screenshot:"",writeup:"",commands:"",report:"",...(s.proofOfWork?.[missionKey]||{})};
+  const missionBeforeAfter={before:"",after:"",...(s.beforeAfter?.[missionKey]||{})};
+  const missionMistakes=s.mistakeNotebook?.[missionKey]||"";
+  const reportScore=REPORT_FIELDS.filter(([id])=>missionReport[id]?.trim()).length;
+  const proofScore=PROOF_FIELDS.filter(([id])=>missionProof[id]?.trim()).length;
+  const doneLabsCount=Object.keys(s.doneLabs||{}).length;
+  const doneCtfCount=Object.keys(s.doneCtfPlatforms||{}).length;
+  const doneProjectsCount=Object.keys(s.doneProjects||{}).length;
+  const reportCount=Object.values(s.missionReports||{}).filter(report=>report&&Object.values(report).some(value=>String(value||"").trim())).length;
+  const proofCount=Object.values(s.proofOfWork||{}).filter(proof=>proof&&Object.values(proof).some(value=>String(value||"").trim())).length;
+  const missionAttackChain=Object.fromEntries(ATTACK_CHAIN_STEPS.map(([id])=>[id,s.attackChains?.[missionKey]?.[id]||""]));
+  const missionRecon=Object.fromEntries(RECON_FIELDS.map(([id])=>[id,s.reconDashboards?.[missionKey]?.[id]||""]));
+  const missionThreatModel=Object.fromEntries(THREAT_MODEL_FIELDS.map(([id])=>[id,s.threatModels?.[missionKey]?.[id]||""]));
+  const weeklyBossKey=`week-${currentWeek}`;
+  const weeklyBoss={target:"",rules:"",report:"",proof:"",done:false,...(s.weeklyBosses?.[weeklyBossKey]||{})};
+  const missionDeepWork=s.deepWorkSegments?.[missionKey]||{};
+  const missionKeywords=extractEnglishKeywords(
+    missionTopic.topic,
+    activeLesson?.title,
+    activeLesson?.topicTags?.join(" "),
+    Object.values(missionReport).join(" "),
+    Object.values(missionProof).join(" "),
+    missionMistakes,
+    missionBeforeAfter.before,
+    missionBeforeAfter.after
+  );
+  const noteCount=Object.values(s.lessonNotes||{}).filter(note=>String(note||"").trim()).length;
+  const writeupCount=Object.values(s.proofOfWork||{}).filter(proof=>String(proof?.writeup||"").trim()).length;
+  const commandProofCount=Object.values(s.proofOfWork||{}).filter(proof=>String(proof?.commands||"").trim()).length;
+  const portfolioChecks=[
+    {id:"reports",label:"Reports",done:reportCount,target:10},
+    {id:"proof",label:"Proof",done:proofCount,target:10},
+    {id:"projects",label:"Projects",done:doneProjectsCount,target:5},
+    {id:"writeups",label:"Writeups",done:writeupCount,target:5},
+    {id:"notes",label:"Notes",done:noteCount,target:30},
+    {id:"commands",label:"Command evidence",done:commandProofCount,target:8},
+  ];
+  const portfolioReadinessScore=Math.round(portfolioChecks.reduce((sum,item)=>sum+Math.min(1,item.done/item.target),0)/portfolioChecks.length*100);
+  const topicSourceCount=missionPack.videos.length+missionPack.articles.length+missionPack.writeups.length+missionPack.methods.length;
+  const antiRabbitHole=topicSourceCount>12&&!s.missionSteps?.[`${missionKey}:labs`];
+  const buildPortfolioMarkdown=()=>{
+    const completedProjects=PROJECT_LIBRARY.filter(project=>s.doneProjects?.[project.id]).slice(-20);
+    const reportRows=Object.entries(s.missionReports||{})
+      .filter(([,report])=>report&&Object.values(report).some(value=>String(value||"").trim()))
+      .slice(-20);
+    const proofRows=Object.entries(s.proofOfWork||{})
+      .filter(([,proof])=>proof&&Object.values(proof).some(value=>String(value||"").trim()))
+      .slice(-20);
+    const completedLessons=LESSONS.filter(lesson=>s.doneLessons?.[lesson.id]).slice(-30);
+    return[
+      "# CyberPath Portfolio Snapshot",
+      "",
+      `Generated: ${today()}`,
+      `Career Mode: ${careerMode.title}`,
+      `Portfolio Readiness Score: ${portfolioReadinessScore}%`,
+      "",
+      "## Readiness Checklist",
+      ...portfolioChecks.map(item=>`- ${item.label}: ${item.done}/${item.target}`),
+      "",
+      "## Completed Projects",
+      ...(completedProjects.length?completedProjects.map(project=>`- ${project.title} (${TRACKS[project.trackId]?.name||project.trackId})`):["- No completed projects yet"]),
+      "",
+      "## Recent Reports",
+      ...(reportRows.length?reportRows.map(([key,report])=>`- ${key}: ${String(report.summary||"Report").replace(/\n+/g," ").slice(0,180)}`):["- No reports yet"]),
+      "",
+      "## Proof Links",
+      ...(proofRows.length?proofRows.map(([key,proof])=>{
+        const links=PROOF_FIELDS.map(([id,label])=>proof[id]?`${label}: ${String(proof[id]).replace(/\n+/g," ").slice(0,160)}`:null).filter(Boolean).join(" | ");
+        return`- ${key}: ${links||"Proof entry"}`;
+      }):["- No proof entries yet"]),
+      "",
+      "## Recent Lessons",
+      ...(completedLessons.length?completedLessons.map(lesson=>`- ${lesson.title} - ${COURSE_BY_ID[lesson.courseId]?.title||lesson.courseId}`):["- No completed lessons yet"]),
+    ].join("\n");
+  };
 
   useEffect(()=>{
     if(loading)return;
-    const earned=BADGES.filter(b=>!s.badges.includes(b.id)&&b.check(s));
-    if(earned.length){
-      upd(prev=>({...prev,badges:[...prev.badges,...earned.map(b=>b.id)],xp:prev.xp+earned.reduce((sum,b)=>sum+b.xp,0)}));
-      showToast(`شارة جديدة: ${earned.map(b=>b.ar).join(" + ")}`);
-    }
+    const earned=BADGES.filter(b=>!s.badges?.includes(b.id)&&b.check(s));
+    if(!earned.length)return;
+    upd(prev=>({...prev,badges:[...(prev.badges||[]),...earned.map(b=>b.id)],xp:(prev.xp||0)+earned.reduce((sum,b)=>sum+b.xp,0)}));
+    notify(`شارة جديدة: ${earned.map(b=>b.ar).join(" + ")}`);
   },[s.totalDone,s.bestStreak,s.perfectQuiz,s.islamicDays,JSON.stringify(s.donePhases),loading,upd]);
+
+  const setTab=id=>upd(prev=>({...prev,activeTab:id}));
+  const timerKey=sessionId=>sessionKey(selectedDateKey,sessionId);
+  const timerFor=key=>{timerTick;return timerSnapshot(s.sessionTimers?.[key]);};
+  const writeTimer=(key,fn)=>upd(prev=>{
+    const current=timerSnapshot(prev.sessionTimers?.[key]);
+    return{...prev,sessionTimers:{...(prev.sessionTimers||{}),[key]:fn(current)}};
+  });
+  const startTimer=key=>writeTimer(key,t=>({durationSec:SESSION_TARGET_MIN*60,remainingSec:t.completed||t.remainingSec<=0?SESSION_TARGET_MIN*60:t.remainingSec,startedAt:Date.now(),running:true,completed:false}));
+  const startCustomTimer=(key,durationSec)=>writeTimer(key,t=>({durationSec,remainingSec:t.completed||t.durationSec!==durationSec||t.remainingSec<=0?durationSec:t.remainingSec,startedAt:Date.now(),running:true,completed:false}));
+  const pauseTimer=key=>writeTimer(key,t=>({...t,startedAt:null,running:false,completed:false}));
+  const resetTimer=key=>writeTimer(key,()=>({durationSec:SESSION_TARGET_MIN*60,remainingSec:SESSION_TARGET_MIN*60,startedAt:null,running:false,completed:false}));
+  const resetCustomTimer=(key,durationSec)=>writeTimer(key,()=>({durationSec,remainingSec:durationSec,startedAt:null,running:false,completed:false}));
+  const completeTimer=key=>writeTimer(key,t=>({...t,remainingSec:0,startedAt:null,running:false,completed:true}));
+  const contextKeyFor=context=>`context-${context.type}-${context.id}`;
+  const openReportContext=context=>{
+    const clean={
+      id:String(context.id),
+      type:context.type||"item",
+      title:context.title||"Training item",
+      source:context.source||"Report Factory",
+      trackId:context.trackId&&TRACKS[context.trackId]?context.trackId:openTrack,
+      url:context.url||null,
+    };
+    const key=contextKeyFor(clean);
+    upd(prev=>{
+      const existing=prev.missionReports?.[key]||{};
+      return{
+        ...prev,
+        activeTab:"command",
+        activeReportContext:clean,
+        missionReports:{
+          ...(prev.missionReports||{}),
+          [key]:{
+            ...existing,
+            summary:existing.summary||`${clean.type.toUpperCase()} report: ${clean.title}`,
+          },
+        },
+      };
+    });
+    setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),30);
+    notify("تم فتح Report Factory لهذا التدريب");
+  };
+  const clearReportContext=()=>upd(prev=>({...prev,activeReportContext:null,activeTab:"command"}));
 
   const toggleLesson=lesson=>{
     const was=!!s.doneLessons?.[lesson.id];
     upd(prev=>{
       const doneLessons={...(prev.doneLessons||{})};
-      let reviewQueue=[...(prev.reviewQueue||[])];
+      let reviewQueue=[...(prev.reviewQueue||[])].filter(item=>item.lessonId!==lesson.id);
       if(was)delete doneLessons[lesson.id];
       else{
         doneLessons[lesson.id]=today();
-        reviewQueue=[
-          ...reviewQueue.filter(item=>item.lessonId!==lesson.id),
-          {lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null}
-        ];
+        reviewQueue.push({lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null});
       }
-      if(was)reviewQueue=reviewQueue.filter(item=>item.lessonId!==lesson.id);
-      const next={...prev,doneLessons,reviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:Math.max(0,prev.xp+(was?-10:10))};
+      const next={...prev,doneLessons,reviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:Math.max(0,(prev.xp||0)+(was?-10:10))};
       next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
       return next;
     });
-    showToast(was?"تم إرجاع الدرس لقائمة اليوم":"تم إنهاء الدرس +10 XP");
+    notify(was?"تم إلغاء إنجاز الدرس":"تم إنهاء الدرس +10 XP");
   };
-
   const completeSession=session=>{
     const missing=session.lessons.filter(lesson=>!s.doneLessons?.[lesson.id]);
-    if(!missing.length){showToast("الجلسة مكتملة بالفعل");return;}
+    if(!missing.length){notify("الجلسة مكتملة بالفعل");return;}
     upd(prev=>{
       const doneLessons={...(prev.doneLessons||{})};
-      const nextReviewQueue=[...(prev.reviewQueue||[])];
-      missing.forEach(lesson=>{doneLessons[lesson.id]=today();});
+      const reviewQueue=[...(prev.reviewQueue||[])];
       missing.forEach(lesson=>{
-        if(!nextReviewQueue.some(item=>item.lessonId===lesson.id))nextReviewQueue.push({lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null});
+        doneLessons[lesson.id]=today();
+        if(!reviewQueue.some(item=>item.lessonId===lesson.id))reviewQueue.push({lessonId:lesson.id,reason:"completed",dueDate:addDaysKey(today(),1),lastReviewedAt:null});
       });
-      const next={...prev,doneLessons,reviewQueue:nextReviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:prev.xp+(missing.length*10)};
+      const next={...prev,doneLessons,reviewQueue,totalDone:Object.values(doneLessons).filter(Boolean).length,xp:(prev.xp||0)+missing.length*10};
       next.doneDailySessions=syncDailySessions(next,dailyPlan,selectedDateKey);
       return next;
     });
-    showToast(`الجلسة اكتملت +${missing.length*10} XP`);
+    completeTimer(timerKey(session.id));
+    notify(`اكتملت الجلسة +${missing.length*10} XP`);
   };
-
-  const saveLessonNote=(lessonId,value)=>upd(prev=>{
-    const lesson=LESSONS.find(l=>l.id===lessonId);
-    let reviewQueue=[...(prev.reviewQueue||[])];
-    if(value.trim()&&lesson&&!reviewQueue.some(item=>item.lessonId===lessonId)){
-      reviewQueue.push({lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});
-    }
+  const saveNote=(lessonId,value)=>upd(prev=>{
+    const hasNote=value.trim().length>0;
+    const reviewQueue=[...(prev.reviewQueue||[])];
+    if(hasNote&&!reviewQueue.some(item=>item.lessonId===lessonId))reviewQueue.push({lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});
     return{...prev,reviewQueue,lessonNotes:{...(prev.lessonNotes||{}),[lessonId]:value}};
   });
-  const goToday=()=>setViewOffset(0);
-  const doCheckIn=()=>{
-    const t=today();
-    if(s.lastCheckIn===t){showToast("سبق تسجيل الحضور اليوم");return;}
-    const y=dateKey(addDays(new Date(),-1));
-    const streak=s.lastCheckIn===y?s.streak+1:1;
-    upd(prev=>({...prev,lastCheckIn:t,streak,bestStreak:Math.max(streak,prev.bestStreak||0),xp:prev.xp+15,islamicDays:(prev.islamicDays||0)+1}));
-    showToast(`حضور اليومي مسجل: سلسلة ${streak} يوم`);
+  const toggleLab=lab=>{
+    const was=!!s.doneLabs?.[lab.id];
+    upd(prev=>{
+      const doneLabs={...(prev.doneLabs||{})};
+      if(was)delete doneLabs[lab.id];
+      else doneLabs[lab.id]=today();
+      return{...prev,doneLabs,xp:Math.max(0,(prev.xp||0)+(was?-8:8))};
+    });
+    if(was)notify("تم إلغاء إنجاز الـ Lab");
+    else openReportContext({id:lab.id,type:"lab",title:lab.title,source:lab.phase||lab.source||"Lab",trackId:openTrack,url:lab.url});
   };
-  const setActiveTab=id=>upd(prev=>({...prev,activeTab:id}));
-  const timerFor=key=>{timerTick;return timerSnapshot(s.sessionTimers?.[key]);};
-  const updateTimer=(key,fn)=>upd(prev=>{
-    const current=timerSnapshot(prev.sessionTimers?.[key]);
-    const nextTimer=fn(current);
-    return{...prev,sessionTimers:{...(prev.sessionTimers||{}),[key]:nextTimer}};
+  const toggleProject=project=>{
+    const was=!!s.doneProjects?.[project.id];
+    upd(prev=>{
+      const doneProjects={...(prev.doneProjects||{})};
+      if(was)delete doneProjects[project.id];
+      else doneProjects[project.id]=today();
+      return{...prev,doneProjects,xp:Math.max(0,(prev.xp||0)+(was?-50:50))};
+    });
+    if(was)notify("تم إلغاء إنجاز المشروع");
+    else openReportContext({id:project.id,type:"project",title:project.title,source:"Project report",trackId:project.trackId||openTrack});
+  };
+  const saveProjectNote=(projectId,value)=>upd(prev=>({...prev,projectNotes:{...(prev.projectNotes||{}),[projectId]:value}}));
+  const toggleCtfPlatform=platform=>{
+    const was=!!s.doneCtfPlatforms?.[platform.id];
+    upd(prev=>{
+      const doneCtfPlatforms={...(prev.doneCtfPlatforms||{})};
+      if(was)delete doneCtfPlatforms[platform.id];
+      else doneCtfPlatforms[platform.id]=today();
+      return{...prev,doneCtfPlatforms,xp:Math.max(0,(prev.xp||0)+(was?-12:12))};
+    });
+    if(was)notify("تم إلغاء إنجاز منصة CTF");
+    else openReportContext({id:platform.id,type:"ctf",title:platform.title,source:platform.category||"CTF",trackId:platform.trackIds?.[0]||"ctf",url:platform.url});
+  };
+  const setCtfFilter=patch=>upd(prev=>({...prev,ctfFilters:{...D0.ctfFilters,...(prev.ctfFilters||{}),...patch}}));
+  const setCareerGoal=careerGoal=>upd(prev=>({...prev,careerGoal}));
+  const missionStepKey=stepId=>`${missionKey}:${stepId}`;
+  const toggleMissionStep=stepId=>upd(prev=>{
+    const key=missionStepKey(stepId);
+    const missionSteps={...(prev.missionSteps||{})};
+    const willDone=!missionSteps[key];
+    if(willDone)missionSteps[key]=today();
+    else delete missionSteps[key];
+    return{...prev,missionSteps,xp:Math.max(0,(prev.xp||0)+(willDone?6:-6))};
   });
-  const startTimer=key=>updateTimer(key,t=>{
-    const remaining=t.completed||t.remainingSec<=0?SESSION_TARGET_MIN*60:t.remainingSec;
-    return{durationSec:SESSION_TARGET_MIN*60,remainingSec:remaining,startedAt:Date.now(),running:true,completed:false};
+  const saveMissionReport=(field,value)=>upd(prev=>({...prev,missionReports:{...(prev.missionReports||{}),[missionKey]:{...(prev.missionReports?.[missionKey]||{}),[field]:value}}}));
+  const applyReportTemplate=template=>{
+    upd(prev=>{
+      const existing=prev.missionReports?.[missionKey]||{};
+      const next={...existing};
+      Object.entries(template.fields||{}).forEach(([field,value])=>{
+        if(!String(next[field]||"").trim())next[field]=value;
+      });
+      return{...prev,missionReports:{...(prev.missionReports||{}),[missionKey]:next}};
+    });
+    notify(`تم تطبيق قالب ${template.title}`);
+  };
+  const saveProof=(field,value)=>upd(prev=>({...prev,proofOfWork:{...(prev.proofOfWork||{}),[missionKey]:{...(prev.proofOfWork?.[missionKey]||{}),[field]:value}}}));
+  const saveBeforeAfter=(field,value)=>upd(prev=>({...prev,beforeAfter:{...(prev.beforeAfter||{}),[missionKey]:{...(prev.beforeAfter?.[missionKey]||{}),[field]:value}}}));
+  const saveMistakes=value=>upd(prev=>{
+    const reviewQueue=[...(prev.reviewQueue||[])];
+    if(value.trim()&&activeLesson?.id&&!reviewQueue.some(item=>item.lessonId===activeLesson.id&&item.reason==="mistake")){
+      reviewQueue.push({lessonId:activeLesson.id,reason:"mistake",dueDate:addDaysKey(today(),1),lastReviewedAt:null});
+    }
+    return{...prev,reviewQueue,mistakeNotebook:{...(prev.mistakeNotebook||{}),[missionKey]:value}};
   });
-  const pauseTimer=key=>updateTimer(key,t=>({...t,remainingSec:t.remainingSec,startedAt:null,running:false,completed:false}));
-  const resetTimer=key=>updateTimer(key,()=>({durationSec:SESSION_TARGET_MIN*60,remainingSec:SESSION_TARGET_MIN*60,startedAt:null,running:false,completed:false}));
-  const completeTimer=key=>updateTimer(key,t=>({...t,remainingSec:0,startedAt:null,running:false,completed:true}));
+  const toggleToolMastery=(toolId,field)=>upd(prev=>{
+    const current=prev.toolMastery?.[toolId]||{};
+    return{...prev,toolMastery:{...(prev.toolMastery||{}),[toolId]:{...current,[field]:!current[field]}}};
+  });
+  const saveAttackChain=(field,value)=>upd(prev=>({...prev,attackChains:{...(prev.attackChains||{}),[missionKey]:{...(prev.attackChains?.[missionKey]||{}),[field]:value}}}));
+  const saveReconField=(field,value)=>upd(prev=>({...prev,reconDashboards:{...(prev.reconDashboards||{}),[missionKey]:{...(prev.reconDashboards?.[missionKey]||{}),[field]:value}}}));
+  const saveThreatModel=(field,value)=>upd(prev=>({...prev,threatModels:{...(prev.threatModels||{}),[missionKey]:{...(prev.threatModels?.[missionKey]||{}),[field]:value}}}));
+  const toggleDeepWorkSegment=segmentId=>upd(prev=>{
+    const current={...(prev.deepWorkSegments?.[missionKey]||{})};
+    if(current[segmentId])delete current[segmentId];
+    else current[segmentId]=today();
+    return{...prev,deepWorkSegments:{...(prev.deepWorkSegments||{}),[missionKey]:current}};
+  });
+  const saveWeeklyBoss=(field,value)=>upd(prev=>({...prev,weeklyBosses:{...(prev.weeklyBosses||{}),[weeklyBossKey]:{...(prev.weeklyBosses?.[weeklyBossKey]||{}),[field]:value}}}));
+  const toggleWeeklyBossDone=()=>upd(prev=>{
+    const current={target:"",rules:"",report:"",proof:"",done:false,...(prev.weeklyBosses?.[weeklyBossKey]||{})};
+    return{...prev,weeklyBosses:{...(prev.weeklyBosses||{}),[weeklyBossKey]:{...current,done:!current.done,completedAt:!current.done?today():null}},xp:Math.max(0,(prev.xp||0)+(current.done?-40:40))};
+  });
+  const markFlashcard=(cardId,known)=>{
+    const due=known?addDaysKey(today(),7):addDaysKey(today(),1);
+    upd(prev=>({...prev,flashcardReview:{...(prev.flashcardReview||{}),[cardId]:{known,lastReviewedAt:today(),nextReviewAt:due,reviewCount:(prev.flashcardReview?.[cardId]?.reviewCount||0)+1}}}));
+    notify(known?`Flashcard مؤجلة إلى ${due}`:"ستظهر للمراجعة غدًا");
+  };
+  const saveBugProgram=()=>{
+    const name=programDraft.name.trim();
+    if(!name){notify("اكتب اسم البرنامج أولًا");return;}
+    const id=`bb-${Date.now()}`;
+    upd(prev=>({...prev,bugBountyPrograms:{...(prev.bugBountyPrograms||{}),[id]:{...programDraft,id,createdAt:today()}}}));
+    setProgramDraft({name:"",scope:"",outOfScope:"",rewards:"",rules:"",lastTested:"",notes:"",trusted:false});
+    notify("تم حفظ برنامج Bug Bounty");
+  };
+  const updateBugProgram=(programId,field,value)=>upd(prev=>({...prev,bugBountyPrograms:{...(prev.bugBountyPrograms||{}),[programId]:{...(prev.bugBountyPrograms?.[programId]||{}),[field]:value}}}));
+  const removeBugProgram=programId=>upd(prev=>{
+    const bugBountyPrograms={...(prev.bugBountyPrograms||{})};
+    delete bugBountyPrograms[programId];
+    return{...prev,bugBountyPrograms};
+  });
+  const toggleScopeCheck=(programId,field)=>upd(prev=>{
+    const current={...(prev.scopeDiscipline?.[programId]||{})};
+    current[field]=!current[field];
+    return{...prev,scopeDiscipline:{...(prev.scopeDiscipline||{}),[programId]:current}};
+  });
+  const openLesson=lesson=>{
+    setActiveLessonId(lesson.id);
+    setVideoOpen(false);
+    setTab("today");
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  const checkIn=()=>{
+    const t=today();
+    if(s.lastCheckIn===t){notify("تم تسجيل حضور اليوم سابقًا");return;}
+    const y=dateKey(addDays(new Date(),-1));
+    const streak=s.lastCheckIn===y?(s.streak||0)+1:1;
+    upd(prev=>({...prev,lastCheckIn:t,streak,bestStreak:Math.max(streak,prev.bestStreak||0),xp:(prev.xp||0)+15,islamicDays:(prev.islamicDays||0)+1}));
+    notify(`تم تسجيل الحضور: ${streak} يوم`);
+  };
+  const setSearchFilter=patch=>upd(prev=>({...prev,searchFilters:{...D0.searchFilters,...(prev.searchFilters||{}),...patch}}));
   const markReviewed=lesson=>{
     const current=s.lessonReview?.[lesson.id]||{reviewCount:0};
     const reviewCount=(current.reviewCount||0)+1;
     const nextReviewAt=addDaysKey(today(),reviewCount===1?3:reviewCount===2?7:14);
     upd(prev=>({...prev,lessonReview:{...(prev.lessonReview||{}),[lesson.id]:{reviewCount,lastReviewedAt:today(),nextReviewAt}},reviewQueue:(prev.reviewQueue||[]).map(item=>item.lessonId===lesson.id?{...item,reason:"scheduled",dueDate:nextReviewAt,lastReviewedAt:today()}:item)}));
-    showToast(`تمت مراجعة الدرس. المراجعة القادمة: ${nextReviewAt}`);
+    notify(`المراجعة القادمة: ${nextReviewAt}`);
   };
-  const postponeReview=lesson=>upd(prev=>({...prev,reviewQueue:(prev.reviewQueue||[]).map(item=>item.lessonId===lesson.id?{...item,dueDate:addDaysKey(today(),2)}:item)}));
-  const setSearchFilter=patch=>upd(prev=>({...prev,searchFilters:{...D0.searchFilters,...(prev.searchFilters||{}),...patch}}));
 
-  const Sidebar=()=>(<div className={isMobile?"sidebar-mobile":"sidebar-glow sidebar-desktop"} style={{width:isMobile?260:(sideOpen?260:72),minHeight:"100vh",background:"var(--sg)",borderRight:"1px solid rgba(0,255,136,0.1)",display:isMobile&&!sideOpen?"none":"flex",flexDirection:"column",padding:"20px 10px",gap:10,transition:"width 0.3s ease",position:"fixed",top:0,left:0,zIndex:100,overflowY:"auto",overflowX:"hidden"}}>
-    <div style={{display:"flex",alignItems:"center",gap:10,padding:"0 4px"}}>
-      <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
-        <span style={{fontSize:16,color:"#050810",fontWeight:900}}>CP</span>
-      </div>
-      {sideOpen&&<div style={{minWidth:0}}><div style={{color:"#00ff88",fontWeight:700,fontSize:13,fontFamily:"'Fira Code',monospace"}} className="glow">CyberPath Academy</div><div style={{color:"var(--t2)",fontSize:10}}>Todo اليوم · YouTube Curriculum</div></div>}
-      <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"}>{theme==="dark"?"☀":"☾"}</button>
-    </div>
-    {sideOpen&&(<>
-      <div style={{padding:12,background:"rgba(0,255,136,0.05)",borderRadius:8,border:"1px solid rgba(0,255,136,0.1)"}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:8}}>
-          <div><div style={{color:lv.color,fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif"}}>{lv.icon} {lv.ar}</div><div style={{color:"var(--t2)",fontSize:10}}>{s.xp} XP</div></div>
-          <Ring pct={levelPct} size={42} color={lv.color}/>
+  const ShellHeader=()=>(
+    <div className="mo-top">
+      <div className="mo-brand">
+        <div className="mo-logo">CP</div>
+        <div style={{minWidth:0}}>
+          <div style={{fontWeight:900,fontSize:18}}>CyberPath Academy</div>
+          <div className="mo-kbd">Modern Study OS · {COURSES.length} courses · {LESSONS.length} lessons</div>
         </div>
-        <div className="bar"><div className="bar-fill" style={{width:`${levelPct}%`,background:`linear-gradient(90deg,${lv.color},${lv.color}88)`}}/></div>
       </div>
-      <div style={{padding:12,background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8}}>
-        <div style={{color:"var(--t0)",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",marginBottom:8}}>تقدم المنهج</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-          {[{label:"الدروس",val:`${doneLessonCount}/${totalLessonCount}`},{label:"اليوم",val:trainingDay>0?trainingDay:"راحة"},{label:"الكورسات",val:COURSES.length},{label:"القوائم",val:`${UNIQUE_PLAYLIST_COUNT}/${SOURCE_PLAYLIST_COUNT}`}].map((item,i)=><div key={i}>
-            <div style={{color:"#00ff88",fontSize:12,fontWeight:700,fontFamily:"'Fira Code',monospace"}}>{item.val}</div>
-            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{item.label}</div>
-          </div>)}
-        </div>
-        <div className="bar" style={{marginTop:10}}><div className="bar-fill" style={{width:`${overallPct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"flex-end"}}>
+        <button className="mo-btn" onClick={checkIn}>تسجيل حضور</button>
+        <button className="mo-btn" onClick={()=>setTheme(p=>p==="dark"?"light":"dark")}>{theme==="dark"?"Light":"Dark"}</button>
       </div>
-      <button className="btn btn-o" onClick={doCheckIn} style={{fontSize:12,padding:"9px 12px"}}>تسجيل حضور اليومي</button>
-    </>)}
-  </div>);
-
-  const StudyTabs=()=>(
-    <div style={{display:"flex",gap:6,overflowX:"auto",padding:"4px",background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:12,marginBottom:14}}>
-      {TAB_ITEMS.map(tab=><button key={tab.id} onClick={()=>setActiveTab(tab.id)} style={{minWidth:isMobile?92:120,padding:isMobile?"9px 10px":"10px 12px",borderRadius:9,border:`1px solid ${activeTab===tab.id?"var(--sbd3)":"transparent"}`,background:activeTab===tab.id?"var(--sbg12)":"transparent",color:activeTab===tab.id?"#00ff88":"var(--t4)",cursor:"pointer",fontFamily:"'Cairo',sans-serif",textAlign:"center"}}>
-        <div style={{fontSize:13,fontWeight:800}}>{tab.label}</div>
-        {!isMobile&&<div style={{fontSize:10,color:activeTab===tab.id?"var(--t5)":"var(--t2)",marginTop:2}}>{tab.hint}</div>}
-      </button>)}
     </div>
   );
 
-  const StudyTimer=({timerKey})=>{
-    const timer=timerFor(timerKey);
-    const progress=pct((timer.durationSec||SESSION_TARGET_MIN*60)-timer.remainingSec,timer.durationSec||SESSION_TARGET_MIN*60);
-    return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:12}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:10}}>
-        <div>
-          <div style={{color:"var(--t0)",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>مؤقت الجلس</div>
-          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{timer.completed?"completed":timer.running?"running":"paused"} · saved in localStorage</div>
-        </div>
-        <div style={{color:timer.completed?"#00ff88":timer.running?"#00d4ff":"var(--t0)",fontSize:24,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{formatTimer(timer.remainingSec)}</div>
-      </div>
-      <div className="bar" style={{height:8,marginBottom:10}}><div className="bar-fill" style={{width:`${progress}%`,background:timer.completed?"#00ff88":"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
-      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-        <button className="btn btn-g" onClick={()=>startTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>{timer.running?"استكمال":"ابدأ"}</button>
-        <button className="btn btn-o" onClick={()=>pauseTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>إيقاف</button>
-        <button className="btn btn-o" onClick={()=>resetTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>إعادة</button>
-        <button className="btn btn-o" onClick={()=>completeTimer(timerKey)} style={{fontSize:11,padding:"7px 11px"}}>تمت الجلسة</button>
-      </div>
-    </div>);
-  };
+  const Navigation=()=>(
+    <div className="mo-tabs">
+      {TAB_ITEMS.map(tab=>(
+        <button key={tab.id} className={`mo-tab ${activeTab===tab.id?"on":""}`} onClick={()=>setTab(tab.id)}>
+          <div style={{fontWeight:900}}>{tab.label}</div>
+          <div className="mo-kbd">{tab.hint}</div>
+        </button>
+      ))}
+    </div>
+  );
 
-  const InlineVideoPanel=({lesson,compact=false})=>{
-    if(!lesson)return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:14,color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>اختر درسًا لعرض الفيديو والملاحظات.</div>);
-    const course=COURSE_BY_ID[lesson.courseId],embed=getLessonEmbedUrl(lesson),note=s.lessonNotes?.[lesson.id]||"",done=!!s.doneLessons?.[lesson.id],showEmbed=activeVideoLessonId===lesson.id;
-    return(<div style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:10,padding:compact?10:12}}>
-      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",flexWrap:"wrap",marginBottom:10}}>
-        <div style={{minWidth:0}}>
-          <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace",marginBottom:3}}>{course?.title} · lesson #{lesson.index}</div>
-          <div style={{color:"var(--t0)",fontSize:compact?13:15,fontWeight:900,fontFamily:"'Cairo',sans-serif",lineHeight:1.6,overflowWrap:"anywhere"}}>{lesson.title}</div>
-        </div>
-        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-          {embed&&<button className="btn btn-o" onClick={()=>setActiveVideoLessonId(showEmbed?null:lesson.id)} style={{fontSize:11,padding:"7px 10px"}}>{showEmbed?"إخفاء الفيديو":"مشاهدة داخل التطبيق"}</button>}
-          <button className="btn btn-o" onClick={()=>toggleLesson(lesson)} style={{fontSize:11,padding:"7px 10px"}}>{done?"إلغاء الإنجاز":"إنهاء الدرس"}</button>
-          <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 10px"}}>فتح YouTube</a>
-        </div>
-      </div>
-      {embed&&showEmbed?(<div style={{aspectRatio:"16 / 9",width:"100%",borderRadius:10,overflow:"hidden",border:"1px solid var(--wo)",background:"#000",marginBottom:10}}>
-        <iframe title={lesson.title} src={embed} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{width:"100%",height:"100%",border:0}}/>
-      </div>):embed?(<div style={{background:"var(--w3)",border:"1px solid var(--wo)",borderRadius:10,padding:14,color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.7,marginBottom:10}}>
-        الفيديو جاهز داخل التطبيق بدون تحميل تلقائي. استخدم زر “مشاهدة داخل التطبيق” أو افتحه مباشرة في YouTube.
-      </div>):(<div style={{background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.24)",borderRadius:8,padding:10,color:"#f87171",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>تعذر استخراج embed لهذا الفيديو، استخدم زر YouTube.</div>)}
-      <textarea value={note} onChange={e=>saveLessonNote(lesson.id,e.target.value)} placeholder="ملاحظات الدرس، نقاط صعبة، أسئلة للمراجعة..." style={{width:"100%",minHeight:compact?64:86,resize:"vertical",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--w3)",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}/>
-    </div>);
-  };
-
-  const StudySessionPanel=({session})=>{
-    const timerKey=sessionKey(selectedDateKey,session.id);
-    const done=session.lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length,total=session.lessons.length;
-    const active=session.lessons.find(lesson=>lesson.id===activeVideoLessonId)||session.lessons.find(lesson=>!s.doneLessons?.[lesson.id])||session.lessons[0]||null;
-    return(<div className="card" style={{padding:isMobile?12:14,borderColor:done===total&&total?"rgba(0,255,136,0.3)":"var(--sbd)",background:"var(--sbg)"}}>
-      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 280px",gap:12,alignItems:"start",marginBottom:12}}>
-        <div>
-          <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap"}}>
-            <div><div style={{color:"var(--t0)",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{session.title}</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{done}/{total} lessons · {session.usedMin}m scheduled</div></div>
-            <button className="btn btn-o" disabled={!total} onClick={()=>{completeSession(session);completeTimer(timerKey);}} style={{fontSize:12,padding:"8px 12px",opacity:total?1:.45}}>إنهاء الجلسة</button>
+  const Side=()=>(
+    <aside className="mo-side">
+      {ShellHeader()}
+      <div className="mo-panel" style={{padding:14,marginTop:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
+          <div>
+            <div style={{color:lv.color,fontWeight:900}}>{lv.icon} {lv.ar}</div>
+            <div className="mo-kbd">{s.xp||0} XP · Week {currentWeek}</div>
           </div>
-          <div className="bar" style={{height:8,marginTop:10}}><div className="bar-fill" style={{width:`${pct(done,total)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+          <Ring pct={overallPct} size={54}/>
         </div>
-        <StudyTimer timerKey={timerKey}/>
+        <div className="mo-progress" style={{marginTop:12}}><span style={{width:`${overallPct}%`}}/></div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"minmax(260px,.75fr) minmax(0,1.25fr)",gap:12}}>
-        <div style={{display:"flex",flexDirection:"column",gap:7}}>
-          {total?session.lessons.map(lesson=>{
-            const doneLesson=!!s.doneLessons?.[lesson.id],sel=active?.id===lesson.id;
-            return(<button key={lesson.id} onClick={()=>setActiveVideoLessonId(lesson.id)} style={{textAlign:"initial",cursor:"pointer",background:sel?"var(--sbg12)":doneLesson?"rgba(0,255,136,0.05)":"var(--bo)",border:`1px solid ${sel?"var(--sbd3)":doneLesson?"rgba(0,255,136,0.22)":"var(--wo)"}`,borderRadius:8,padding:9}}>
-              <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
-                <span className={`chk ${doneLesson?"on":""}`} style={{width:18,height:18,marginTop:1}}>{doneLesson&&<span style={{color:"var(--bg4)",fontSize:9,fontWeight:900}}>✓</span>}</span>
-                <div style={{minWidth:0}}>
-                  <div style={{color:doneLesson?"var(--t2)":"var(--t0)",fontSize:12,fontWeight:800,fontFamily:"'Cairo',sans-serif",lineHeight:1.45,overflowWrap:"anywhere"}}>{lesson.index}. {lesson.title}</div>
-                  <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:3}}>{formatDuration(lesson.durationSec)}</div>
+      {Navigation()}
+      <div className="mo-card" style={{padding:12,marginTop:14}}>
+        <div className="mo-kbd">Current phase</div>
+        <div style={{fontWeight:900,marginTop:5}}>{currentPhase.icon} {currentPhase.nameAr}</div>
+        <div className="mo-muted" style={{fontSize:12,marginTop:4,lineHeight:1.7}}>{currentPhase.desc}</div>
+      </div>
+    </aside>
+  );
+
+  const MobileBar=()=>(
+    <div className="mo-mobilebar">
+      <div className="mo-mobile-row">
+        <div className="mo-brand"><div className="mo-logo" style={{width:36,height:36,borderRadius:10}}>CP</div><div style={{fontWeight:900}}>{TAB_ITEMS.find(tab=>tab.id===activeTab)?.label}</div></div>
+        <button className="mo-btn" onClick={()=>setTheme(p=>p==="dark"?"light":"dark")} style={{minHeight:36,padding:"7px 10px"}}>{theme==="dark"?"Light":"Dark"}</button>
+      </div>
+      <div className="mo-mobile-tabs">
+        {TAB_ITEMS.map(tab=><button key={tab.id} className={`mo-mobile-tab ${activeTab===tab.id?"on":""}`} onClick={()=>setTab(tab.id)}>{tab.label}</button>)}
+      </div>
+    </div>
+  );
+
+  const StatStrip=()=>(
+    <div className="mo-grid" style={{gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",marginBottom:12}}>
+      {[
+        ["تقدم المنهج",`${overallPct}%`,"#00ff88"],
+        ["دروس اليوم",`${todayDone}/${todayLessons.length}`,"#00d4ff"],
+        ["اليوم التدريبي",restDay?"راحة":trainingDay,"#a78bfa"],
+        ["المرحلة",currentPhase.nameAr,currentPhase.color],
+      ].map(([label,value,color])=>(
+        <div className="mo-stat" key={label}>
+          <div style={{fontWeight:900,fontSize:18,color}}>{value}</div>
+          <div className="mo-muted" style={{fontSize:12,marginTop:4}}>{label}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const CommandView=()=>{
+    const missionSteps=[
+      {id:"before",title:"Before Learning",desc:"اكتب توقعك قبل المذاكرة: ما الذي تعرفه؟ وما الذي تتوقع أن يكون صعبًا؟"},
+      {id:"videos",title:"شاهد 2 فيديو",desc:"ابدأ بالفهم البصري قبل التطبيق.",links:missionPack.videos.slice(0,2)},
+      {id:"article",title:"اقرأ مقال/مرجع",desc:"ثبت المصطلحات والتفاصيل.",links:missionPack.articles.slice(0,1)},
+      {id:"labs",title:"حل 3 Labs/CTF",desc:"لا تحسب الفهم كاملًا قبل التطبيق.",links:missionPack.labs.slice(0,3)},
+      {id:"report",title:"اكتب Mini Report",desc:"Summary / Steps / Evidence / Impact / Fix / Lessons Learned."},
+      {id:"explain",title:"Explain It Back",desc:"اشرح الموضوع كأنك تعلم شخصًا مبتدئًا."},
+    ];
+    const missionDone=missionSteps.filter(step=>s.missionSteps?.[missionStepKey(step.id)]).length;
+    const practiceDone=doneLabsCount+doneCtfCount;
+    const productionDone=reportCount+proofCount+doneProjectsCount;
+    const debtItems=[
+      doneLessonCount>practiceDone*4+6&&["تطبيق ناقص","أنت تشاهد/تنهي دروسًا أكثر من التطبيق. افتح Challenge Queue الآن.","#00ff88","labs"],
+      practiceDone>doneLessonCount+8&&["Theory ناقصة","التطبيق سابق الفهم النظري. ارجع لفيديو/مقال للموضوع الحالي.","#00d4ff","library"],
+      practiceDone>reportCount*3+2&&["Reports ناقصة","حلول كثيرة بدون تقارير كافية. استخدم Report Factory.","#f472b6","command"],
+      reportCount>proofCount+1&&["Proof ناقص","عندك تقارير أكثر من الأدلة المرفقة. أضف Screenshot/Writeup/Commands.","#facc15","command"],
+      doneLessonCount>30&&doneProjectsCount<1&&["Portfolio ناقص","ابدأ مشروعًا واحدًا على الأقل من Projects.","#a78bfa","projects"],
+    ].filter(Boolean);
+    const skillStatus={};
+    SKILL_TREE.forEach(node=>{
+      const trackLessons=getTrackLessons(node.trackId);
+      const lDone=trackLessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+      const labs=getTrackLabs(node.trackId);
+      const labDone=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+      const prereqOk=(node.requires||[]).every(req=>skillStatus[req]?.started);
+      const unlocked=!node.requires?.length||prereqOk;
+      const score=pct(lDone+labDone,Math.max(1,Math.min(trackLessons.length,20)+Math.min(labs.length,5)));
+      skillStatus[node.id]={unlocked,started:lDone>0||labDone>0||(!node.requires?.length&&node.id==="networking"),score:clamp(score,0,100)};
+    });
+    const nextCtfIndex=CTF_LADDER.findIndex(stage=>!s.doneCtfPlatforms?.[stage.platformId]);
+    const nextCtf=CTF_LADDER[nextCtfIndex<0?CTF_LADDER.length-1:nextCtfIndex];
+    const relevantTools=TOOL_MASTERY.filter(tool=>(tool.trackIds||[]).includes(missionTrackId)||careerMode.focus?.some(tid=>tool.trackIds?.includes(tid))).slice(0,6);
+    const battleTopic=String(missionTopic.topic||"").replace(/^Lesson\s+\d+[:：]\s*/i,"");
+    const doneLessonHay=textNorm(LESSONS.filter(lesson=>s.doneLessons?.[lesson.id]).slice(-80).map(lesson=>`${lesson.title} ${(lesson.topicTags||[]).join(" ")} ${(lesson.trackIds||[]).join(" ")}`).join(" "));
+    const smartChallenges=CHALLENGE_RULES.filter(rule=>(rule.trackId===missionTrackId||careerMode.focus?.includes(rule.trackId)||rule.match.some(term=>doneLessonHay.includes(textNorm(term))||textNorm(battleTopic).includes(textNorm(term))))).slice(0,4);
+    const challengeQueue=[...smartChallenges,...missionPack.labs.slice(0,4),...(nextCtf?[{id:`next-${nextCtf.id}`,title:`Next CTF Gate: ${nextCtf.title}`,url:CTF_PLATFORMS.find(p=>p.id===nextCtf.platformId)?.url,meta:nextCtf.gate,source:"gate"}]:[])];
+    const missionHay=textNorm(`${battleTopic} ${missionTrackId} ${(activeLesson?.topicTags||[]).join(" ")} ${missionKeywords.join(" ")}`);
+    const reportHay=textNorm(`${missionHay} ${activeReportContext?.type||""} ${activeReportContext?.source||""} ${activeReportContext?.title||""}`);
+    const reportTemplateItems=[
+      ...REPORT_TEMPLATES.filter(template=>template.id!=="generic"&&(template.match||[]).some(term=>reportHay.includes(textNorm(term)))),
+      REPORT_TEMPLATES.find(template=>template.id==="generic"),
+    ].filter(Boolean).slice(0,5);
+    const matchesMission=item=>{
+      const trackOk=(item.trackIds||[]).includes(missionTrackId)||careerMode.focus?.some(tid=>(item.trackIds||[]).includes(tid));
+      const topicOk=(item.topicTags||item.match||[]).some(tag=>missionHay.includes(textNorm(tag)));
+      return trackOk||topicOk;
+    };
+    const commandItems=COMMAND_VAULT.filter(matchesMission).slice(0,8);
+    const payloadItems=PAYLOAD_LIBRARY.filter(matchesMission).slice(0,6);
+    const caseItems=REAL_WORLD_CASES.filter(matchesMission).slice(0,4);
+    const buildLabs=BUILD_TO_BREAK_LABS.filter(matchesMission).slice(0,4);
+    const flashcards=FLASHCARD_SEEDS.filter(card=>(card.trackIds||[]).includes(missionTrackId)||careerMode.focus?.some(tid=>card.trackIds?.includes(tid))).slice(0,6);
+    const bugPrograms=Object.values(s.bugBountyPrograms||{}).sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||"")));
+    const currentSkill=SKILL_TREE.find(node=>node.trackId===missionTrackId)||SKILL_TREE[0];
+    const currentProject=getTrackProjects(missionTrackId).find(project=>!s.doneProjects?.[project.id])||getTrackProjects(missionTrackId)[0];
+    const masterRows=[
+      ["Career",careerMode.title,portfolioReadinessScore],
+      ["Track",missionTrack.name,pct(getTrackLessons(missionTrackId).filter(lesson=>s.doneLessons?.[lesson.id]).length,Math.max(1,getTrackLessons(missionTrackId).length))],
+      ["Skill",currentSkill?.title||"Skill",skillStatus[currentSkill?.id]?.score||0],
+      ["Lesson",activeLesson?.title||"Lesson",s.doneLessons?.[activeLesson?.id]?100:0],
+      ["Labs",`${doneLabsCount} completed`,pct(doneLabsCount,Math.max(1,doneLessonCount/3))],
+      ["CTF",`${doneCtfCount} gates/platforms`,pct(doneCtfCount,CTF_LADDER.length)],
+      ["Project",currentProject?.title||"Project",currentProject&&s.doneProjects?.[currentProject.id]?100:0],
+      ["Resources",`${topicSourceCount} sources`,antiRabbitHole?65:100],
+    ];
+    const weaknessItems=TRACK_COURSE_TREE.map(item=>{
+      const lessons=getTrackLessons(item.tid);
+      const lessonDone=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+      const labs=getTrackLabs(item.tid);
+      const labDone=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+      const projects=getTrackProjects(item.tid);
+      const projectDone=projects.filter(project=>s.doneProjects?.[project.id]).length;
+      const toolDone=TOOL_MASTERY.filter(tool=>tool.trackIds?.includes(item.tid)).filter(tool=>Object.values(s.toolMastery?.[tool.id]||{}).filter(Boolean).length>=2).length;
+      const lessonPct=pct(lessonDone,Math.max(1,Math.min(lessons.length,30)));
+      const labPct=pct(labDone,Math.max(1,Math.min(labs.length,8)));
+      const projectPct=pct(projectDone,Math.max(1,projects.length));
+      const toolPct=pct(toolDone,Math.max(1,TOOL_MASTERY.filter(tool=>tool.trackIds?.includes(item.tid)).length));
+      const score=Math.round((lessonPct+labPct+projectPct+toolPct)/4);
+      const reason=lessonPct>60&&labPct<25?"Labs ناقصة":labPct>50&&lessonPct<25?"Theory ناقصة":projectPct<25?"Portfolio ناقص":toolPct<25?"Tool mastery ناقص":"متوازن نسبيًا";
+      return{...item,score,reason,lessonPct,labPct,projectPct,toolPct};
+    }).sort((a,b)=>a.score-b.score).slice(0,5);
+    const heatRows=TRACK_COURSE_TREE.map(item=>{
+      const lessons=getTrackLessons(item.tid);
+      const labs=getTrackLabs(item.tid);
+      const projects=getTrackProjects(item.tid);
+      return{
+        tid:item.tid,
+        track:item.track,
+        lessons:pct(lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length,Math.max(1,Math.min(lessons.length,30))),
+        labs:pct(labs.filter(lab=>s.doneLabs?.[lab.id]).length,Math.max(1,Math.min(labs.length,8))),
+        projects:pct(projects.filter(project=>s.doneProjects?.[project.id]).length,Math.max(1,projects.length)),
+        ctf:pct(CTF_PLATFORMS.filter(platform=>platform.trackIds?.includes(item.tid)&&s.doneCtfPlatforms?.[platform.id]).length,Math.max(1,CTF_PLATFORMS.filter(platform=>platform.trackIds?.includes(item.tid)).length)),
+      };
+    }).slice(0,10);
+    const cheatSheetText=[
+      `# ${battleTopic}`,
+      "",
+      "## English Keywords",
+      missionKeywords.map(keyword=>`- ${keyword}`).join("\n")||"- Add notes to extract keywords",
+      "",
+      "## Commands",
+      commandItems.map(item=>`- ${item.title}: ${item.command}`).join("\n")||"- No command yet",
+      "",
+      "## Payloads / Probes",
+      payloadItems.map(item=>`- ${item.title}: ${item.payload}`).join("\n")||"- No payload yet",
+      "",
+      "## Report Summary",
+      missionReport.summary||"- Add summary in Report Factory",
+      "",
+      "## Lessons Learned",
+      missionReport.lessons||missionMistakes||"- Add lessons learned",
+    ].join("\n");
+    const reportMarkdown=[
+      `# ${battleTopic} Report`,
+      "",
+      "## Context",
+      `- Date: ${selectedDateKey}`,
+      `- Track: ${missionTrack.name}`,
+      `- Career Mode: ${careerMode.title}`,
+      `- Source: ${activeReportContext?.source||missionTopic.phase}`,
+      activeReportContext?.url?`- URL: ${activeReportContext.url}`:null,
+      activeLesson?.url?`- Lesson: ${activeLesson.title} - ${activeLesson.url}`:null,
+      "",
+      "## Report Factory",
+      ...REPORT_FIELDS.map(([id,label])=>`### ${label}\n${missionReport[id]||"-"}`),
+      "",
+      "## Proof of Work",
+      ...PROOF_FIELDS.map(([id,label])=>`- ${label}: ${missionProof[id]||"-"}`),
+      "",
+      "## Before / After Learning",
+      `### Before\n${missionBeforeAfter.before||"-"}`,
+      `### After\n${missionBeforeAfter.after||"-"}`,
+      "",
+      "## Mistake Notebook",
+      missionMistakes||"-",
+      "",
+      "## Attack Chain",
+      ...ATTACK_CHAIN_STEPS.map(([id,label])=>`- ${label}: ${missionAttackChain[id]||"-"}`),
+      "",
+      "## Threat Model",
+      ...THREAT_MODEL_FIELDS.map(([id,label])=>`- ${label}: ${missionThreatModel[id]||"-"}`),
+      "",
+      "## Recon Notes",
+      ...RECON_FIELDS.map(([id,label])=>`- ${label}: ${missionRecon[id]||"-"}`),
+    ].filter(Boolean).join("\n");
+    const portfolioMarkdown=buildPortfolioMarkdown();
+    const scopePercent=programId=>pct(SCOPE_CHECKS.filter(([id])=>s.scopeDiscipline?.[programId]?.[id]).length,SCOPE_CHECKS.length);
+    const ResourceButtons=({items=[]})=>(
+      <div className="mo-list" style={{marginTop:8}}>
+        {items.map(item=>item.url?(
+          <a key={item.id||item.url} href={item.url} target="_blank" rel="noopener noreferrer" className="mo-card" style={{padding:8,textDecoration:"none",color:"var(--t0)"}}>
+            <div style={{fontWeight:800,overflowWrap:"anywhere"}}>{item.title}</div>
+            <div className="mo-kbd">{item.meta||item.source}</div>
+          </a>
+        ):(
+          <div key={item.id||item.title} className="mo-card" style={{padding:8}}>
+            <div style={{fontWeight:800,overflowWrap:"anywhere"}}>{item.title}</div>
+            <div className="mo-kbd">{item.meta||item.source}</div>
+          </div>
+        ))}
+      </div>
+    );
+    return(
+      <div className="mo-grid">
+        <div className="mo-panel" style={{padding:isMobile?14:18}}>
+          <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+            <div>
+              <div className="mo-kbd">// Mission Command</div>
+              <h2 style={{margin:"4px 0",fontWeight:900}}>مهمة اليوم: {battleTopic}</h2>
+              <div className="mo-muted" style={{lineHeight:1.8}}>المسار: {missionTrack.icon} {missionTrack.name} · الهدف: {careerMode.title} · اليوم التدريبي {trainingDay}</div>
+              {activeReportContext&&(
+                <div className="mo-card" style={{padding:10,marginTop:10,borderColor:"var(--sbd25)"}}>
+                  <div className="mo-kbd">Active report context · {activeReportContext.type} · {activeReportContext.source}</div>
+                  <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{activeReportContext.title}</div>
+                  <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:8}}>
+                    {activeReportContext.url&&<a className="mo-btn" href={activeReportContext.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>افتح التدريب</a>}
+                    <button className="mo-btn" onClick={clearReportContext}>رجوع لمهمة اليوم</button>
+                  </div>
                 </div>
+              )}
+            </div>
+            <div style={{minWidth:160}}>
+              <div className="mo-kbd">Mission progress</div>
+              <div style={{fontSize:34,fontWeight:900,color:"#00ff88"}}>{missionDone}/{missionSteps.length}</div>
+              <div className="mo-progress"><span style={{width:`${pct(missionDone,missionSteps.length)}%`}}/></div>
+            </div>
+          </div>
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.1fr .9fr",marginTop:14}}>
+            <div className="mo-card" style={{padding:12}}>
+              <div style={{fontWeight:900}}>Career Mode</div>
+              <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",marginTop:10}}>
+                {CAREER_MODES.map(mode=>(
+                  <button key={mode.id} className={`mo-btn ${careerMode.id===mode.id?"primary":""}`} onClick={()=>setCareerGoal(mode.id)}>{mode.title}</button>
+                ))}
               </div>
-            </button>);
-          }):<div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif"}}>لا توجد دروس في هذه الجلس.</div>}
+              <div className="mo-muted mo-small" style={{marginTop:8}}>{careerMode.desc}</div>
+            </div>
+            <div className="mo-card" style={{padding:12}}>
+              <div style={{fontWeight:900}}>Deep Work Timer</div>
+              <div className="mo-grid" style={{gridTemplateColumns:"1fr",marginTop:10}}>
+                {DEEP_WORK_SEGMENTS.map(([id,label,desc])=>{
+                  const key=`deep-${missionKey}-${id}`;
+                  const durationSec=DEEP_WORK_SECONDS[id]||600;
+                  const timer=timerFor(key);
+                  const remainingSec=timer.durationSec===durationSec?timer.remainingSec:durationSec;
+                  const progress=pct(durationSec-remainingSec,durationSec);
+                  return(
+                    <div key={id} className="mo-card" style={{padding:9,borderColor:missionDeepWork[id]?"var(--sbd25)":"var(--wo)"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+                        <div>
+                          <div style={{fontWeight:900}}>{missionDeepWork[id]?"✓ ":""}{label}</div>
+                          <div className="mo-kbd">{desc}</div>
+                        </div>
+                        <div style={{fontFamily:"'Fira Code',monospace",fontWeight:900}}>{formatTimer(remainingSec)}</div>
+                      </div>
+                      <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${progress}%`}}/></div>
+                      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
+                        <button className="mo-btn primary" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>startCustomTimer(key,durationSec)}>ابدأ</button>
+                        <button className="mo-btn" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>pauseTimer(key)}>Pause</button>
+                        <button className="mo-btn" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>{completeTimer(key);if(!missionDeepWork[id])toggleDeepWorkSegment(id);}}>Done</button>
+                        <button className="mo-btn" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>resetCustomTimer(key,durationSec)}>Reset</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {antiRabbitHole&&<div className="mo-card" style={{padding:9,marginTop:10,borderColor:"#facc15"}}><b style={{color:"#facc15"}}>Anti-Rabbit-Hole:</b> مصادر هذا الـ topic كثيرة. كفاية قراءة الآن، نفذ Lab ثم ارجع للمصادر.</div>}
+            </div>
+          </div>
         </div>
-        <InlineVideoPanel lesson={active}/>
-      </div>
-    </div>);
-  };
 
-  const LessonRow=({lesson})=>{
-    const course=COURSE_BY_ID[lesson.courseId];
-    const done=!!s.doneLessons?.[lesson.id];
-    const resources=getLessonRelatedResources(lesson);
-    const note=s.lessonNotes?.[lesson.id]||"";
-    return(<div style={{background:done?"rgba(0,255,136,0.06)":"var(--bo)",border:`1px solid ${done?"rgba(0,255,136,0.28)":"var(--wo)"}`,borderRadius:9,padding:10}}>
-      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:10,alignItems:"start"}}>
-        <button onClick={()=>toggleLesson(lesson)} className={`chk ${done?"on":""}`} style={{marginTop:2,border:"2px solid var(--sbd4)",background:done?"#00ff88":"transparent"}} aria-label={done?"إلغاء الدرس":"إنهاء الدرس"}>{done&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
-        <div style={{minWidth:0}}>
-          <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap",marginBottom:4}}>
-            <span style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{course?.title} · #{lesson.index}</span>
-            <span style={{color:"#a78bfa",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{formatDuration(lesson.durationSec)}</span>
-          </div>
-          <div style={{color:done?"var(--t2)":"var(--t0)",fontSize:13,fontWeight:700,fontFamily:"'Cairo',sans-serif",lineHeight:1.6,textDecoration:done?"line-through":"none",overflowWrap:"anywhere"}}>{lesson.title}</div>
-          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:7}}>
-            {(lesson.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)",background:"var(--wm)",border:"1px solid var(--wo)",padding:"2px 7px",borderRadius:20,fontFamily:"'Cairo',sans-serif"}}>{trackLabel(tid)}</span>)}
-            {(lesson.topicTags||[]).slice(0,5).map(tag=><span key={tag} style={{fontSize:10,color:"var(--t1)",background:"var(--wm)",border:"1px solid var(--wo)",padding:"2px 7px",borderRadius:20}}>#{tag}</span>)}
-          </div>
-        </div>
-        <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"8px 12px",textAlign:"center",whiteSpace:"nowrap"}}>الفيديو</a>
-      </div>
-      <details style={{marginTop:9}}>
-        <summary style={{cursor:"pointer",color:"#00d4ff",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>كل المصادر المتعلقة ({resources.length}) + ملاحظات الدرس</summary>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:7,marginTop:9}}>
-          {resources.map((r,i)=><a key={`${r.url}-${i}`} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-            <div className="res-card" style={{marginBottom:0}}>
-              <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginBottom:5,overflowWrap:"anywhere"}}>{r.title}</div>
-              <div style={{display:"flex",justifyContent:"space-between",gap:6,alignItems:"center",flexWrap:"wrap"}}>
-                <span style={{fontSize:10,color:r.trackColor,fontFamily:"'Cairo',sans-serif"}}>{r.trackIcon} {r.trackName}</span>
-                <Tag type={r.type} lang={r.lang}/>
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.2fr .8fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+              <div>
+                <h3 style={{margin:"0 0 4px"}}>Master Map</h3>
+                <div className="mo-muted mo-small">خريطة واحدة تربط الهدف، المسار، الدرس، Labs، CTFs، المشاريع، والمصادر.</div>
+              </div>
+              <span className="mo-pill">Current position</span>
+            </div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",marginTop:12}}>
+              {masterRows.map(([label,value,score])=>(
+                <div key={label} className="mo-card" style={{padding:10}}>
+                  <div className="mo-kbd">{label}</div>
+                  <div style={{fontWeight:900,overflowWrap:"anywhere",minHeight:40}}>{value}</div>
+                  <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${clamp(score,0,100)}%`}}/></div>
+                </div>
+              ))}
+            </div>
+            <div className="mo-card" style={{padding:12,marginTop:12}}>
+              <div className="mo-kbd">Visual Master Map</div>
+              <div style={{display:"flex",gap:8,alignItems:"stretch",flexWrap:"wrap",marginTop:10}}>
+                {masterRows.slice(0,7).map(([label,value,score],index)=>(
+                  <div key={`visual-${label}`} style={{display:"flex",gap:8,alignItems:"center",flex:"1 1 108px",minWidth:0}}>
+                    <div className="mo-card" style={{padding:9,flex:1,minHeight:82,borderColor:index===3?"var(--sbd25)":"var(--wo)",background:index===3?"var(--sbg12)":"var(--w3)"}}>
+                      <div className="mo-kbd">{label}</div>
+                      <div style={{fontWeight:900,fontSize:12,overflowWrap:"anywhere",marginTop:4}}>{value}</div>
+                      <div className="mo-progress" style={{marginTop:7}}><span style={{width:`${clamp(score,0,100)}%`}}/></div>
+                    </div>
+                    {index<6&&<div className="mo-kbd" style={{fontWeight:900,color:"var(--t0)"}}>&gt;</div>}
+                  </div>
+                ))}
               </div>
             </div>
-          </a>)}
-        </div>
-        <textarea value={note} onChange={e=>saveLessonNote(lesson.id,e.target.value)} placeholder="ملاحظاتك على هذا الدرس..." style={{width:"100%",minHeight:70,marginTop:9,resize:"vertical",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--bo)",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}/>
-      </details>
-    </div>);
-  };
-
-  const SessionCard=({session})=>{
-    const done=session.lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
-    const total=session.lessons.length;
-    const sessionDone=total>0&&done===total;
-    const key=sessionKey(selectedDateKey,session.id);
-    return(<div className="card" style={{padding:12,borderColor:sessionDone?"rgba(0,255,136,0.32)":"var(--sbd)"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:10}}>
-        <div>
-          <div style={{color:"var(--t0)",fontSize:15,fontWeight:800,fontFamily:"'Cairo',sans-serif"}}>{session.title} · 90 دقيقة</div>
-          <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{total} lessons · {session.usedMin}m scheduled · saved: {s.doneDailySessions?.[key]?"yes":"no"}</div>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <Ring pct={pct(done,total)} size={42} color={sessionDone?"#00ff88":"#00d4ff"}/>
-          <button className="btn btn-o" disabled={!total} onClick={()=>completeSession(session)} style={{fontSize:11,padding:"7px 10px",opacity:total?1:.45}}>إنهاء الجلسة</button>
-        </div>
-      </div>
-      <div className="bar" style={{marginBottom:10}}><div className="bar-fill" style={{width:`${pct(done,total)}%`,background:sessionDone?"#00ff88":"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
-      {total?(
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>{session.lessons.map(lesson=><LessonRow key={lesson.id} lesson={lesson}/>)}</div>
-      ):(
-        <div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif",padding:10,background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8}}>لا توجد دروس في هذه الجلس.</div>
-      )}
-    </div>);
-  };
-
-  const RestDay=()=>{
-    const reviewPlan=buildDailyTodo(Math.max(1,trainingDay));
-    const reviewLessons=reviewPlan.sessions.flatMap(session=>session.lessons).slice(0,6);
-    return(<div className="card" style={{padding:isMobile?14:18,borderColor:"rgba(250,204,21,0.28)",background:"rgba(250,204,21,0.05)",marginBottom:14}}>
-      <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
-        <div><div style={{color:"#fde047",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>الجمعة راحة ومراجعة خفيفة</div><div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8}}>لا توجد دروس جديدة اليوم. راجع ملاحظاتك، أعد مشاهدة الدروس الصعبة، وخفف الحمل.</div></div>
-        <button className="btn btn-o" onClick={goToday} style={{fontSize:12,padding:"8px 12px"}}>اليوم</button>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:8,marginTop:12}}>
-        {reviewLessons.map(lesson=><a key={lesson.id} href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-          <div className="res-card" style={{marginBottom:0}}>
-            <div style={{color:"var(--t0)",fontSize:12,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
-            <div style={{color:"var(--t2)",fontSize:10,marginTop:4}}>{COURSE_BY_ID[lesson.courseId]?.title}</div>
           </div>
-        </a>)}
-      </div>
-    </div>);
-  };
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Portfolio Readiness Score</h3>
+            <div style={{fontSize:44,fontWeight:900,color:portfolioReadinessScore>=70?"#00ff88":"#facc15"}}>{portfolioReadinessScore}%</div>
+            <div className="mo-progress"><span style={{width:`${portfolioReadinessScore}%`}}/></div>
+            <button className="mo-btn" style={{marginTop:10,width:"100%"}} onClick={()=>downloadText(`cyberpath-portfolio-${today()}.md`,portfolioMarkdown)}>Export Portfolio.md</button>
+            <div className="mo-list" style={{marginTop:10}}>
+              {portfolioChecks.map(item=>(
+                <div key={item.id} className="mo-card" style={{padding:8}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:8}}><b>{item.label}</b><span className="mo-kbd">{item.done}/{item.target}</span></div>
+                  <div className="mo-progress" style={{marginTop:6}}><span style={{width:`${pct(item.done,item.target)}%`}}/></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-  const TrackPlaylistTree=()=>(
-    <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:12}}>
-        <div>
-          <div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>شجرة البلاليست حسب المسارات</div>
-          <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{TRACK_COURSE_TREE.length} tracks · {TRACK_TREE_COURSE_COUNT}/{UNIQUE_PLAYLIST_COUNT} playlists · {LESSONS.length} video lessons</div>
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Learning Heatmap</h3>
+            <div className="mo-list">
+              {heatRows.map(row=>(
+                <div key={row.tid} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{row.track.icon} {row.track.name}</div>
+                  <div className="mo-grid" style={{gridTemplateColumns:"repeat(4,1fr)",marginTop:8}}>
+                    {[["Videos",row.lessons],["Labs",row.labs],["CTF",row.ctf],["Projects",row.projects]].map(([label,value])=>(
+                      <div key={label} style={{borderRadius:8,padding:8,background:`rgba(0,255,136,${Math.max(.04,value/160)})`,border:"1px solid var(--wo)"}}>
+                        <div className="mo-kbd">{label}</div>
+                        <div style={{fontWeight:900}}>{value}%</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Weakness Detector</h3>
+            <div className="mo-list">
+              {weaknessItems.map(item=>(
+                <div key={item.tid} className="mo-card" style={{padding:10,borderColor:item.score<35?"#f472b6":"var(--wo)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
+                    <b>{item.track.icon} {item.track.name}</b>
+                    <span className="mo-kbd">{item.score}%</span>
+                  </div>
+                  <div className="mo-muted mo-small">{item.reason}</div>
+                  <div className="mo-kbd">Theory {item.lessonPct}% · Labs {item.labPct}% · Tools {item.toolPct}% · Portfolio {item.projectPct}%</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-          <button className="btn btn-o" onClick={()=>upd(prev=>({...prev,libraryFilter:prev.libraryFilter==="undone"?"all":"undone"}))} style={{fontSize:12,padding:"8px 12px"}}>{s.libraryFilter==="undone"?"عرض الكل":"غير المكتمل فقط"}</button>
-          <button className="btn btn-o" onClick={()=>setCourseOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{courseOpen?"إخفاء الشجرة":"عرض الشجرة"}</button>
-        </div>
-      </div>
-      <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",lineHeight:1.8,marginBottom:12}}>
-        افتح المسار ثم افتح الـ playlist لترى كل فيديو كدرس مستقل برابطه، مع نفس حالة الإنجاز المحفوظة في Todo اليوم.
-      </div>
-      {courseOpen&&<div style={{display:"flex",flexDirection:"column",gap:9}}>
-        {TRACK_COURSE_TREE.map(item=>{
-          const trackOpen=openTrackId===item.tid;
-          const trackDone=item.courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.doneLessons?.[lesson.id]).length,0);
-          return(<div key={item.tid} style={{background:trackOpen?item.track.colorBg:"var(--bo)",border:`1px solid ${trackOpen?item.track.color+"66":"var(--wo)"}`,borderRadius:10,overflow:"hidden"}}>
-            <button onClick={()=>{setOpenTrackId(trackOpen?null:item.tid);setOpenCourseKey(null);}} style={{width:"100%",border:0,background:"transparent",cursor:"pointer",padding:isMobile?10:12,textAlign:"initial"}}>
-              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
-                <div style={{minWidth:0,display:"flex",gap:10,alignItems:"center"}}>
-                  <span style={{fontSize:23}}>{item.track.icon}</span>
-                  <div style={{minWidth:0}}>
-                    <div style={{color:"var(--t0)",fontSize:14,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>{item.track.name}</div>
-                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:4}}>
-                      <span style={{color:item.track.color,fontSize:10,fontFamily:"'Fira Code',monospace"}}>{item.courses.length} playlists</span>
-                      <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{trackDone}/{item.lessonCount} video lessons</span>
-                      <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{item.track.duration}</span>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.1fr .9fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Mission Mode</h3>
+            <div className="mo-list">
+              {missionSteps.map(step=>(
+                <div key={step.id} className="mo-card" style={{padding:12}}>
+                  <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <button className={`chk ${s.missionSteps?.[missionStepKey(step.id)]?"on":""}`} onClick={()=>toggleMissionStep(step.id)} aria-label="toggle mission step" style={{marginTop:2}}>{s.missionSteps?.[missionStepKey(step.id)]&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
+                    <div style={{minWidth:0,flex:1}}>
+                      <div style={{fontWeight:900}}>{step.title}</div>
+                      <div className="mo-muted mo-small">{step.desc}</div>
+                      {step.links&&<ResourceButtons items={step.links}/>}
                     </div>
                   </div>
                 </div>
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <div style={{minWidth:isMobile?80:130}}><div className="bar"><div className="bar-fill" style={{width:`${pct(trackDone,item.lessonCount)}%`,background:item.track.color}}/></div></div>
-                  <span style={{color:item.track.color,fontSize:15,transform:trackOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+              ))}
+            </div>
+          </div>
+          <div className="mo-grid">
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Knowledge Debt</h3>
+              <div className="mo-list">
+                {(debtItems.length?debtItems:[["متوازن حاليًا","استمر: فيديو + تطبيق + تقرير + دليل.", "#00ff88","today"]]).map(([title,desc,color,target])=>(
+                  <div key={title} className="mo-card" style={{padding:10,borderColor:color}}>
+                    <div style={{fontWeight:900,color}}>{title}</div>
+                    <div className="mo-muted mo-small">{desc}</div>
+                    <button className="mo-btn" style={{marginTop:8,minHeight:34,padding:"6px 9px"}} onClick={()=>setTab(target)}>نفّذ الإجراء</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Challenge Queue</h3>
+              <div className="mo-list">
+                {challengeQueue.map(item=>(
+                  <div key={item.id||item.url||item.title} className="mo-card" style={{padding:9}}>
+                    <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{item.title}</div>
+                    <div className="mo-kbd">{item.meta||item.source||"challenge"}</div>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:8}}>
+                      {item.url&&<a className="mo-btn" href={item.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",minHeight:34,padding:"6px 9px"}}>افتح</a>}
+                      <button className="mo-btn primary" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>openReportContext({id:item.id||item.title,type:"challenge",title:item.title,source:item.meta||item.source||"Challenge Queue",trackId:item.trackId||missionTrackId,url:item.url})}>ابدأ بتقرير</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Report Factory</h3>
+            <div className="mo-kbd" style={{marginBottom:8}}>Completion {reportScore}/{REPORT_FIELDS.length}</div>
+            <div className="mo-card" style={{padding:10,marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+                <div>
+                  <div style={{fontWeight:900}}>Report Templates</div>
+                  <div className="mo-kbd">اختر قالبًا حسب الموضوع أو نوع التدريب، ثم عدّل التفاصيل بأسلوبك.</div>
+                </div>
+                <button className="mo-btn" onClick={()=>downloadText(`${safeFileName(battleTopic)}-report.md`,reportMarkdown)}>Export Report.md</button>
+              </div>
+              <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:9}}>
+                {reportTemplateItems.map(template=>(
+                  <button key={template.id} className="mo-btn" style={{minHeight:34,padding:"6px 9px"}} onClick={()=>applyReportTemplate(template)}>{template.title}</button>
+                ))}
+              </div>
+            </div>
+            <div className="mo-grid">
+              {REPORT_FIELDS.map(([id,label])=>(
+                <textarea key={id} className="mo-textarea" style={{minHeight:70}} value={missionReport[id]||""} onChange={e=>saveMissionReport(id,e.target.value)} placeholder={label}/>
+              ))}
+            </div>
+          </div>
+          <div className="mo-grid">
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Proof of Work</h3>
+              <div className="mo-kbd" style={{marginBottom:8}}>Evidence {proofScore}/{PROOF_FIELDS.length}</div>
+              <div className="mo-grid">
+                {PROOF_FIELDS.map(([id,label])=>(
+                  <input key={id} className="mo-input" value={missionProof[id]||""} onChange={e=>saveProof(id,e.target.value)} placeholder={label}/>
+                ))}
+              </div>
+            </div>
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Before / After Learning</h3>
+              <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr",marginBottom:8}}>
+                <div className="mo-card" style={{padding:9}}>
+                  <div style={{fontWeight:900}}>Before questions</div>
+                  {["ما تعريف الموضوع بكلماتك؟","ما أكثر نقطة تتوقع أنها صعبة؟","ما الدليل الذي سيقنعك أنك فهمت؟"].map(q=><div key={q} className="mo-kbd">- {q}</div>)}
+                </div>
+                <div className="mo-card" style={{padding:9}}>
+                  <div style={{fontWeight:900}}>After questions</div>
+                  {["ما الذي تغير في فهمك؟","ما الخطأ الذي لن تكرره؟","كيف تشرح الموضوع لمبتدئ؟"].map(q=><div key={q} className="mo-kbd">- {q}</div>)}
                 </div>
               </div>
-            </button>
-            {trackOpen&&<div style={{padding:isMobile?"0 10px 10px":"0 12px 12px",display:"flex",flexDirection:"column",gap:8}}>
-              {item.courses.filter(course=>s.libraryFilter!=="undone"||(COURSE_LESSONS[course.id]||[]).some(lesson=>!s.doneLessons?.[lesson.id])).map(course=>{
-                const lessons=COURSE_LESSONS[course.id]||[];
-                const visibleLessons=s.libraryFilter==="undone"?lessons.filter(lesson=>!s.doneLessons?.[lesson.id]):lessons;
-                const courseKey=`${item.tid}-${course.id}`;
-                const courseOpenNow=openCourseKey===courseKey;
-                const done=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
-                return(<div key={courseKey} style={{background:"var(--bo)",border:`1px solid ${courseOpenNow?item.track.color+"55":"var(--wo)"}`,borderRadius:9,overflow:"hidden"}}>
-                  <button onClick={()=>setOpenCourseKey(courseOpenNow?null:courseKey)} style={{width:"100%",border:0,background:"transparent",cursor:"pointer",padding:10,textAlign:"initial"}}>
-                    <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
-                      <div style={{minWidth:0}}>
-                        <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{course.title}</div>
-                        <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:5}}>
-                          <span style={{color:"#00ff88",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{done}/{lessons.length} lessons</span>
-                          {course.channel&&<span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Cairo',sans-serif"}}>{course.channel}</span>}
-                          {(course.trackIds||[]).slice(0,5).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}
-                        </div>
-                      </div>
-                      <div style={{display:"flex",gap:8,alignItems:"center",justifyContent:isMobile?"flex-start":"flex-end",flexWrap:"wrap"}}>
-                        <a className="btn btn-o" href={course.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{textDecoration:"none",fontSize:11,padding:"6px 10px"}}>رابط البلاليست</a>
-                        <div style={{minWidth:100}}><div className="bar"><div className="bar-fill" style={{width:`${pct(done,lessons.length)}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div></div>
-                        <span style={{color:"var(--t1)",fontSize:12,transform:courseOpenNow?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
-                      </div>
-                    </div>
+              <textarea className="mo-textarea" value={missionBeforeAfter.before||""} onChange={e=>saveBeforeAfter("before",e.target.value)} placeholder="قبل التعلم: ماذا تعرف؟ ما توقعك؟"/>
+              <textarea className="mo-textarea" style={{marginTop:8}} value={missionBeforeAfter.after||""} onChange={e=>saveBeforeAfter("after",e.target.value)} placeholder="بعد التعلم: ما الذي تغير؟ اشرح الموضوع بلغتك."/>
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Topic Battle Card</h3>
+            {["ما هو؟","متى يحدث؟","كيف تكتشفه؟","كيف تستغله في Lab مصرح؟","كيف تصلحه؟","كيف تكتبه في Report؟"].map(item=><div key={item} className="mo-card mo-small" style={{padding:9,marginBottom:7}}>{item} · {battleTopic}</div>)}
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Blue Team Mirror</h3>
+            {["Detection: راقب logs والأنماط غير الطبيعية.","Mitigation: تحقق من المدخلات والصلاحيات والحدود.","Evidence: اجمع request/response وtimestamp وimpact.","Rule idea: حول المؤشر إلى Sigma/YARA/KQL إن أمكن."].map(item=><div key={item} className="mo-card mo-small" style={{padding:9,marginBottom:7}}>{item}</div>)}
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Mistake Notebook</h3>
+            <textarea className="mo-textarea" value={missionMistakes} onChange={e=>saveMistakes(e.target.value)} placeholder="فشلت فين؟ نقص معرفة؟ نسيت أمر؟ فهمت الثغرة غلط؟ استعجلت؟"/>
+          </div>
+        </div>
+
+        <div className="mo-panel" style={{padding:14}}>
+          <h3 style={{marginTop:0}}>One Topic, Five Angles</h3>
+          <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))"}}>
+            {[
+              ["Theory","ما النموذج الذهني؟ المصطلحات؟ شروط الحدوث؟"],
+              ["Exploit","كيف تثبتها بأمان داخل Lab أو scope مصرح؟"],
+              ["Defense","ما الإصلاح الصحيح؟ وما الخطأ الشائع في الإصلاح؟"],
+              ["Detection","أي logs أو alerts تكشفها؟"],
+              ["Report","كيف تكتب impact وsteps وfix؟"],
+            ].map(([angle,desc])=>(
+              <div key={angle} className="mo-card" style={{padding:10}}>
+                <div style={{fontWeight:900,color:"#00d4ff"}}>{angle}</div>
+                <div className="mo-muted mo-small">{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Attack Chain Builder</h3>
+            <div className="mo-grid">
+              {ATTACK_CHAIN_STEPS.map(([id,label,desc])=>(
+                <div key={id} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{label}</div>
+                  <div className="mo-muted mo-small">{desc}</div>
+                  <textarea className="mo-textarea" style={{minHeight:64,marginTop:8}} value={missionAttackChain[id]||""} onChange={e=>saveAttackChain(id,e.target.value)} placeholder={`${label} notes...`}/>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mo-grid">
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Threat Model Cards</h3>
+              <div className="mo-grid">
+                {THREAT_MODEL_FIELDS.map(([id,label])=>(
+                  <textarea key={id} className="mo-textarea" style={{minHeight:64}} value={missionThreatModel[id]||""} onChange={e=>saveThreatModel(id,e.target.value)} placeholder={label}/>
+                ))}
+              </div>
+            </div>
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Recon Dashboard</h3>
+              <div className="mo-grid">
+                {RECON_FIELDS.map(([id,label])=>(
+                  <textarea key={id} className="mo-textarea" style={{minHeight:58}} value={missionRecon[id]||""} onChange={e=>saveReconField(id,e.target.value)} placeholder={label}/>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-panel" style={{padding:14}}>
+          <h3 style={{marginTop:0}}>Skill Tree + Prerequisite Guard</h3>
+          <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))"}}>
+            {SKILL_TREE.map(node=>{
+              const status=skillStatus[node.id];
+              return(
+                <div key={node.id} className="mo-card" style={{padding:12,opacity:status.unlocked?1:.55,borderColor:status.started?"var(--sbd25)":"var(--wo)"}}>
+                  <div style={{fontWeight:900}}>{TRACKS[node.trackId]?.icon} {node.title}</div>
+                  <div className="mo-muted mo-small">{node.goal}</div>
+                  <div className="mo-kbd">{status.unlocked?"unlocked":"locked by prerequisites"} · {node.requires?.join(", ")||"start here"}</div>
+                  <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${status.score}%`}}/></div>
+                  <button
+                    className={`mo-btn ${status.unlocked?"primary":""}`}
+                    disabled={!status.unlocked}
+                    onClick={()=>{setOpenTrack(node.trackId);setTab("knowledge");}}
+                    style={{marginTop:8,width:"100%"}}
+                    title="guard action"
+                  >
+                    {status.unlocked?"افتح المسار":"مغلق حتى تكمل المتطلبات"}
                   </button>
-                  {courseOpenNow&&<div style={{padding:10,paddingTop:0,display:"flex",flexDirection:"column",gap:7}}>
-                    {visibleLessons.map(lesson=>{
-                      const doneLesson=!!s.doneLessons?.[lesson.id];
-                      return(<div key={`${item.tid}-${lesson.id}`} style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:9,alignItems:"center",background:doneLesson?"rgba(0,255,136,0.06)":"var(--w3)",border:`1px solid ${doneLesson?"rgba(0,255,136,0.25)":"var(--wb)"}`,borderRadius:8,padding:9}}>
-                        <button onClick={()=>toggleLesson(lesson)} className={`chk ${doneLesson?"on":""}`} style={{border:"2px solid var(--sbd4)",background:doneLesson?"#00ff88":"transparent"}} aria-label={doneLesson?"إلغاء إنجاز الدرس":"إنهاء الدرس"}>{doneLesson&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
-                        <div style={{minWidth:0}}>
-                          <div style={{color:doneLesson?"var(--t2)":"var(--t0)",fontSize:12,fontWeight:700,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere",textDecoration:doneLesson?"line-through":"none"}}>{lesson.index}. {lesson.title}</div>
-                          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:4}}>
-                            <span style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{formatDuration(lesson.durationSec)}</span>
-                            {(lesson.topicTags||[]).slice(0,5).map(tag=><span key={tag} style={{color:"var(--t1)",fontSize:10}}>#{tag}</span>)}
-                          </div>
-                        </div>
-                        <div style={{display:"flex",gap:7,flexWrap:"wrap",justifyContent:isMobile?"flex-start":"flex-end"}}>
-                          <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 11px",whiteSpace:"nowrap"}}>داخل التطبيق</button>
-                          <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 11px",textAlign:"center",whiteSpace:"nowrap"}}>YouTube</a>
-                        </div>
-                      </div>);
-                    })}
-                  </div>}
-                </div>);
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Command Vault</h3>
+            <div className="mo-muted mo-small" style={{marginBottom:10}}>أوامر مرتبطة بالمسار الحالي. نفذ فقط في Labs أو أهداف مصرح بها.</div>
+            <div className="mo-list">
+              {commandItems.map(item=>(
+                <div key={item.id} className="mo-card" style={{padding:10}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:8,flexWrap:"wrap"}}>
+                    <b>{item.title}</b>
+                    <span className="mo-kbd">{item.toolId}</span>
+                  </div>
+                  <pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere",marginTop:8,background:"var(--bg4)",border:"1px solid var(--wo)",borderRadius:8,padding:9,color:"var(--t0)"}}>{item.command}</pre>
+                  <div className="mo-muted mo-small">{item.use}</div>
+                </div>
+              ))}
+              {!commandItems.length&&<div className="mo-card" style={{padding:10}}>لا توجد أوامر مطابقة الآن. غيّر Career Mode أو المسار.</div>}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Payload Library</h3>
+            <div className="mo-card" style={{padding:10,borderColor:"#facc15",marginBottom:10}}>
+              <b style={{color:"#facc15"}}>Scope Discipline:</b> هذه probes تعليمية للـ Labs أو النطاق المصرح فقط، وليست للاستخدام على أهداف عشوائية.
+            </div>
+            <div className="mo-list">
+              {payloadItems.map(item=>(
+                <div key={item.id} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{item.title}</div>
+                  <pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere",marginTop:8,background:"var(--bg4)",border:"1px solid var(--wo)",borderRadius:8,padding:9,color:"var(--t0)"}}>{item.payload}</pre>
+                  <div className="mo-muted mo-small"><b>Defense:</b> {item.defense}</div>
+                  <div className="mo-kbd">{item.warning}</div>
+                </div>
+              ))}
+              {!payloadItems.length&&<div className="mo-card" style={{padding:10}}>لا توجد Payloads مطابقة لهذا الموضوع الحالي.</div>}
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Real-World Case Linking</h3>
+            <div className="mo-list">
+              {caseItems.map(item=>(
+                <div key={item.id} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{item.title}</div>
+                  <div className="mo-kbd">{item.caseName}</div>
+                  <div className="mo-muted mo-small">{item.lesson}</div>
+                </div>
+              ))}
+              {!caseItems.length&&<div className="mo-card" style={{padding:10}}>لا توجد case مباشرة، اربط الموضوع بحالة مشابهة في Report Factory.</div>}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Build-To-Break</h3>
+            <div className="mo-list">
+              {buildLabs.map(lab=>(
+                <div key={lab.id} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{lab.title}</div>
+                  <div className="mo-list" style={{marginTop:8}}>
+                    {lab.steps.map(step=><div key={step} className="mo-small">- [ ] {step}</div>)}
+                  </div>
+                </div>
+              ))}
+              {!buildLabs.length&&<div className="mo-card" style={{padding:10}}>اكتب Lab صغير: ابنِ الشيء، اكسره محليًا، أصلحه، ثم اكتب التقرير.</div>}
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>CTF Ladder Gates</h3>
+            <div className="mo-list">
+              {CTF_LADDER.map((stage,index)=>{
+                const prevDone=index===0||s.doneCtfPlatforms?.[CTF_LADDER[index-1].platformId];
+                const platform=CTF_PLATFORMS.find(item=>item.id===stage.platformId);
+                return(
+                  <div key={stage.id} className="mo-card" style={{padding:10,opacity:prevDone?1:.55}}>
+                    <div style={{fontWeight:900}}>{index+1}. {stage.title}</div>
+                    <div className="mo-muted mo-small">{stage.gate}</div>
+                    <div style={{display:"flex",gap:8,marginTop:8,flexWrap:"wrap"}}>
+                      {platform&&<a className="mo-btn" href={platform.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>افتح</a>}
+                      {platform&&<button className={`mo-btn ${s.doneCtfPlatforms?.[platform.id]?"":"primary"}`} disabled={!prevDone} onClick={()=>toggleCtfPlatform(platform)}>{s.doneCtfPlatforms?.[platform.id]?"تم":"أنجزت المرحلة"}</button>}
+                    </div>
+                  </div>
+                );
               })}
-            </div>}
-          </div>);
-        })}
-      </div>}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Bug Bounty Track</h3>
+            <div className="mo-list">
+              {BUG_BOUNTY_PATH.map((item,index)=>(
+                <div key={item.id} className="mo-card" style={{padding:10}}>
+                  <div style={{fontWeight:900}}>{index+1}. {item.title}</div>
+                  <div className="mo-muted mo-small">{item.check}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mo-card" style={{padding:10,marginTop:12}}>
+              <h4 style={{margin:"0 0 8px"}}>Bug Bounty Program Tracker</h4>
+              <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+                <input className="mo-input" value={programDraft.name} onChange={e=>setProgramDraft(p=>({...p,name:e.target.value}))} placeholder="Program name"/>
+                <input className="mo-input" value={programDraft.rewards} onChange={e=>setProgramDraft(p=>({...p,rewards:e.target.value}))} placeholder="Rewards / severity notes"/>
+                <textarea className="mo-textarea" style={{minHeight:58}} value={programDraft.scope} onChange={e=>setProgramDraft(p=>({...p,scope:e.target.value}))} placeholder="Scope"/>
+                <textarea className="mo-textarea" style={{minHeight:58}} value={programDraft.outOfScope} onChange={e=>setProgramDraft(p=>({...p,outOfScope:e.target.value}))} placeholder="Out of Scope"/>
+                <textarea className="mo-textarea" style={{minHeight:58}} value={programDraft.rules} onChange={e=>setProgramDraft(p=>({...p,rules:e.target.value}))} placeholder="Rules / safe testing"/>
+                <textarea className="mo-textarea" style={{minHeight:58}} value={programDraft.notes} onChange={e=>setProgramDraft(p=>({...p,notes:e.target.value}))} placeholder="Notes"/>
+              </div>
+              <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginTop:8}}>
+                <input className="mo-input" style={{maxWidth:180}} value={programDraft.lastTested} onChange={e=>setProgramDraft(p=>({...p,lastTested:e.target.value}))} placeholder="Last tested"/>
+                <label className="mo-pill" style={{cursor:"pointer"}}><input type="checkbox" checked={programDraft.trusted} onChange={e=>setProgramDraft(p=>({...p,trusted:e.target.checked}))}/> موثوق؟</label>
+                <button className="mo-btn primary" onClick={saveBugProgram}>حفظ البرنامج</button>
+              </div>
+            </div>
+            <div className="mo-list" style={{marginTop:12}}>
+              {bugPrograms.map(program=>(
+                <div key={program.id} className="mo-card" style={{padding:10}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:8,flexWrap:"wrap"}}>
+                    <div>
+                      <div style={{fontWeight:900}}>{program.name}</div>
+                      <div className="mo-kbd">{program.trusted?"trusted":"needs verification"} · scope discipline {scopePercent(program.id)}%</div>
+                    </div>
+                    <button className="mo-btn" onClick={()=>removeBugProgram(program.id)}>حذف</button>
+                  </div>
+                  <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr",marginTop:8}}>
+                    {["scope","outOfScope","rules","notes","rewards","lastTested"].map(field=>(
+                      <textarea key={field} className="mo-textarea" style={{minHeight:54}} value={program[field]||""} onChange={e=>updateBugProgram(program.id,field,e.target.value)} placeholder={field}/>
+                    ))}
+                  </div>
+                  <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",marginTop:8}}>
+                    {SCOPE_CHECKS.map(([id,label])=>(
+                      <button key={id} className={`mo-btn ${s.scopeDiscipline?.[program.id]?.[id]?"primary":""}`} onClick={()=>toggleScopeCheck(program.id,id)}>{s.scopeDiscipline?.[program.id]?.[id]?"✓ ":""}{label}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {!bugPrograms.length&&<div className="mo-muted mo-small">أضف أول برنامج لتفعيل Scope Discipline Mode.</div>}
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Tool Mastery Tracker</h3>
+            <div className="mo-list">
+              {relevantTools.map(tool=>{
+                const state=s.toolMastery?.[tool.id]||{};
+                return(
+                  <div key={tool.id} className="mo-card" style={{padding:10}}>
+                    <div style={{fontWeight:900}}>{tool.title}</div>
+                    <div className="mo-muted mo-small">{tool.check}</div>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:8}}>
+                      {["watched","used","lab","cheatsheet"].map(field=><button key={field} className={`mo-btn ${state[field]?"primary":""}`} onClick={()=>toggleToolMastery(tool.id,field)}>{field}</button>)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Cert Map + Research Feed</h3>
+            <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+              <div className="mo-list">
+                {CERT_MAP.filter(cert=>cert.trackIds.some(tid=>careerMode.focus.includes(tid)||tid===missionTrackId)).map(cert=><div key={cert.id} className="mo-card" style={{padding:9}}><div style={{fontWeight:900}}>{cert.title}</div><div className="mo-kbd">{cert.goal}</div></div>)}
+              </div>
+              <div className="mo-list">
+                {RESEARCH_FEED.filter(feed=>feed.trackIds.some(tid=>careerMode.focus.includes(tid)||tid===missionTrackId)).map(feed=><a key={feed.id} href={feed.url} target="_blank" rel="noopener noreferrer" className="mo-card" style={{padding:9,textDecoration:"none",color:"var(--t0)"}}><div style={{fontWeight:900}}>{feed.title}</div><div className="mo-kbd">{feed.why}</div></a>)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr"}}>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Flashcards</h3>
+            <div className="mo-list">
+              {flashcards.map(card=>{
+                const review=s.flashcardReview?.[card.id];
+                return(
+                  <div key={card.id} className="mo-card" style={{padding:10}}>
+                    <div style={{fontWeight:900}}>{card.front}</div>
+                    <div className="mo-muted mo-small" style={{marginTop:5}}>{card.back}</div>
+                    <div className="mo-kbd" style={{marginTop:6}}>{review?`reviewed ${review.reviewCount||1}x · next ${review.nextReviewAt}`:"new card"}</div>
+                    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:8}}>
+                      <button className="mo-btn primary" onClick={()=>markFlashcard(card.id,true)}>عرفتها</button>
+                      <button className="mo-btn" onClick={()=>markFlashcard(card.id,false)}>راجعها قريبًا</button>
+                    </div>
+                  </div>
+                );
+              })}
+              {!flashcards.length&&<div className="mo-card" style={{padding:10}}>لا توجد Flashcards مطابقة الآن.</div>}
+            </div>
+          </div>
+          <div className="mo-panel" style={{padding:14}}>
+            <h3 style={{marginTop:0}}>Cheatsheet Generator</h3>
+            <div className="mo-muted mo-small" style={{marginBottom:8}}>يتولد من ملاحظاتك، التقرير، الأوامر، والـ payloads الحالية.</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:10}}>
+              <button className="mo-btn primary" onClick={()=>downloadText(`${safeFileName(battleTopic)}-cheatsheet.md`,cheatSheetText)}>Export Cheatsheet.md</button>
+              <button className="mo-btn" onClick={()=>downloadText(`${safeFileName(battleTopic)}-report.md`,reportMarkdown)}>Export Report.md</button>
+              <button className="mo-btn" onClick={()=>downloadText(`cyberpath-portfolio-${today()}.md`,portfolioMarkdown)}>Export Portfolio.md</button>
+            </div>
+            <textarea className="mo-textarea" readOnly value={cheatSheetText} style={{minHeight:320,fontFamily:"'Fira Code',monospace",direction:"ltr",textAlign:"left"}}/>
+            <div style={{marginTop:10}}>
+              <div style={{fontWeight:900}}>Arabic Notes, English Keywords</div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
+                {(missionKeywords.length?missionKeywords:["اكتب ملاحظاتك ليتم استخراج keywords"]).map(keyword=><span key={keyword} className="mo-pill">{keyword}</span>)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mo-panel" style={{padding:14}}>
+          <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+            <div>
+              <h3 style={{margin:"0 0 4px"}}>Weekly Boss Fight</h3>
+              <div className="mo-muted mo-small">آخر الأسبوع: تحدي واحد شامل بدون hints، ثم report وproof.</div>
+            </div>
+            <button className={`mo-btn ${weeklyBoss.done?"":"primary"}`} onClick={toggleWeeklyBossDone}>{weeklyBoss.done?"تم boss fight":"أنهيت boss fight"}</button>
+          </div>
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr",marginTop:12}}>
+            <textarea className="mo-textarea" value={weeklyBoss.target||""} onChange={e=>saveWeeklyBoss("target",e.target.value)} placeholder={`Week ${currentWeek} boss target: Lab/CTF/project name`}/>
+            <textarea className="mo-textarea" value={weeklyBoss.rules||""} onChange={e=>saveWeeklyBoss("rules",e.target.value)} placeholder="Rules: no hints, allowed tools, timebox, scope"/>
+            <textarea className="mo-textarea" value={weeklyBoss.report||""} onChange={e=>saveWeeklyBoss("report",e.target.value)} placeholder="Boss report summary / writeup link"/>
+            <textarea className="mo-textarea" value={weeklyBoss.proof||""} onChange={e=>saveWeeklyBoss("proof",e.target.value)} placeholder="Proof: screenshot, commands, evidence"/>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const SessionTimer=({session})=>{
+    const key=timerKey(session.id);
+    const timer=timerFor(key);
+    const progress=pct((timer.durationSec||SESSION_TARGET_MIN*60)-timer.remainingSec,timer.durationSec||SESSION_TARGET_MIN*60);
+    return(
+      <div className="mo-card" style={{padding:12}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
+          <div>
+            <div style={{fontWeight:900}}>{session.title}</div>
+            <div className="mo-kbd">{timer.running?"running":"paused"} · {session.usedMin}m</div>
+          </div>
+          <div style={{fontFamily:"'Fira Code',monospace",fontSize:22,fontWeight:900}}>{formatTimer(timer.remainingSec)}</div>
+        </div>
+        <div className="mo-progress" style={{marginTop:10}}><span style={{width:`${progress}%`}}/></div>
+        <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:10}}>
+          <button className="mo-btn primary" onClick={()=>startTimer(key)}>ابدأ</button>
+          <button className="mo-btn" onClick={()=>pauseTimer(key)}>إيقاف</button>
+          <button className="mo-btn" onClick={()=>resetTimer(key)}>إعادة</button>
+          <button className="mo-btn" onClick={()=>completeSession(session)}>إنهاء الجلسة</button>
+        </div>
+      </div>
+    );
+  };
+
+  const ActiveLessonPanel=()=>(
+    <div className="mo-panel" style={{padding:isMobile?14:18}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+        <div style={{minWidth:0}}>
+          <div className="mo-kbd">{activeCourse?.title} · lesson #{activeLesson?.index}</div>
+          <h1 style={{fontSize:isMobile?24:36,lineHeight:1.25,margin:"6px 0 8px",fontWeight:900,overflowWrap:"anywhere"}}>{activeLesson?.title}</h1>
+          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+            {(activeLesson?.trackIds||[]).map(tid=><span className="mo-pill" key={tid}>{trackLabel(tid)}</span>)}
+            {(activeLesson?.topicTags||[]).slice(0,5).map(tag=><span className="mo-pill" key={tag}>#{tag}</span>)}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          <button className="mo-btn primary" onClick={()=>toggleLesson(activeLesson)}>{s.doneLessons?.[activeLesson?.id]?"إلغاء الإنجاز":"إنهاء الدرس"}</button>
+          <button className="mo-btn" onClick={()=>{setActiveLessonId(activeLesson.id);setVideoOpen(p=>!p);}}>{videoOpen?"إخفاء الفيديو":"مشاهدة داخل التطبيق"}</button>
+          <a className="mo-btn" href={activeLesson?.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>YouTube</a>
+        </div>
+      </div>
+      {videoOpen&&getLessonEmbedUrl(activeLesson)&&(
+        <div style={{aspectRatio:"16/9",background:"#000",borderRadius:14,overflow:"hidden",border:"1px solid var(--wo)",marginTop:14}}>
+          <iframe title={activeLesson.title} src={getLessonEmbedUrl(activeLesson)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{width:"100%",height:"100%",border:0}}/>
+        </div>
+      )}
+      <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.2fr .8fr",marginTop:14}}>
+        <textarea className="mo-textarea" value={s.lessonNotes?.[activeLesson?.id]||""} onChange={e=>saveNote(activeLesson.id,e.target.value)} placeholder="ملاحظات الدرس، نقاط صعبة، أسئلة للمراجعة..."/>
+        <div className="mo-card" style={{padding:12}}>
+          <div style={{fontWeight:900,marginBottom:8}}>مصادر مرتبطة</div>
+          <div style={{display:"grid",gap:7}}>
+            {activeResources.length?activeResources.map((r,i)=>(
+              <a key={`${r.url}-${i}`} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:9,padding:8,background:"var(--w3)"}}>
+                <div style={{fontSize:12,fontWeight:800,overflowWrap:"anywhere"}}>{r.title}</div>
+                <div className="mo-kbd">{r.trackIcon} {r.trackName} · {r.type}</div>
+              </a>
+            )):<div className="mo-muted" style={{fontSize:12}}>لا توجد مصادر مرتبطة مباشرة.</div>}
+          </div>
+        </div>
+      </div>
     </div>
   );
 
-  const TodayStudyCockpit=()=>{
-    const activeOutsideDay=activeVideoLesson&&!dailyPlan.sessions.some(session=>session.lessons.some(lesson=>lesson.id===activeVideoLesson.id));
-    return(<div>
-      {activeOutsideDay&&<div style={{marginBottom:12}}>
-        <div style={{color:"var(--t1)",fontSize:12,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:7}}>درس مفتوح من البحث أو المكتبة</div>
-        <InlineVideoPanel lesson={activeVideoLesson}/>
-      </div>}
-      {restDay?<RestDay/>:dailyPlan.exhausted?(
-        <div className="card" style={{padding:18,marginBottom:14}}>
-          <div style={{color:"#00ff88",fontSize:17,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>أكملت كل الدروس المستخرجة</div>
-          <div style={{color:"var(--t4)",fontSize:12,fontFamily:"'Cairo',sans-serif",marginTop:6}}>لا توجد دروس جديدة لهذا اليوم التدريبي. راجع المكتبة أو المراجعة.</div>
+  const TodayView=()=>(
+    <div className="mo-grid">
+      <div>
+        <div className="mo-kbd">// Today cockpit</div>
+        <h2 style={{fontSize:26,margin:"4px 0",fontWeight:900}}>جلسة الدراسة الحالية</h2>
+        <div className="mo-muted">{fmtDate(selectedDate)} · {dayLabel(selectedDate)} · {restDay?"راحة ومراجعة":`يوم تدريبي ${trainingDay}`}</div>
+      </div>
+      {StatStrip()}
+      {restDay?(
+        <div className="mo-panel" style={{padding:18}}>
+          <h2 style={{margin:0}}>الجمعة راحة ومراجعة خفيفة</h2>
+          <p className="mo-muted" style={{lineHeight:1.8}}>لا توجد دروس جديدة اليوم. راجع الملاحظات، شاهد الدروس الصعبة، وجهز أسبوعك القادم.</p>
         </div>
       ):(
-        <div style={{display:"flex",flexDirection:"column",gap:12}}>
-          {dailyPlan.sessions.map(session=><StudySessionPanel key={session.id} session={session}/>)}
-        </div>
+        <>
+          {ActiveLessonPanel()}
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)"}}>
+            {dailyPlan.sessions.map(session=>{
+              const done=session.lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+              return(
+                <div key={session.id} className="mo-panel" style={{padding:12}}>
+                  {SessionTimer({session})}
+                  <div style={{marginTop:10,display:"grid",gap:8}}>
+                    <div className="mo-kbd">{done}/{session.lessons.length} lessons</div>
+                    {session.lessons.map(lesson=>(
+                      <button key={lesson.id} className="mo-card" onClick={()=>{setActiveLessonId(lesson.id);setVideoOpen(false);}} style={{padding:10,textAlign:"right",cursor:"pointer",background:activeLesson?.id===lesson.id?"var(--sbg12)":"var(--w3)"}}>
+                        <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+                          <span className={`chk ${s.doneLessons?.[lesson.id]?"on":""}`} style={{width:20,height:20,marginTop:2}}>{s.doneLessons?.[lesson.id]&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</span>
+                          <span style={{fontWeight:800,fontSize:13,overflowWrap:"anywhere"}}>{lesson.index}. {lesson.title}</span>
+                        </div>
+                        <div className="mo-kbd" style={{marginTop:5}}>{formatDuration(lesson.durationSec)}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
-    </div>);
+    </div>
+  );
+
+  const TrackRail=({title="المسارات"})=>(
+    <div className="mo-panel" style={{padding:12}}>
+      <div style={{fontWeight:900,marginBottom:10}}>{title}</div>
+      <div style={{display:"grid",gap:7}}>
+        {TRACK_COURSE_TREE.map(item=>{
+          const done=item.courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.doneLessons?.[lesson.id]).length,0);
+          const labs=getTrackLabs(item.tid);
+          const projects=getTrackProjects(item.tid);
+          const labDone=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+          const projectDone=projects.filter(project=>s.doneProjects?.[project.id]).length;
+          return(
+            <button key={item.tid} className={`mo-tab ${openTrack===item.tid?"on":""}`} onClick={()=>setOpenTrack(item.tid)}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:8}}><span>{item.track.icon} {item.track.name}</span><span>{pct(done,item.lessonCount)}%</span></div>
+              <div className="mo-kbd">{item.lessonCount} lessons · {labDone}/{labs.length} labs · {projectDone}/{projects.length} projects</div>
+              <div className="mo-progress" style={{marginTop:7}}><span style={{width:`${pct(done,item.lessonCount)}%`,background:item.track.color}}/></div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const KnowledgeView=()=>{
+    const courses=getTrackCourses(openTrack);
+    const lessons=getTrackLessons(openTrack);
+    const resources=getTrackResources(openTrack);
+    const labs=getTrackLabs(openTrack);
+    const projects=getTrackProjects(openTrack);
+    const topics=getTrackTopics(openTrack);
+    const doneLessons=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+    const doneLabs=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+    const doneProjects=projects.filter(project=>s.doneProjects?.[project.id]).length;
+    const phases=selectedTrack?.phases||[];
+    const renderTopicResourceColumn=(title,items,accent)=>(
+      <div className="mo-card" style={{padding:10}}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center",marginBottom:8}}>
+          <div style={{fontWeight:900,color:accent}}>{title}</div>
+          <div className="mo-kbd">{items.length}</div>
+        </div>
+        <div className="mo-list">
+          {items.map(item=>item.url?(
+            <a key={item.id||item.url} href={item.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"var(--t0)",border:"1px solid var(--wo)",borderRadius:9,padding:8,background:"var(--w3)"}}>
+              <div style={{fontWeight:800,fontSize:12,overflowWrap:"anywhere"}}>{item.title}</div>
+              <div className="mo-kbd">{item.meta}</div>
+            </a>
+          ):(
+            <div key={item.id||item.title} style={{border:"1px solid var(--wo)",borderRadius:9,padding:8,background:"var(--w3)"}}>
+              <div style={{fontWeight:800,fontSize:12,overflowWrap:"anywhere"}}>{item.title}</div>
+              <div className="mo-kbd">{item.meta}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+    const topicMatrix=topics.slice(0,12).map(item=>{
+      const phase=phases.find(phase=>phase.name===item.phase)||phases[0]||{};
+      const pack=getTopicResourcePack(openTrack,phase,item.topic);
+      return{
+        ...item,
+        videos:pack.videos.length,
+        articles:pack.articles.length,
+        writeups:pack.writeups.length,
+        labs:pack.labs.length,
+        methods:pack.methods.length,
+      };
+    });
+    return(
+      <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"300px minmax(0,1fr)"}}>
+        {TrackRail({title:"Knowledge graph"})}
+        <div className="mo-grid">
+          <div className="mo-panel" style={{padding:isMobile?14:18}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap",alignItems:"flex-start"}}>
+              <div>
+                <div className="mo-kbd">// selected track</div>
+                <h2 style={{margin:"4px 0",fontWeight:900}}>{selectedTrack.icon} {selectedTrack.name}</h2>
+                <div className="mo-muted" style={{lineHeight:1.8,maxWidth:760}}>{selectedTrack.desc}</div>
+              </div>
+              <div style={{minWidth:120}}>
+                <div className="mo-kbd">Track progress</div>
+                <div style={{fontSize:32,fontWeight:900,color:selectedTrack.color}}>{pct(doneLessons,lessons.length)}%</div>
+              </div>
+            </div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",marginTop:14}}>
+              {[
+                ["Courses",selectedCoverage.courses],
+                ["Lessons",selectedCoverage.lessons],
+                ["Topics",selectedCoverage.topics],
+                ["Resources",selectedCoverage.resources],
+                ["Labs",`${doneLabs}/${labs.length}`],
+                ["Projects",`${doneProjects}/${projects.length}`],
+              ].map(([label,value])=>(
+                <div key={label} className="mo-stat">
+                  <div style={{fontWeight:900,fontSize:22}}>{value}</div>
+                  <div className="mo-kbd">{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mo-panel" style={{padding:14}}>
+            <div style={{fontWeight:900,marginBottom:10}}>طبقات التغطية الشاملة</div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))"}}>
+              {KNOWLEDGE_PILLARS.map(pillar=>(
+                <div key={pillar.id} className="mo-node mo-soft">
+                  <div className="mo-node-body">
+                    <div style={{fontWeight:900}}>{pillar.ar}</div>
+                    <div className="mo-kbd">{pillar.label}</div>
+                    <div className="mo-muted mo-small" style={{marginTop:5}}>{pillar.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mo-panel" style={{padding:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",flexWrap:"wrap"}}>
+              <div>
+                <h3 style={{margin:"0 0 4px"}}>Topic Resource Matrix</h3>
+                <div className="mo-muted mo-small">مختصر سريع: لكل topic أكثر من زاوية ومصدر، والزر يحوله إلى Mission قابلة للتقرير.</div>
+              </div>
+              <span className="mo-pill">{topicMatrix.length}/{topics.length} shown</span>
+            </div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",marginTop:12}}>
+              {topicMatrix.map(item=>(
+                <div key={item.id} className="mo-card" style={{padding:10}}>
+                  <div className="mo-kbd">{item.phase}</div>
+                  <div style={{fontWeight:900,overflowWrap:"anywhere",minHeight:42}}>{item.topic}</div>
+                  <div className="mo-kbd" style={{marginTop:7}}>Videos {item.videos} · Articles {item.articles} · Writeups {item.writeups} · Labs {item.labs} · Methods {item.methods}</div>
+                  <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${pct(item.videos+item.articles+item.writeups+item.labs+item.methods,18)}%`,background:selectedTrack.color}}/></div>
+                  <button className="mo-btn" style={{marginTop:8,width:"100%"}} onClick={()=>openReportContext({id:item.id,type:"topic",title:item.topic,source:`Topic Resource Matrix · ${item.phase}`,trackId:openTrack})}>ابدأ Mission لهذا الـ topic</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.1fr .9fr"}}>
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>شجرة التعلم داخل المسار</h3>
+              <div className="mo-list">
+                {phases.map((phase,phaseIndex)=>(
+                  <div key={phase.id} className="mo-node">
+                    <div className="mo-node-body">
+                      <div style={{fontWeight:900}}>{phase.emoji} {phase.name}</div>
+                      <div className="mo-kbd">{phase.topics?.length||0} topics · {phase.resources?.length||0} resources</div>
+                      <div style={{display:"grid",gap:8,marginTop:9}}>
+                        {(phase.topics||[]).map((topic,index)=>{
+                          const topicKey=`${openTrack}-${phase.id}-${index}`;
+                          const isTopicOpen=Object.prototype.hasOwnProperty.call(openTopicPacks,topicKey)?openTopicPacks[topicKey]:(phaseIndex===0&&index===0);
+                          const pack=isTopicOpen?getTopicResourcePack(openTrack,phase,topic):null;
+                          const count=pack?pack.videos.length+pack.articles.length+pack.writeups.length+pack.labs.length+pack.methods.length:0;
+                          return(
+                            <details key={topicKey} className="mo-card" style={{padding:0,overflow:"hidden"}} open={isTopicOpen} onToggle={e=>{const isOpen=e.currentTarget.open;setOpenTopicPacks(prev=>({...prev,[topicKey]:isOpen}));}}>
+                              <summary style={{cursor:"pointer",padding:10,listStyle:"none"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",flexWrap:"wrap"}}>
+                                  <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{topic}</div>
+                                  <span className="mo-pill">{isTopicOpen?`${count} sources`:"افتح المصادر"}</span>
+                                </div>
+                                <div className="mo-kbd" style={{marginTop:5}}>{isTopicOpen?`Videos ${pack.videos.length} · Articles ${pack.articles.length} · Writeups ${pack.writeups.length} · Labs ${pack.labs.length} · Methods ${pack.methods.length}`:"مصادر متنوعة لكل topic: فيديوهات، مقالات، Writeups، Labs، Methodologies"}</div>
+                              </summary>
+                              {isTopicOpen&&(
+                                <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",padding:10,paddingTop:0}}>
+                                  {renderTopicResourceColumn("Videos",pack.videos,"#00d4ff")}
+                                  {renderTopicResourceColumn("Articles / Books",pack.articles,"#facc15")}
+                                  {renderTopicResourceColumn("Writeups / Reports",pack.writeups,"#f472b6")}
+                                  {renderTopicResourceColumn("Labs / CTF",pack.labs,"#00ff88")}
+                                  {renderTopicResourceColumn("Tools / Methodology",pack.methods,"#a78bfa")}
+                                </div>
+                              )}
+                            </details>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mo-grid">
+              <div className="mo-panel" style={{padding:14}}>
+                <h3 style={{marginTop:0}}>كورسات مرتبطة</h3>
+                <div className="mo-list">
+                  {courses.map(course=>{
+                    const all=COURSE_LESSONS[course.id]||[];
+                    const done=all.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+                    return(
+                      <a key={course.id} href={course.url} target="_blank" rel="noopener noreferrer" className="mo-card" style={{padding:10,textDecoration:"none",color:"var(--t0)"}}>
+                        <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{course.title}</div>
+                        <div className="mo-kbd">{done}/{all.length} lessons · {course.channel}</div>
+                        <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${pct(done,all.length)}%`}}/></div>
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="mo-panel" style={{padding:14}}>
+                <h3 style={{marginTop:0}}>مخرجات المسار</h3>
+                <div className="mo-list">
+                  {projects.map(project=>(
+                    <div key={project.id} className="mo-card" style={{padding:10}}>
+                      <div style={{fontWeight:900}}>{project.title}</div>
+                      <div className="mo-muted mo-small">{project.goal}</div>
+                      <div className="mo-kbd">{s.doneProjects?.[project.id]?"completed":"portfolio project"}</div>
+                    </div>
+                  ))}
+                  {!projects.length&&<div className="mo-muted mo-small">سيتم توليد مشاريع لهذا المسار في التوسعة التالية.</div>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  const GlobalSearchPanel=()=>{
+  const LabsView=()=>{
+    const labs=getTrackLabs(openTrack);
+    const resources=getTrackResources(openTrack).filter(resource=>resource.type==="lab");
+    const lessons=getTrackLessons(openTrack).slice(0,6);
+    const done=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+    return(
+      <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"300px minmax(0,1fr)"}}>
+        {TrackRail({title:"Lab tracks"})}
+        <div className="mo-grid">
+          <div className="mo-panel" style={{padding:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+              <div>
+                <div className="mo-kbd">// practice layer</div>
+                <h2 style={{margin:"4px 0",fontWeight:900}}>{selectedTrack.icon} Labs: {selectedTrack.name}</h2>
+                <div className="mo-muted">كل Lab مرتبط بمسار، ويمكن استخدام الدروس والمصادر معه كتدريب عملي.</div>
+              </div>
+              <div style={{fontSize:30,fontWeight:900,color:selectedTrack.color}}>{done}/{labs.length}</div>
+            </div>
+            <div className="mo-progress" style={{marginTop:12}}><span style={{width:`${pct(done,labs.length)}%`,background:selectedTrack.color}}/></div>
+          </div>
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr .7fr"}}>
+            <div className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>Labs العملية</h3>
+              <div className="mo-list">
+                {labs.map(lab=>(
+                  <div key={lab.id} className="mo-card" style={{padding:12,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+                    <div>
+                      <div className="mo-kbd">{lab.phase} · {lab.source}</div>
+                      <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{lab.title}</div>
+                      <div className="mo-muted mo-small">نفذ الخطوات، احفظ الأدلة، ثم اربط النتيجة بتقرير أو مشروع.</div>
+                    </div>
+                    <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                      {lab.url&&<a className="mo-btn" href={lab.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>افتح</a>}
+                      <button className="mo-btn" onClick={()=>openReportContext({id:lab.id,type:"lab",title:lab.title,source:lab.phase||lab.source||"Lab",trackId:openTrack,url:lab.url})}>تقرير</button>
+                      <button className={`mo-btn ${s.doneLabs?.[lab.id]?"":"primary"}`} onClick={()=>toggleLab(lab)}>{s.doneLabs?.[lab.id]?"إلغاء":"تم التنفيذ"}</button>
+                    </div>
+                  </div>
+                ))}
+                {!labs.length&&<div className="mo-card" style={{padding:14}}>لا توجد Labs مصنفة لهذا المسار بعد، لكن يمكنك استخدام مصادره ودروسه لبناء Lab يدوي.</div>}
+              </div>
+            </div>
+            <div className="mo-grid">
+              <div className="mo-panel" style={{padding:14}}>
+                <h3 style={{marginTop:0}}>مصادر Lab مباشرة</h3>
+                <div className="mo-list">
+                  {resources.map((resource,index)=>(
+                    <a key={`${resource.url}-${index}`} className="mo-card" href={resource.url} target="_blank" rel="noopener noreferrer" style={{padding:10,textDecoration:"none",color:"var(--t0)"}}>
+                      <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{resource.title}</div>
+                      <div className="mo-kbd">{resource.lang} · {resource.phase}</div>
+                    </a>
+                  ))}
+                  {!resources.length&&<div className="mo-muted mo-small">لا توجد روابط Labs مباشرة لهذا المسار.</div>}
+                </div>
+              </div>
+              <div className="mo-panel" style={{padding:14}}>
+                <h3 style={{marginTop:0}}>دروس تساعدك قبل التطبيق</h3>
+                <div className="mo-list">
+                  {lessons.map(lesson=>(
+                    <button key={lesson.id} className="mo-card" onClick={()=>openLesson(lesson)} style={{padding:10,textAlign:"right",cursor:"pointer"}}>
+                      <div style={{fontWeight:800,overflowWrap:"anywhere"}}>{lesson.title}</div>
+                      <div className="mo-kbd">{COURSE_BY_ID[lesson.courseId]?.title}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const CtfView=()=>{
+    const trackOptions=TRACK_COURSE_TREE.map(item=>({id:item.tid,label:item.track.name}));
+    const categoryOptions=[...new Set(CTF_PLATFORMS.map(platform=>platform.category))].sort();
+    const levelOptions=[...new Set(CTF_PLATFORMS.map(platform=>platform.level))];
+    const filtered=CTF_PLATFORMS.filter(platform=>{
+      const trackOk=ctfFilters.track==="all"||(platform.trackIds||[]).includes(ctfFilters.track);
+      const levelOk=ctfFilters.level==="all"||platform.level===ctfFilters.level;
+      const categoryOk=ctfFilters.category==="all"||platform.category===ctfFilters.category;
+      return trackOk&&levelOk&&categoryOk;
+    });
+    const done=CTF_PLATFORMS.filter(platform=>s.doneCtfPlatforms?.[platform.id]).length;
+    const starterIds=["overthewire","tryhackme","picoctf","portswigger","hacksplaining","google-gruyere"];
+    const coreIds=["hackthebox","rootme","hacker101","attackdefense","pentesterlab","ctflearn","holidayhack"];
+    const advancedIds=["exploit-education","pwn-college","pwnablekr","microcorruption","google-ctf","pentestit"];
+    const renderPlatform=platform=>(
+      <div key={platform.id} className="mo-card" style={{padding:12,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+        <div>
+          <div className="mo-kbd">{platform.category} · {platform.level}</div>
+          <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{platform.title}</div>
+          <div className="mo-muted mo-small">{platform.note}</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:7}}>
+            {(platform.trackIds||[]).map(tid=><span key={tid} className="mo-pill">{trackLabel(tid)}</span>)}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:isMobile?"flex-start":"flex-end"}}>
+          <a className="mo-btn" href={platform.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>افتح</a>
+          <button className="mo-btn" onClick={()=>openReportContext({id:platform.id,type:"ctf",title:platform.title,source:platform.category||"CTF",trackId:platform.trackIds?.[0]||"ctf",url:platform.url})}>تقرير</button>
+          <button className={`mo-btn ${s.doneCtfPlatforms?.[platform.id]?"":"primary"}`} onClick={()=>toggleCtfPlatform(platform)}>{s.doneCtfPlatforms?.[platform.id]?"إلغاء":"أنجزت"}</button>
+        </div>
+      </div>
+    );
+    return(
+      <div className="mo-grid">
+        <div className="mo-panel" style={{padding:isMobile?14:18}}>
+          <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+            <div>
+              <div className="mo-kbd">// CTF & practice ladder</div>
+              <h2 style={{margin:"4px 0",fontWeight:900}}>منصات CTF والتدريب العملي</h2>
+              <div className="mo-muted" style={{lineHeight:1.8,maxWidth:820}}>حولت قائمتك إلى Ladder: ابدأ بالتعلم المنظم، ثم Web/Labs، ثم Machines وPwn/Reversing. بعض الروابط القديمة موسومة كمحتوى يحتاج تدقيق دوري.</div>
+            </div>
+            <div style={{minWidth:130}}>
+              <div className="mo-kbd">Platforms progress</div>
+              <div style={{fontSize:32,fontWeight:900,color:"#00ff88"}}>{done}/{CTF_PLATFORMS.length}</div>
+            </div>
+          </div>
+          <div className="mo-progress" style={{marginTop:12}}><span style={{width:`${pct(done,CTF_PLATFORMS.length)}%`}}/></div>
+        </div>
+
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)"}}>
+          <div className="mo-panel" style={{padding:14,gridColumn:isMobile?"auto":"1 / -1"}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+              <div>
+                <h3 style={{margin:"0 0 4px"}}>CTF Ladder Road</h3>
+                <div className="mo-muted mo-small">طريق انتقال واضح: لا تنتقل للمرحلة التالية إلا بعد تنفيذ شرط المرحلة الحالية وكتابة تقرير مختصر.</div>
+              </div>
+              <span className="mo-pill">{CTF_LADDER.filter(stage=>s.doneCtfPlatforms?.[stage.platformId]).length}/{CTF_LADDER.length} gates</span>
+            </div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",marginTop:12}}>
+              {CTF_LADDER.map((stage,index)=>{
+                const platform=CTF_PLATFORMS.find(item=>item.id===stage.platformId);
+                const prevDone=index===0||s.doneCtfPlatforms?.[CTF_LADDER[index-1].platformId];
+                const done=platform&&s.doneCtfPlatforms?.[platform.id];
+                return(
+                  <div key={`road-${stage.id}`} className="mo-card" style={{padding:10,opacity:prevDone?1:.55,borderColor:done?"var(--sbd25)":"var(--wo)"}}>
+                    <div className="mo-kbd">Gate {index+1}</div>
+                    <div style={{fontWeight:900}}>{stage.title}</div>
+                    <div className="mo-muted mo-small">{stage.gate}</div>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:8}}>
+                      {platform&&<a className="mo-btn" href={platform.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>افتح</a>}
+                      {platform&&<button className="mo-btn" disabled={!prevDone} onClick={()=>openReportContext({id:platform.id,type:"ctf",title:platform.title,source:`CTF Ladder Road gate ${index+1}`,trackId:platform.trackIds?.[0]||"ctf",url:platform.url})}>تقرير</button>}
+                      {platform&&<button className={`mo-btn ${done?"":"primary"}`} disabled={!prevDone} onClick={()=>toggleCtfPlatform(platform)}>{done?"تم":"أنجزت"}</button>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          {[
+            ["ابدأ هنا",starterIds,"أساسيات، Linux، Web مبسط، CTF beginner."],
+            ["مرحلة Core",coreIds,"منصات أكثر جدية بعد فهم الأساسيات."],
+            ["Advanced",advancedIds,"Pwn, Reversing, Exploit, مسابقات أقوى."],
+          ].map(([title,ids,desc])=>(
+            <div key={title} className="mo-panel" style={{padding:14}}>
+              <h3 style={{marginTop:0}}>{title}</h3>
+              <div className="mo-muted mo-small" style={{marginBottom:10}}>{desc}</div>
+              <div className="mo-list">
+                {ids.map(id=>CTF_PLATFORMS.find(platform=>platform.id===id)).filter(Boolean).map(platform=>(
+                  <a key={platform.id} href={platform.url} target="_blank" rel="noopener noreferrer" className="mo-card" style={{padding:10,textDecoration:"none",color:"var(--t0)"}}>
+                    <div style={{fontWeight:900}}>{platform.title}</div>
+                    <div className="mo-kbd">{platform.category} · {platform.level}</div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mo-panel" style={{padding:14}}>
+          <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr"}}>
+            <select className="mo-select" value={ctfFilters.track} onChange={e=>setCtfFilter({track:e.target.value})}>
+              <option value="all">كل المسارات</option>
+              {trackOptions.map(track=><option key={track.id} value={track.id}>{track.label}</option>)}
+            </select>
+            <select className="mo-select" value={ctfFilters.category} onChange={e=>setCtfFilter({category:e.target.value})}>
+              <option value="all">كل الأنواع</option>
+              {categoryOptions.map(category=><option key={category} value={category}>{category}</option>)}
+            </select>
+            <select className="mo-select" value={ctfFilters.level} onChange={e=>setCtfFilter({level:e.target.value})}>
+              <option value="all">كل المستويات</option>
+              {levelOptions.map(level=><option key={level} value={level}>{level}</option>)}
+            </select>
+          </div>
+          <div className="mo-kbd" style={{margin:"12px 0"}}>{filtered.length} platforms · user-submitted + curated</div>
+          <div className="mo-list">
+            {filtered.map(renderPlatform)}
+          </div>
+        </div>
+
+        <div className="mo-panel" style={{padding:14}}>
+          <h2 style={{marginTop:0}}>مصادر إضافية من قائمتك</h2>
+          <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))"}}>
+            {EXTRA_LEARNING_RESOURCES.map(resource=>(
+              <a key={resource.id} href={resource.url} target="_blank" rel="noopener noreferrer" className="mo-card" style={{padding:12,textDecoration:"none",color:"var(--t0)"}}>
+                <div className="mo-kbd">{resource.type}</div>
+                <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{resource.title}</div>
+                <div className="mo-muted mo-small" style={{marginTop:5}}>{resource.note}</div>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
+                  {(resource.trackIds||[]).slice(0,3).map(tid=><span key={tid} className="mo-pill">{trackLabel(tid)}</span>)}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const ProjectsView=()=>{
+    const projects=getTrackProjects(openTrack);
+    const labs=getTrackLabs(openTrack);
+    const lessons=getTrackLessons(openTrack);
+    const done=projects.filter(project=>s.doneProjects?.[project.id]).length;
+    return(
+      <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"300px minmax(0,1fr)"}}>
+        {TrackRail({title:"Portfolio tracks"})}
+        <div className="mo-grid">
+          <div className="mo-panel" style={{padding:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+              <div>
+                <div className="mo-kbd">// portfolio layer</div>
+                <h2 style={{margin:"4px 0",fontWeight:900}}>{selectedTrack.icon} Projects: {selectedTrack.name}</h2>
+                <div className="mo-muted">كل مشروع يحول الدراسة إلى دليل عملي: تقرير، Checklist، PoC، أو Case study.</div>
+              </div>
+              <div style={{fontSize:30,fontWeight:900,color:selectedTrack.color}}>{done}/{projects.length}</div>
+            </div>
+            <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",marginTop:12}}>
+              <div className="mo-stat"><div style={{fontWeight:900,fontSize:22}}>{lessons.length}</div><div className="mo-kbd">related lessons</div></div>
+              <div className="mo-stat"><div style={{fontWeight:900,fontSize:22}}>{labs.length}</div><div className="mo-kbd">practice labs</div></div>
+              <div className="mo-stat"><div style={{fontWeight:900,fontSize:22}}>{getTrackResources(openTrack).length}</div><div className="mo-kbd">resources</div></div>
+            </div>
+          </div>
+          <div className="mo-list">
+            {projects.map(project=>(
+              <div key={project.id} className="mo-panel" style={{padding:14}}>
+                <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
+                  <div>
+                    <div className="mo-kbd">{project.level} · {selectedTrack.nameEn}</div>
+                    <h3 style={{margin:"4px 0",fontWeight:900}}>{project.title}</h3>
+                    <div className="mo-muted" style={{lineHeight:1.8}}>{project.goal}</div>
+                  </div>
+                  <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                    <button className="mo-btn" onClick={()=>openReportContext({id:project.id,type:"project",title:project.title,source:"Project report",trackId:project.trackId||openTrack})}>تقرير المشروع</button>
+                    <button className={`mo-btn ${s.doneProjects?.[project.id]?"":"primary"}`} onClick={()=>toggleProject(project)}>{s.doneProjects?.[project.id]?"إلغاء الإنجاز":"أنهيت المشروع"}</button>
+                  </div>
+                </div>
+                <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1fr 1fr",marginTop:12}}>
+                  <div className="mo-card" style={{padding:12}}>
+                    <div style={{fontWeight:900,marginBottom:8}}>Deliverables</div>
+                    <div className="mo-list">
+                      {project.deliverables.map(item=><div key={item} className="mo-small">- [ ] {item}</div>)}
+                    </div>
+                  </div>
+                  <div className="mo-card" style={{padding:12}}>
+                    <div style={{fontWeight:900,marginBottom:8}}>Rubric</div>
+                    <div className="mo-list">
+                      {project.rubric.map(item=><div key={item} className="mo-small">• {item}</div>)}
+                    </div>
+                  </div>
+                </div>
+                <textarea className="mo-textarea" style={{marginTop:12}} value={s.projectNotes?.[project.id]||""} onChange={e=>saveProjectNote(project.id,e.target.value)} placeholder="ملاحظات المشروع، روابط GitHub/Notion، نتائج، أسئلة تحتاج مراجعة..."/>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const LibraryView=()=>(
+    <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"300px minmax(0,1fr)"}}>
+      {TrackRail({})}
+      <div className="mo-panel" style={{padding:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:12}}>
+          <div>
+            <h2 style={{margin:0,fontWeight:900}}>{TRACKS[openTrack]?.name}</h2>
+            <div className="mo-kbd">Playlist tree · lazy open · {LESSONS.length} lessons total</div>
+          </div>
+          <button className="mo-btn" onClick={()=>upd(prev=>({...prev,libraryFilter:prev.libraryFilter==="undone"?"all":"undone"}))}>{s.libraryFilter==="undone"?"عرض الكل":"غير المكتمل فقط"}</button>
+        </div>
+        <div style={{display:"grid",gap:10}}>
+          {(TRACK_COURSE_TREE.find(item=>item.tid===openTrack)?.courses||[]).map(course=>{
+            const lessons=(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.libraryFilter==="undone"?!s.doneLessons?.[lesson.id]:true);
+            const allLessons=COURSE_LESSONS[course.id]||[];
+            const done=allLessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+            const isOpen=openCourse===`${openTrack}-${course.id}`;
+            return(
+              <div className="mo-card" key={course.id} style={{padding:10}}>
+                <button onClick={()=>setOpenCourse(isOpen?null:`${openTrack}-${course.id}`)} style={{all:"unset",cursor:"pointer",display:"block",width:"100%"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
+                    <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{course.title}</div>
+                    <div className="mo-kbd">{done}/{allLessons.length}</div>
+                  </div>
+                  <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${pct(done,allLessons.length)}%`}}/></div>
+                </button>
+                {isOpen&&(
+                  <div style={{display:"grid",gap:7,marginTop:10}}>
+                    {lessons.map(lesson=>(
+                      <div key={lesson.id} className="mo-card" style={{padding:9,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:8,alignItems:"center"}}>
+                        <button onClick={()=>toggleLesson(lesson)} className={`chk ${s.doneLessons?.[lesson.id]?"on":""}`} style={{position:"absolute",opacity:0}} aria-label="toggle"/>
+                        <div>
+                          <div style={{fontWeight:800,fontSize:13,overflowWrap:"anywhere",color:s.doneLessons?.[lesson.id]?"var(--t2)":"var(--t0)"}}>{lesson.index}. {lesson.title}</div>
+                          <div className="mo-kbd">{formatDuration(lesson.durationSec)} · {s.doneLessons?.[lesson.id]?"done":"undone"}</div>
+                        </div>
+                        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                          <button className="mo-btn" onClick={()=>toggleLesson(lesson)}>{s.doneLessons?.[lesson.id]?"إلغاء":"إنهاء"}</button>
+                          <button className="mo-btn primary" onClick={()=>openLesson(lesson)}>ادرس</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
+  const SearchView=()=>{
     const q=textNorm(searchFilters.q);
     const results=LESSONS.filter(lesson=>{
       const course=COURSE_BY_ID[lesson.courseId];
@@ -21649,182 +23542,185 @@ export default function CyberPath(){
       const statusOk=searchFilters.status==="all"||(searchFilters.status==="done"&&done)||(searchFilters.status==="undone"&&!done);
       return trackOk&&statusOk&&(!q||hay.includes(q));
     });
-    return(<div className="card" style={{padding:isMobile?12:16}}>
-      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:12}}>
-        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>بحث شامل في الدروس</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{results.length}/{LESSONS.length} results</div></div>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1.2fr .7fr .7fr",gap:8,marginBottom:12}}>
-        <input value={searchFilters.q||""} onChange={e=>setSearchFilter({q:e.target.value})} placeholder="ابحث عن XSS, Linux, Android..." style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--bo)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}/>
-        <select value={searchFilters.track||"all"} onChange={e=>setSearchFilter({track:e.target.value})} style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--select-bg)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}>
-          <option value="all">كل المسارات</option>
-          {TRACK_COURSE_TREE.map(item=><option key={item.tid} value={item.tid}>{item.track.name}</option>)}
-        </select>
-        <select value={searchFilters.status||"all"} onChange={e=>setSearchFilter({status:e.target.value})} style={{padding:"10px 12px",borderRadius:8,border:"1px solid var(--wo)",background:"var(--select-bg)",color:"var(--t0)",fontFamily:"'Cairo',sans-serif"}}>
-          <option value="all">كل الحالات</option><option value="undone">غير مكتمل</option><option value="done">مكتمل</option>
-        </select>
-      </div>
-      <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:isMobile?"none":"70vh",overflowY:isMobile?"visible":"auto",paddingRight:isMobile?0:4}}>
-        {results.map(lesson=>{
-          const course=COURSE_BY_ID[lesson.courseId],done=!!s.doneLessons?.[lesson.id];
-          return(<div key={lesson.id} style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"auto 1fr auto",gap:9,alignItems:"center",background:done?"rgba(0,255,136,0.06)":"var(--bo)",border:`1px solid ${done?"rgba(0,255,136,0.25)":"var(--wo)"}`,borderRadius:9,padding:10}}>
-            <button onClick={()=>toggleLesson(lesson)} className={`chk ${done?"on":""}`} style={{border:"2px solid var(--sbd4)",background:done?"#00ff88":"transparent"}}>{done&&<span style={{color:"var(--bg4)",fontSize:10,fontWeight:900}}>✓</span>}</button>
-            <div style={{minWidth:0}}>
-              <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{course?.title} · #{lesson.index}</div>
-              <div style={{color:done?"var(--t2)":"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
-              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:5}}>{(lesson.trackIds||[]).slice(0,4).map(tid=><span key={tid} style={{fontSize:10,color:TRACKS[tid]?.color||"var(--t1)"}}>{trackLabel(tid)}</span>)}</div>
-            </div>
-            <div style={{display:"flex",gap:7,flexWrap:"wrap",justifyContent:isMobile?"flex-start":"flex-end"}}>
-              <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 10px"}}>مشاهدة داخل التطبيق</button>
-              <a className="btn btn-g" href={lesson.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",fontSize:11,padding:"7px 10px"}}>YouTube</a>
-            </div>
-          </div>);
-        })}
-      </div>
-    </div>);
-  };
-
-  const ReviewPanel=()=>{
-    const byId=new Map((s.reviewQueue||[]).map(item=>[item.lessonId,item]));
-    Object.entries(s.lessonNotes||{}).forEach(([lessonId,note])=>{if(note?.trim()&&!byId.has(lessonId))byId.set(lessonId,{lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});});
-    const items=[...byId.values()].map(item=>({item,lesson:LESSONS.find(lesson=>lesson.id===item.lessonId)})).filter(row=>row.lesson).sort((a,b)=>String(a.item.dueDate||"").localeCompare(String(b.item.dueDate||"")));
-    const due=items.filter(row=>(row.item.dueDate||today())<=today());
-    const later=items.filter(row=>(row.item.dueDate||today())>today());
-    const renderRow=({item,lesson})=>{
-      const course=COURSE_BY_ID[lesson.courseId],review=s.lessonReview?.[lesson.id]||{};
-      return(<div key={lesson.id} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
-          <div style={{minWidth:0}}>
-            <div style={{color:"var(--t1)",fontSize:10,fontFamily:"'Fira Code',monospace"}}>{item.reason} · due {item.dueDate} · reviewed {review.reviewCount||0}x</div>
-            <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",overflowWrap:"anywhere"}}>{lesson.title}</div>
-            <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:3}}>{course?.title}</div>
-          </div>
-          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-            <button className="btn btn-o" onClick={()=>{setActiveVideoLessonId(lesson.id);setActiveTab("today");}} style={{fontSize:11,padding:"7px 10px"}}>راجع الآن</button>
-            <button className="btn btn-g" onClick={()=>markReviewed(lesson)} style={{fontSize:11,padding:"7px 10px"}}>تمت المراجعة</button>
-            <button className="btn btn-o" onClick={()=>postponeReview(lesson)} style={{fontSize:11,padding:"7px 10px"}}>أجل يومين</button>
-          </div>
+    return(
+      <div className="mo-panel" style={{padding:14}}>
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"1.4fr .8fr .7fr"}}>
+          <input className="mo-input" value={searchFilters.q||""} onChange={e=>setSearchFilter({q:e.target.value})} placeholder="ابحث في 875 درس..."/>
+          <select className="mo-select" value={searchFilters.track||"all"} onChange={e=>setSearchFilter({track:e.target.value})}>
+            <option value="all">كل المسارات</option>
+            {TRACK_COURSE_TREE.map(item=><option key={item.tid} value={item.tid}>{item.track.name}</option>)}
+          </select>
+          <select className="mo-select" value={searchFilters.status||"all"} onChange={e=>setSearchFilter({status:e.target.value})}>
+            <option value="all">كل الحالات</option><option value="undone">غير مكتمل</option><option value="done">مكتمل</option>
+          </select>
         </div>
-      </div>);
-    };
-    return(<div className="card" style={{padding:isMobile?12:16}}>
-      <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"center",flexWrap:"wrap",marginBottom:12}}>
-        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>المراجعة الذكية</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Fira Code',monospace"}}>{due.length} due · {later.length} scheduled</div></div>
+        <div className="mo-kbd" style={{margin:"12px 0"}}>{results.length} result</div>
+        <div style={{display:"grid",gap:8}}>
+          {results.map(lesson=>(
+            <div key={lesson.id} className="mo-card" style={{padding:10,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10,alignItems:"center"}}>
+              <div>
+                <div className="mo-kbd">{COURSE_BY_ID[lesson.courseId]?.title} · #{lesson.index}</div>
+                <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{lesson.title}</div>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:6}}>{(lesson.trackIds||[]).slice(0,3).map(tid=><span className="mo-pill" key={tid}>{trackLabel(tid)}</span>)}</div>
+              </div>
+              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                <button className="mo-btn" onClick={()=>toggleLesson(lesson)}>{s.doneLessons?.[lesson.id]?"إلغاء":"إنهاء"}</button>
+                <button className="mo-btn primary" onClick={()=>openLesson(lesson)}>ادرس</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        <div style={{color:"#00ff88",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>مستحق الآن</div>
-        {due.length?due.map(renderRow):<div style={{color:"var(--t2)",fontSize:12,fontFamily:"'Cairo',sans-serif",background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:8,padding:10}}>لا توجد مراجعات مستحقة الآن.</div>}
-        <div style={{color:"var(--t1)",fontSize:13,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginTop:8}}>قادمة</div>
-        {later.slice(0,20).map(renderRow)}
-      </div>
-    </div>);
+    );
   };
 
-  const ProgressPanel=()=>{
+  const ReviewView=()=>{
+    const map=new Map((s.reviewQueue||[]).map(item=>[item.lessonId,item]));
+    Object.entries(s.lessonNotes||{}).forEach(([lessonId,note])=>{if(note?.trim()&&!map.has(lessonId))map.set(lessonId,{lessonId,reason:"note",dueDate:today(),lastReviewedAt:null});});
+    const rows=[...map.values()].map(item=>({item,lesson:LESSONS.find(lesson=>lesson.id===item.lessonId)})).filter(row=>row.lesson).sort((a,b)=>String(a.item.dueDate||"").localeCompare(String(b.item.dueDate||"")));
+    return(
+      <div className="mo-panel" style={{padding:14}}>
+        <h2 style={{marginTop:0}}>المراجعة الذكية</h2>
+        <div className="mo-kbd" style={{marginBottom:12}}>{rows.length} lessons with notes/completion review</div>
+        <div style={{display:"grid",gap:8}}>
+          {rows.length?rows.map(({item,lesson})=>(
+            <div key={lesson.id} className="mo-card" style={{padding:10,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:10}}>
+              <div>
+                <div className="mo-kbd">{item.reason} · due {item.dueDate}</div>
+                <div style={{fontWeight:900,overflowWrap:"anywhere"}}>{lesson.title}</div>
+                <div className="mo-muted" style={{fontSize:12}}>{COURSE_BY_ID[lesson.courseId]?.title}</div>
+              </div>
+              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                <button className="mo-btn" onClick={()=>openLesson(lesson)}>افتح</button>
+                <button className="mo-btn primary" onClick={()=>markReviewed(lesson)}>تمت المراجعة</button>
+              </div>
+            </div>
+          )):<div className="mo-card" style={{padding:14}}>لا توجد مراجعات بعد. أنجز درسًا أو أضف ملاحظة لتبدأ المراجعة.</div>}
+        </div>
+      </div>
+    );
+  };
+
+  const ProgressView=()=>{
     const courseDone=COURSES.filter(course=>(COURSE_LESSONS[course.id]||[]).every(lesson=>s.doneLessons?.[lesson.id])).length;
     const studiedDays=new Set(Object.values(s.doneLessons||{})).size;
-    const avgPerDay=studiedDays?doneLessonCount/studiedDays:0;
-    const remaining=Math.max(0,totalLessonCount-doneLessonCount);
-    const etaDays=avgPerDay?Math.ceil(remaining/avgPerDay):null;
-    return(<div>
-      <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:9,marginBottom:12}}>
-        {[{label:"الدروس المكتملة",val:`${doneLessonCount}/${totalLessonCount}`,color:"#00ff88"},{label:"الكورسات المكتملة",val:`${courseDone}/${COURSES.length}`,color:"#00d4ff"},{label:"أيام بها إنجاز",val:studiedDays,color:"#a78bfa"},{label:"تقدير الإكمال",val:etaDays?`${etaDays} يوم`:"ابدأ أولًا",color:"#fbbf24"}].map((item,i)=><div key={i} className="stat-card" style={{padding:12}}>
-          <div style={{color:item.color,fontSize:17,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{item.val}</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{item.label}</div>
-        </div>)}
-      </div>
-      <div className="card" style={{padding:isMobile?12:16}}>
-        <div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:10}}>تقدم المسارات</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:9}}>
-          {TRACK_COURSE_TREE.map(item=>{
-            const done=item.courses.reduce((sum,course)=>sum+(COURSE_LESSONS[course.id]||[]).filter(lesson=>s.doneLessons?.[lesson.id]).length,0);
-            return(<div key={item.tid} style={{background:"var(--bo)",border:"1px solid var(--wo)",borderRadius:9,padding:10}}>
-              <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}><span style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif"}}>{item.track.icon} {item.track.name}</span><span style={{color:item.track.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{pct(done,item.lessonCount)}%</span></div>
-              <div className="bar" style={{marginTop:8}}><div className="bar-fill" style={{width:`${pct(done,item.lessonCount)}%`,background:item.track.color}}/></div>
-              <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:5}}>{done}/{item.lessonCount} lessons · {item.courses.length} playlists</div>
-            </div>);
-          })}
+    const eta=studiedDays?Math.ceil((totalLessonCount-doneLessonCount)/(doneLessonCount/studiedDays)):null;
+    const allLabs=TRACK_ORDER.flatMap(tid=>getTrackLabs(tid));
+    const doneLabs=allLabs.filter(lab=>s.doneLabs?.[lab.id]).length;
+    const doneProjects=PROJECT_LIBRARY.filter(project=>s.doneProjects?.[project.id]).length;
+    const doneCtf=CTF_PLATFORMS.filter(platform=>s.doneCtfPlatforms?.[platform.id]).length;
+    return(
+      <div className="mo-grid">
+        {StatStrip()}
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"repeat(6,1fr)"}}>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Courses complete</div><div style={{fontSize:30,fontWeight:900}}>{courseDone}/{COURSES.length}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Study days</div><div style={{fontSize:30,fontWeight:900}}>{studiedDays}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Labs complete</div><div style={{fontSize:30,fontWeight:900}}>{doneLabs}/{allLabs.length}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">CTF platforms</div><div style={{fontSize:30,fontWeight:900}}>{doneCtf}/{CTF_PLATFORMS.length}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Projects complete</div><div style={{fontSize:30,fontWeight:900}}>{doneProjects}/{PROJECT_LIBRARY.length}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">ETA</div><div style={{fontSize:30,fontWeight:900}}>{eta?`${eta} يوم`:"ابدأ"}</div></div>
+        </div>
+        <div className="mo-grid" style={{gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)"}}>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Mission reports</div><div style={{fontSize:30,fontWeight:900}}>{reportCount}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Proof entries</div><div style={{fontSize:30,fontWeight:900}}>{proofCount}</div></div>
+          <div className="mo-panel" style={{padding:14}}><div className="mo-kbd">Career mode</div><div style={{fontSize:24,fontWeight:900}}>{careerMode.title}</div></div>
+          <div className="mo-panel" style={{padding:14}}>
+            <div className="mo-kbd">Portfolio Readiness Score</div>
+            <div style={{fontSize:30,fontWeight:900,color:portfolioReadinessScore>=70?"#00ff88":"#facc15"}}>{portfolioReadinessScore}%</div>
+            <button className="mo-btn" style={{marginTop:8,width:"100%"}} onClick={()=>downloadText(`cyberpath-portfolio-${today()}.md`,buildPortfolioMarkdown())}>Export Portfolio.md</button>
+          </div>
+        </div>
+        <div className="mo-panel" style={{padding:14}}>
+          <h2 style={{marginTop:0}}>Coverage Matrix</h2>
+          <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))"}}>
+            {TRACK_COURSE_TREE.map(item=>{
+              const coverage=trackCoverage(item.tid);
+              const lessons=getTrackLessons(item.tid);
+              const lessonDone=lessons.filter(lesson=>s.doneLessons?.[lesson.id]).length;
+              const labs=getTrackLabs(item.tid);
+              const labDone=labs.filter(lab=>s.doneLabs?.[lab.id]).length;
+              const projects=getTrackProjects(item.tid);
+              const projectDone=projects.filter(project=>s.doneProjects?.[project.id]).length;
+              return(
+                <div key={item.tid} className="mo-card" style={{padding:12}}>
+                  <div style={{fontWeight:900}}>{item.track.icon} {item.track.name}</div>
+                  <div className="mo-kbd">{coverage.courses} courses · {coverage.resources} resources · {coverage.topics} topics</div>
+                  <div className="mo-small" style={{marginTop:8}}>Lessons: {lessonDone}/{lessons.length}</div>
+                  <div className="mo-progress"><span style={{width:`${pct(lessonDone,lessons.length)}%`,background:item.track.color}}/></div>
+                  <div className="mo-small" style={{marginTop:8}}>Labs: {labDone}/{labs.length} · Projects: {projectDone}/{projects.length}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="mo-panel" style={{padding:14}}>
+          <h2 style={{marginTop:0}}>خريطة 80 أسبوع</h2>
+          <div className="mo-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))"}}>
+            {PHASES.map(ph=>{
+              const done=clamp(currentWeek-ph.startWeek+1,0,ph.endWeek-ph.startWeek+1);
+              const total=ph.endWeek-ph.startWeek+1;
+              return(
+                <div key={ph.id} className="mo-card" style={{padding:12,borderColor:currentPhase.id===ph.id?ph.color:"var(--wo)"}}>
+                  <div style={{fontSize:24}}>{ph.icon}</div>
+                  <div style={{fontWeight:900}}>{ph.nameAr}</div>
+                  <div className="mo-kbd">Weeks {ph.startWeek}-{ph.endWeek}</div>
+                  <div className="mo-progress" style={{marginTop:8}}><span style={{width:`${pct(done,total)}%`,background:ph.color}}/></div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>);
+    );
   };
 
-  const RoadmapSummary=()=>(
-    <div className="card" style={{padding:isMobile?12:16,marginTop:14}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:12}}>
-        <div><div style={{color:"var(--t0)",fontSize:16,fontWeight:900,fontFamily:"'Cairo',sans-serif"}}>خريطة 80 أسبوع كتصنيف ثانوي</div><div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif"}}>الأسابيع لم تعد الشاشة الأساسية؛ تظهر هنا كمؤشر عام مرتبط برقم يوم التدريب.</div></div>
-        <button className="btn btn-o" onClick={()=>setRoadmapOpen(p=>!p)} style={{fontSize:12,padding:"8px 12px"}}>{roadmapOpen?"إخفاء":"عرض الخريطة"}</button>
-      </div>
-      {roadmapOpen&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:9}}>
-        {PHASES.map(ph=>{
-          const done=clamp(currentRoadmapWeek-ph.startWeek+1,0,ph.endWeek-ph.startWeek+1);
-          const total=ph.endWeek-ph.startWeek+1;
-          const percent=pct(done,total);
-          const active=currentPhase?.id===ph.id;
-          return(<div key={ph.id} style={{background:active?ph.bg:"var(--bo)",border:`1px solid ${active?ph.color+"66":"var(--wo)"}`,borderRadius:10,padding:12}}>
-            <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}>
-              <span style={{fontSize:22}}>{ph.icon}</span>
-              <span style={{color:ph.color,fontSize:11,fontFamily:"'Fira Code',monospace"}}>{Math.round(percent)}%</span>
+  const renderContent=()=>{
+    if(activeTab==="command")return CommandView();
+    if(activeTab==="knowledge")return KnowledgeView();
+    if(activeTab==="library")return LibraryView();
+    if(activeTab==="labs")return LabsView();
+    if(activeTab==="ctf")return CtfView();
+    if(activeTab==="projects")return ProjectsView();
+    if(activeTab==="search")return SearchView();
+    if(activeTab==="review")return ReviewView();
+    if(activeTab==="progress")return ProgressView();
+    return TodayView();
+  };
+  const content=renderContent();
+
+  if(loading)return(
+    <div className="mo-root" data-theme={theme} style={{display:"grid",placeItems:"center"}}>
+      <style>{FONTS+CSS+MODERN_CSS}</style>
+      <div style={{textAlign:"center"}}><div className="mo-logo" style={{margin:"0 auto 12px"}}>CP</div><div className="mo-kbd">جاري تحميل المنهج...</div></div>
+    </div>
+  );
+
+  return(
+    <div className="mo-root" data-theme={theme}>
+      <style>{FONTS+CSS+MODERN_CSS}</style>
+      {toast&&<div className="xp-toast">{toast}</div>}
+      {MobileBar()}
+      <div className="mo-shell">
+        {Side()}
+        <main className="mo-main">
+          <div className="mo-desk-only">{ShellHeader()}</div>
+          <div className="mo-panel" style={{padding:isMobile?14:18,marginBottom:12}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+              <div>
+                <div className="mo-kbd">// {activeTab}</div>
+                <div style={{fontSize:isMobile?24:34,fontWeight:900}}>منهج واحد، يوم واحد، درس واحد في كل لحظة</div>
+                <div className="mo-muted" style={{marginTop:5}}>نفس منهج CyberPath، لكن في واجهة Study OS حديثة ومركزة.</div>
+              </div>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                <button className="mo-btn" onClick={()=>setViewOffset(v=>v-1)}>اليوم السابق</button>
+                <button className="mo-btn primary" onClick={()=>setViewOffset(0)}>اليوم</button>
+                <button className="mo-btn" onClick={()=>setViewOffset(v=>v+1)}>اليوم التالي</button>
+              </div>
             </div>
-            <div style={{color:"var(--t0)",fontSize:13,fontWeight:800,fontFamily:"'Cairo',sans-serif",marginTop:6}}>{ph.nameAr}</div>
-            <div style={{color:"var(--t2)",fontSize:10,fontFamily:"'Fira Code',monospace",marginTop:2}}>Weeks {ph.startWeek}-{ph.endWeek} · {ph.monthLabel}</div>
-            <div className="bar" style={{marginTop:8}}><div className="bar-fill" style={{width:`${percent}%`,background:ph.color}}/></div>
-          </div>);
-        })}
-      </div>}
-    </div>
-  );
-
-  const Dashboard=()=>(
-    <div className="slide">
-      <div style={{background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,212,255,0.04))",border:"1px solid rgba(0,255,136,0.15)",borderRadius:16,padding:isMobile?"16px":"20px 24px",marginBottom:14,position:"relative",overflow:"hidden"}}>
-        <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
-          <div style={{minWidth:0}}>
-            <div style={{color:"var(--t1)",fontSize:11,fontFamily:"'Fira Code',monospace",marginBottom:4}}>// Study Cockpit v2</div>
-            <h1 style={{color:"var(--t0)",fontSize:isMobile?22:30,fontWeight:900,fontFamily:"'Cairo',sans-serif",marginBottom:4}}>مركز الدراسة اليومي</h1>
-            <div style={{color:"var(--t4)",fontSize:13,fontFamily:"'Cairo',sans-serif"}}>{fmtDate(selectedDate)} · {restDay?"جمعة راحة":`يوم تدريبي ${trainingDay}`} · البداية {s.trainingStartDate}</div>
           </div>
-          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-            <button className="btn btn-o" onClick={()=>setViewOffset(v=>v-1)} style={{fontSize:12,padding:"8px 12px"}}>اليوم السابق</button>
-            <button className="btn btn-g" onClick={goToday} style={{fontSize:12,padding:"8px 12px"}}>اليوم</button>
-            <button className="btn btn-o" onClick={()=>setViewOffset(v=>v+1)} style={{fontSize:12,padding:"8px 12px"}}>اليوم التالي</button>
-          </div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:8,marginTop:14}}>
-          {[{label:"تقدم الكل",val:`${overallPct}%`,color:"#00ff88"},{label:"دروس اليوم",val:`${todayDone}/${todayTotal}`,color:"#00d4ff"},{label:"الجلسات",val:"3 × 90m",color:"#a78bfa"},{label:"المستوى",val:lv.ar,color:lv.color}].map((item,i)=><div key={i} className="stat-card" style={{padding:11}}>
-            <div style={{color:item.color,fontSize:16,fontWeight:900,fontFamily:"'Fira Code',monospace"}}>{item.val}</div>
-            <div style={{color:"var(--t2)",fontSize:11,fontFamily:"'Cairo',sans-serif",marginTop:4}}>{item.label}</div>
-          </div>)}
-        </div>
-        <div className="bar" style={{height:8,marginTop:12}}><div className="bar-fill" style={{width:`${overallPct}%`,background:"linear-gradient(90deg,#00ff88,#00d4ff)"}}/></div>
+          {content}
+        </main>
       </div>
-
-      <StudyTabs/>
-      {activeTab==="today"&&<TodayStudyCockpit/>}
-      {activeTab==="library"&&<TrackPlaylistTree/>}
-      {activeTab==="search"&&<GlobalSearchPanel/>}
-      {activeTab==="review"&&<ReviewPanel/>}
-      {activeTab==="progress"&&<><ProgressPanel/><RoadmapSummary/></>}
     </div>
   );
-
-  if(loading)return(<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"var(--bg)",flexDirection:"column",gap:16}}>
-    <style>{FONTS+CSS}</style><div className="pulse" style={{fontSize:48}}>CP</div>
-    <div style={{color:"#00ff88",fontFamily:"'Fira Code',monospace",fontSize:14}}>جاري التحميل...</div>
-  </div>);
-
-  return(<div className="matrix-bg" data-theme={theme} style={{fontFamily:"'Fira Code',monospace",background:"var(--bg)",minHeight:"100vh",color:"var(--t0)"}}>
-    <style>{FONTS+CSS}</style>
-    {toast&&<div className="xp-toast">{toast}</div>}
-    {isMobile&&sideOpen&&<div className="sidebar-overlay" onClick={()=>setSideOpen(false)}/>}
-    <Sidebar/>
-    <main style={{marginLeft:isMobile?0:SB,padding:isMobile?"60px 14px 24px":"26px 26px 40px",maxWidth:isMobile?"100%":1180,transition:"margin-left 0.3s ease"}}>
-      {isMobile&&<div style={{position:"fixed",top:0,left:0,right:0,zIndex:50,background:"var(--bg)",borderBottom:"1px solid var(--sbd15)",display:"flex",alignItems:"center",gap:10,padding:"10px 14px"}}>
-        <div style={{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#00ff88,#00d4ff)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}} onClick={()=>setSideOpen(p=>!p)}>
-          <span style={{fontSize:16,color:"#050810",fontWeight:900}}>☰</span>
-        </div>
-        <div style={{flex:1,color:"#00ff88",fontWeight:700,fontSize:12,fontFamily:"'Fira Code',monospace"}} className="glow">{TAB_ITEMS.find(tab=>tab.id===activeTab)?.label||"Study Cockpit"}</div>
-        <button className="theme-tgl" onClick={toggleTheme} title={theme==="dark"?"الوضع النهاري":"الوضع الليلي"} style={{margin:0}}>{theme==="dark"?"☀":"☾"}</button>
-      </div>}
-      <Dashboard/>
-    </main>
-  </div>);
 }
